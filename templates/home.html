@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{user_name}} Home</title>
+</head>
+<body>
+You are logged in as {{user_name}}
+<br>
+<a href="/login" align="left" style="color:black;position:absolute;right:0px;"><button>logout</button></a>
+<br>
+<br>
+<a href="/{{user_name}}/edit" style="color:black;position:absolute;right:0px;"><button>edit user</button></a>
+Events you are attending:
+{% for t in user.going_to: %}
+<a href="/events/{{t.name}}">{{t.name}} </a>
+{% endfor %}
+<br>
+
+Events you created:
+
+{% for events_owned in what_events_i_own %}
+<a href="/events/{{events_owned.name}}"> {{ events_owned.name }} </a>
+{% endfor %}
+<br>
+<br><br>
+
+
+
+<a href="/events/view" style="color:black;">View all events</a>
+<br>
+<a href="/events/create" style="color:black;">Create an Event!</a>
+<br>
+<a href="/events/edit" style="color:black;">Edit events</a>
+
+</body>
+</html>

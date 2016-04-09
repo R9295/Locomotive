@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit {{var.name}}</title>
+</head>
+<body>
+<a href="/login" align="left" style="color:black;position:absolute;right:0px;"><button>logout</button></a>
+
+    <div class="container">
+      <h1>Create Event</h1>
+      <br>
+      <form action="" method="post" id="ww">
+       Username
+          <br>
+          <input type="text"  name="name" value="{{var.name}}">
+          <br>
+          <br>
+       Email
+          <br>
+          <input type="text"  name="email" value="{{var.email}}">
+          <br>
+          <br>
+       Phone Number
+          <br>
+          <input type="text"  name="phone_number" value="{{var.phone_number}}">
+          <br>
+          <br>
+       Community
+          <br>
+          <input type="text" name="community" value="{{var.community}}">
+       <br><br>
+          Old Password
+          <br>
+          <input type="password" name="old_password">
+          <br><br>
+          New Password
+          <br>
+          <input type="password" name="password">
+            <br><br>
+          Re enter New Password
+          <br>
+          <input type="password" name="new_password">
+            <br><br>
+</form>
+
+
+</div>
+<script>
+
+function myFunction() {
+    var x;
+    if (confirm("Are you sure about the changes?!") == true) {
+       ww.submit();
+    } else {
+        x = "You pressed Cancel!";
+    }
+  }
+</script>
+          <button onclick="myFunction()">Confirm Changes</button>
+<br>
+<br>
+
+      {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}</p>
+      {% endif %}
+<a href ="/"><button>Cancel</button></a>
+
+
+
+</body>
+</html>

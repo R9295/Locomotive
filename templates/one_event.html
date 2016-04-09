@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event:{{var.name}}</title>
+</head>
+<body>
+<a href="/login" align="left" style="color:black;position:absolute;right:0px;"><button>logout</button></a>
+
+Event created by:
+<br>
+{{var.who_made_me}}
+<br><br>
+Event Name:
+<br>
+{{var.name}}
+<br><br>
+Host's Email:
+<br>
+{{var.email}}
+<br><br>
+Host's phone number:
+<br>
+{{var.phone_number}}
+<br><br>
+Event Location:
+<br>
+{{var.venue}}
+<br><br>
+Event Address:
+<br>
+{{var.address}}  <a href="{{wololo}}" style="color:black;">View on Google Maps:</a>
+<br><br>
+Event's Description:
+<br>
+{{var.description}}
+<br><br>
+When the event is happening:
+<br>
+{{var.date}}
+<br><br>
+Event Begins at:
+<br>
+{{var.time}}
+<br><br>
+Event duration
+<br>
+{{var.duration}}
+<br><br>
+Who's coming:
+{% for people in var.who_is_coming %}
+<br>
+{{ people.name }}
+
+{% endfor %}
+
+<br>
+<br>
+
+<form action="" method="post">
+    <input type="submit" value="Go to!">
+<br><br>
+<a href="/events/view" style="color:black;">back to view events</a>
+</form>
+</body>
+</html>

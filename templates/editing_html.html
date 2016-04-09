@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit {{var.name}}</title>
+</head>
+<body>
+<a href="/login" align="left" style="color:black;position:absolute;right:0px;"><button>logout</button></a>
+
+    <div class="container">
+      <h1>Create Event</h1>
+      <br>
+      <form action="" method="post" id="ww">
+       Name of the Event
+          <br>
+          <input type="text"  name="name" value="{{var.name}}">
+          <br>
+          <br>
+       Email of host
+          <br>
+          <input type="text"  name="email" value="{{var.email}}">
+          <br>
+          <br>
+          Venue
+          <br>
+          <input type="text" name="venue" value="{{var.venue}}">
+          <br>
+          <br>
+          Address(Will auto search GoogleMaps for you)
+          <br>
+          <input type="text"  name="address" value="{{var.address}}">
+          <br>
+          <br>
+       Description
+          <br>
+          <input type="text"  name="description" value="{{var.description}}">
+          <br>
+          <br>
+       Phone Number of host
+          <br>
+          <input type="text"  name="phone_number" value="{{var.phone_number}}">
+          <br>
+          <br>
+       Time event starts
+          <br>
+          <input type="text" name="time" value="{{var.time}}">
+          <br>
+          <br>
+       Duration of event
+          <br>
+          <input type="text"  name="duration" value="{{var.duration}}">
+          <br>
+          <br>
+       Date
+          <br>
+          <input type="text"  name="date" value="{{var.date}}">
+          <br>
+          <br>
+
+</form>
+
+</div>
+<script>
+
+function myFunction() {
+    var x;
+    if (confirm("Press a button!") == true) {
+       ww.submit();
+    } else {
+        x = "You pressed Cancel!";
+    }
+  }
+</script>
+          <button onclick="myFunction()">Confirm Changes</button>
+      {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}</p>
+      {% endif %}
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit event</title>
+
+</head>
+<body>
+<a href="/login" align="left" style="color:black;position:absolute;right:0px;"><button>logout</button></a>
+
+{% for wololo in var %}
+    <a href="/events/edit/{{wololo.name}}">{{wololo.name}}</a>
+{% endfor %}
+</body>
+</html>

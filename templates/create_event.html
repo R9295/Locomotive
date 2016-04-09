@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <title>Create an Event!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+  </head>
+  <body>
+  <a href="/login" align="left" style="color:black;position:absolute;right:0px;"><button>logout</button></a>
+
+    <div class="container">
+      <h1>Create Event</h1>
+      <br>
+      <form action="" method="post">
+       Name of the Event
+          <br>
+          <input type="text"  name="name">
+          <br>
+       Email of host
+          <br>
+          <input type="text" placeholder="goldroger@gmail.com" name="email">
+          <br>
+          Venue
+          <br>
+          <input type="text" name="venue">
+          <br>
+          Address(Will auto search GoogleMaps for you)
+          <br>
+          <input type="text"  name="address">
+          <br>
+       Description
+          <br>
+          <input type="text" placeholder="200 words max." name="description">
+          <br>
+       Phone Number of host
+          <br>
+          <input type="text" placeholder="Danil" name="phone_number">
+          <br>
+       Time event starts
+          <br>
+          <input type="text" placeholder="" name="time">
+          <br>
+       Duration of event
+          <br>
+          <input type="text" placeholder="" name="duration">
+          <br>
+       Date
+          <br>
+          <input type="text" placeholder="in D/M/Y format" name="date">
+          <br>
+
+          <input  type="submit" value="Create!" class="btn btn-default">
+      </form>
+
+
+
+      {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}</p>
+      {% endif %}
+    </div>
+  <div>
+      <a href="/events/view" style="color:black;">view events</a>
+  </div>
+  </body>
+</html>

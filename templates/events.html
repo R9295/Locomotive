@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Events</title>
+</head>
+<body>
+{% for eventz in events: %}
+<a href="/events/{{eventz.name}}" style="color:black;"> {{eventz.name}}<br></a>
+{% endfor %}
+</body>
+</html>
