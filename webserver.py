@@ -254,6 +254,7 @@ def view_events_for_edit():
 @app.route('/events/edit/<event_name>',methods=['GET','POST'])
 def edit_particular_event(event_name):
     if g.user:
+        error = None
         var = con.query(Events).filter_by(who_made_me=g.user,name=event_name).first()
         #updating all the entries
         if request.method == 'POST':
@@ -261,16 +262,16 @@ def edit_particular_event(event_name):
             var.email = request.form['email']
             var.venue = request.form['venue']
             var.address = request.form['address']
-            var.decription = request.form['description']
+            var.description = request.form['description']
             var.phone_number = request.form['phone_number']
             var.time = request.form['time']
             var.duration = request.form['duration']
             var.date = request.form['date']
             con.commit()
-            return redirect(url_for('home'))
+            return redirect(url_for('/events/%s'%(event_name)))
     else:
         return redirect(url_for('login'))
-    return render_template('editing_html.html',var=var,error=None)
+    return render_template('editing_html.html',var=var,error=error)
 
 
 #Each individual event's page auto generated

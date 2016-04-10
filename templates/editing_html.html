@@ -12,7 +12,7 @@
     <div class="container">
       <h1>Edit {{var.name}}</h1>
       <br>
-      <form action="" method="post" id="ww">
+      <form action="" method="post" id="ww" name="edit">
        Name of the Event
           <br>
           <input type="text"  name="name" value="{{var.name}}" class="form-control">
@@ -35,7 +35,7 @@
           <br>
        Description
           <br>
-            <textarea class="form-control" rows="7" placeholder="Max 200 words"></textarea>
+            <textarea class="form-control" rows="7" placeholder="Max 200 words" name="description"></textarea>
           <br>
           <br>
        Phone Number of host
