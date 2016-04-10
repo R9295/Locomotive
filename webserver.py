@@ -1,6 +1,7 @@
 from flask import * #web framework
 from DB import * #SQLalchemy database.py file
 
+import os
 from key import key # key for GoogleMaps API
 from mail_server_pass import email,password #mail server password info
 
