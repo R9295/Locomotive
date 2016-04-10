@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <link  href="/static/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>Edit {{var.name}}</title>
 </head>
@@ -8,61 +10,63 @@
 <a href="/login" align="left" style="color:black;position:absolute;right:0px;"><button>logout</button></a>
 
     <div class="container">
-      <h1>Create Event</h1>
+      <h1>Edit {{var.name}}</h1>
       <br>
       <form action="" method="post" id="ww">
        Name of the Event
           <br>
-          <input type="text"  name="name" value="{{var.name}}">
+          <input type="text"  name="name" value="{{var.name}}" class="form-control">
           <br>
           <br>
        Email of host
           <br>
-          <input type="text"  name="email" value="{{var.email}}">
+          <input type="text"  name="email" value="{{var.email}}" class="form-control">
           <br>
           <br>
           Venue
           <br>
-          <input type="text" name="venue" value="{{var.venue}}">
+          <input type="text" name="venue" value="{{var.venue}}" class="form-control">
           <br>
           <br>
           Address(Will auto search GoogleMaps for you)
           <br>
-          <input type="text"  name="address" value="{{var.address}}">
+          <input type="text"  name="address" value="{{var.address}}" class="form-control">
           <br>
           <br>
        Description
           <br>
-          <input type="text"  name="description" value="{{var.description}}">
+            <textarea class="form-control" rows="7" placeholder="Max 200 words"></textarea>
           <br>
           <br>
        Phone Number of host
           <br>
-          <input type="text"  name="phone_number" value="{{var.phone_number}}">
+          <input type="text"  name="phone_number" value="{{var.phone_number}}" class="form-control">
           <br>
           <br>
        Time event starts
           <br>
-          <input type="text" name="time" value="{{var.time}}">
+          <input type="text" name="time" value="{{var.time}}" class="form-control">
           <br>
           <br>
        Duration of event
           <br>
-          <input type="text"  name="duration" value="{{var.duration}}">
+          <input type="text"  name="duration" value="{{var.duration}}" class="form-control">
           <br>
           <br>
        Date
           <br>
-          <input type="text"  name="date" value="{{var.date}}">
+          <input type="text"  name="date" value="{{var.date}}" class="form-control">
           <br>
           <br>
 
 
 </form>
-
+      {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}</p>
+      {% endif %}
 </div>
-<script>
 
+<script>
 function myFunction() {
     var x;
     if (confirm("Are you sure you wont to commit these changes?") == true) {
@@ -71,27 +75,28 @@ function myFunction() {
         x = "You pressed Cancel!";
     }
   }
-
 </script>
-          <button onclick="myFunction()">Confirm Changes</button>
-      {% if error %}
-        <p class="error"><strong>Error:</strong> {{ error }}</p>
-      {% endif %}
+
+<div class="container">
+<button onclick="myFunction()" class="btn btn-success">Confirm Changes</button>
+</div>
 
 <script>
-      function del() {
+function del() {
     var x;
-    if (confirm("Are you sure you want to delete this event? ") == true) {
-       delete.submit();
+    if (confirm("Are you sure you wont to commit these changes?") == true) {
+       window.location="/delete/{{var.name}}"
     } else {
         x = "You pressed Cancel!";
     }
   }
 </script>
 
-<form action="/delete/{{var.name}}" method="post">
-<button onclick="del()">Delete event</button>
-</form>
+<div class="container">
+<button onclick="del()" class="btn btn-danger">Delete event</button>
+
+</div>
+
 
 </body>
 </html>
