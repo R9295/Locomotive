@@ -8,8 +8,12 @@
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
-<nav class="navbar navbar-inverse">
+
+</head>
 <body>
+    <nav class="navbar navbar-inverse">
+
+
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -57,55 +61,75 @@
   </div>
  </nav>
 
-</head>
 
 
+<div class="container">
 
 
-Event created by:
+<h3>Event created by:</h3>
 <br>
-{{var.who_made_me}}
+<h4>{{var.who_made_me}}
 <br><br>
-Event Name:
+
+
+<h3>Event Name:</h3>
 <br>
-{{var.name}}
+<h4>{{var.name}}</h4>
 <br><br>
-Host's Email:
+
+
+<h3>Host's Email:</h3>
 <br>
-{{var.email}}
+<h4>{{var.email}}</h4>
 <br><br>
-Host's phone number:
+
+
+<h3>Host's phone number:</h3>
 <br>
-{{var.phone_number}}
+<h4>{{var.phone_number}}</h4>
 <br><br>
-Event Location:
+
+
+<h3>Event Location:</h3>
 <br>
-{{var.venue}}
+<h4>{{var.venue}}</h4>
 <br><br>
-Event Address:
+
+
+<h3>Event Address:</h3>
 <br>
-{{var.address}}  <a href="{{wololo}}" style="color:black;">View on Google Maps:</a>
+<h4>{{var.address}}  <a href="{{wololo}}" style="color:black;">View on Google Maps:</a></h4>
 <br><br>
-Event's Description:
+
+
+<h3>Event's Description:</h3>
 <br>
-{{var.description}}
+<h4>{{var.description}}</h4>
 <br><br>
-When the event is happening:
+
+
+<h3>When the event is happening:</h3>
 <br>
-{{var.date}}
+<h4>{{var.date}}</h4>
 <br><br>
-Event Begins at:
+
+
+<h3>Event Begins at:</h3>
 <br>
-{{var.time}}
+<h4>{{var.time}}</h4>
 <br><br>
-Event duration
+
+
+<h3>Event duration:</h3>
 <br>
-{{var.duration}}
+<h4>{{var.duration}}</h4>
 <br><br>
-Who's coming:
+
+
+<h3>Who's coming:</h3>
 {% for people in var.who_is_coming %}
 <br>
-{{ people.name }}
+<h4>{{ people.name }}</h4>
 
 {% endfor %}
 
@@ -113,8 +137,10 @@ Who's coming:
 <br>
 
 <form action="" method="post">
-    <input type="submit" value="Go to!">
+    <input type="submit" value="Go to!" class="btn btn-success">
 <br><br>
 </form>
+</div>
 </body>
+
 </html>
