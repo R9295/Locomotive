@@ -16,6 +16,72 @@
     <title>View all Events</title>
 </head>
 <body>
+<nav class="navbar navbar-inverse">
+
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" >Logged in as {{user_in_use }}</a>
+    </div>
+    <ul class="nav navbar-nav">
+
+      <li class="active"><a href="/">Home</a></li>
+      <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown">Events I Created
+        <span class="caret"></span></a>
+
+        <ul class="dropdown-menu">
+            {%for my_eventz in my_events: %}
+            <li><a href="/events/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
+            {% endfor %}
+        </ul>
+      </li>
+
+        <li><a href="/events/create">Create an Event</a></li>
+      <li><a href="/events/view">View Events</a></li>
+
+        <li class="navbar-right">
+        <a class="dropdown-toggle" data-toggle="dropdown" >User options
+        <span class="caret"></span></a>
+
+        <ul class="dropdown-menu">
+            <li><a href="/login">Logout</a></li>
+            <li><a href="/{{user_in_use}}/edit">Edit User</a> </li>
+        </ul>
+      </li>
+        <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown">Edit my events
+        <span class="caret"></span></a>
+
+        <ul class="dropdown-menu">
+            {%for my_eventz in my_events: %}
+            <li><a href="/events/edit/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
+            {% endfor %}
+        </ul>
+      </li>
+
+    </ul>
+
+  </div>
+ </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <a href="/login" align="left" style="color:black;position:absolute;right:0px;"><button>logout</button></a>
 
 <a href="/" style="color:black;">go home</a>

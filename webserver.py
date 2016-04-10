@@ -59,6 +59,8 @@ def before_request():
         g.user = session['user']
 
 
+
+
 @app.route('/')
 def home():
     if g.user:
@@ -156,6 +158,8 @@ def login():
 
 @app.route('/<edit_user>/edit', methods=['GET','POST'])
 def edit_user(edit_user):
+    user_in_use = g.user
+    my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     error = ""
     if g.user:
         edit_user= con.query(Users).filter_by(name=g.user).first()
@@ -171,8 +175,8 @@ def edit_user(edit_user):
                 edit_user.phone_number = request.form['phone_number']
                 edit_user.community = request.form['community']
                 con.commit()
-                return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button>logout</button></a></body></html>'
-    return render_template('edit_users.html', var=edit_user,error=error)
+                return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button style="color:green;">logout</button></a></body></html>'
+    return render_template('edit_users.html', var=edit_user,error=error,my_events=my_events,user_in_use =user_in_use )
 
 
 
@@ -197,6 +201,8 @@ def search_events(queries):
 #Views all events
 @app.route('/events/view',methods=['GET','POST'])
 def view_events():
+    user_in_use = g.user
+    my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     #check if logged in
     if g.user:
         all_events = con.query(Events).all()
@@ -205,7 +211,7 @@ def view_events():
             what_event = request.form['search_events'].encode('utf-8')
             return redirect('/search'+'/'+what_event)
 
-        return render_template('view_events.html',all_events=all_events)
+        return render_template('view_events.html',all_events=all_events,my_events=my_events,user_in_use =user_in_use )
     else:
         return redirect(url_for('login'))
 
@@ -215,6 +221,8 @@ def view_events():
 #creates an event and registers it. need to add which user did made it
 @app.route('/events/create',methods=['GET','POST'])
 def create_event():
+    user_in_use = g.user
+    my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     if g.user:
         error = None
         if request.method == 'POST':
@@ -231,29 +239,19 @@ def create_event():
                 con.add(add_event)
                 con.commit()
 
-        return render_template('create_event.html',error=error)
+        return render_template('create_event.html',error=error,my_events=my_events,user_in_use =user_in_use )
     else:
         return redirect(url_for('login'))
 
 
 
 
-#Views events you can edit
-@app.route('/events/edit/',methods=['GET','POST'])
-def view_events_for_edit():
-    #check if logged in
-    if g.user:
-
-        event = con.query(Events).filter_by(who_made_me=g.user).all()
-        #urls = var.name
-        return render_template('edit_events.html', var=event)
-
-    else:
-        return redirect(url_for('login'))
 
 #edit a particular event
 @app.route('/events/edit/<event_name>',methods=['GET','POST'])
 def edit_particular_event(event_name):
+    user_in_use = g.user
+    my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     if g.user:
         error = None
         var = con.query(Events).filter_by(who_made_me=g.user,name=event_name).first()
@@ -274,12 +272,14 @@ def edit_particular_event(event_name):
             return redirect('/events/%s'%(var.name))
     else:
         return redirect(url_for('login'))
-    return render_template('editing_html.html',var=var,error=error)
+    return render_template('editing_html.html',var=var,error=error,my_events=my_events,user_in_use =user_in_use )
 
 
 #Each individual event's page auto generated
 @app.route('/events/<event_name>',methods=['GET','POST'])
 def view_particular_event(event_name):
+    user_in_use = g.user
+    my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     #check if logged in
     if g.user:
         #querying the map from GoogleMap API. It takes the Address of the location as GoogleMap search and spits out a link
@@ -304,7 +304,7 @@ def view_particular_event(event_name):
             con.commit()
             return redirect(url_for('home'))
 
-        return render_template('one_event.html', var=var,wololo=wololo)
+        return render_template('one_event.html', var=var,wololo=wololo,my_events=my_events,user_in_use =user_in_use )
     else:
         return redirect(url_for('login'))
 
