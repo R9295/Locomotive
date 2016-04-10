@@ -314,6 +314,12 @@ def deleteion(name):
          return redirect('/')
     else:
         user_to_delete = con.query(Users).filter_by(name=name).first()
+
+        events_of_user = con.query(Events).filter_by(name=user_to_delete.name).all()
+        con.delete(user_to_delete)
+        for events in events_of_user:
+            con.delete(events.name)
+        con.commit()
         con.delete(user_to_delete)
         con.commit()
         return redirect('/login')

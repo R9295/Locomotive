@@ -50,15 +50,12 @@
 
           <input  type="submit" value="Create!" class="btn btn-default">
       </form>
-
-
-
-      {% if error %}
+        {% if error %}
         <p class="error"><strong>Error:</strong> {{ error }}</p>
       {% endif %}
     </div>
-  <div>
-      <a href="/events/view" style="color:black;">view events</a>
+  <div class="container">
+      <a href="/events/view"><button class="btn btn-default">View events</button></a>
   </div>
   </body>
 </html>
