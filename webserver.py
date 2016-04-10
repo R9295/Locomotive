@@ -257,6 +257,8 @@ def edit_particular_event(event_name):
     if g.user:
         error = None
         var = con.query(Events).filter_by(who_made_me=g.user,name=event_name).first()
+        if not var:
+            return redirect('/')
         #updating all the entries
         if request.method == 'POST':
             var.name = request.form['name']

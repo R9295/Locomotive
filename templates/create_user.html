@@ -1,11 +1,15 @@
 <html>
   <head>
+
     <title>Create User!</title>
-   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="static/css/bootstrap.min.css">
-  <script src="static/js/jquery.min.js"></script>
-  <script src="static/js/bootstrap.min.js"></script>
-   <link href="static/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+  <script src="{{url_for('static', filename='bootstrap.min.js')}}"></script>
+  <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+   <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+
   </head>
   <body>
     <div class="container">
@@ -19,7 +23,7 @@
           <input type="text" placeholder="Phone Number" name="phone_number">
           <input type="text" placeholder="Email" name="email">
           <input type="text" placeholder="Community" name="community">
-          <input class="btn btn-default" type="submit" value="Create!">
+          <input class="btn btn-success" type="submit" value="Create!">
       </form>
 
       {% if error %}
