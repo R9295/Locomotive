@@ -304,7 +304,9 @@ def view_particular_event(event_name):
     else:
         return redirect(url_for('login'))
 
-
+@app.route('/delete/<name_of_thing>',methods=['GET','POST'])
+def deleteion(name_of_thing):
+    pass
 
 
 

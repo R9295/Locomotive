@@ -57,6 +57,7 @@
           <br>
           <br>
 
+
 </form>
 
 </div>
@@ -64,20 +65,33 @@
 
 function myFunction() {
     var x;
-    if (confirm("Press a button!") == true) {
+    if (confirm("Are you sure you wont to commit these changes?") == true) {
        ww.submit();
     } else {
         x = "You pressed Cancel!";
     }
   }
+
 </script>
           <button onclick="myFunction()">Confirm Changes</button>
       {% if error %}
         <p class="error"><strong>Error:</strong> {{ error }}</p>
       {% endif %}
 
+<script>
+      function del() {
+    var x;
+    if (confirm("Are you sure you want to delete this event? ") == true) {
+       delete.submit();
+    } else {
+        x = "You pressed Cancel!";
+    }
+  }
+</script>
 
-
+<form action="/delete/{{var.name}}" method="post">
+<button onclick="del()">Delete event</button>
+</form>
 
 </body>
 </html>

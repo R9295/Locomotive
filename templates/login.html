@@ -6,14 +6,13 @@
   </head>
   <body>
     <div class="container">
-      <h1>Please login</h1>
+      <h1>Login to Locomotive!a</h1>
       <br>
       <form action="" method="post">
-        <input type="text" placeholder="Username" name="username" value="{{
-          request.form.username }}">
-         <input type="password" placeholder="Password" name="password" value="{{
-          request.form.password }}" >
-        <input class="btn btn-default" type="submit" value="Login">
+        <input type="text" placeholder="Username" name="username"  class="form-control">
+         <input type="password" placeholder="Password" name="password" class="form-control">
+        <br>
+        <input class="btn btn-success" type="submit" value="Login">
       </form>
       <a href="/create" style="color:black;">Create an account</a>
       {% if error %}
