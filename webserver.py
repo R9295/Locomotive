@@ -268,7 +268,7 @@ def edit_particular_event(event_name):
             var.duration = request.form['duration']
             var.date = request.form['date']
             con.commit()
-            return redirect(url_for('/events/%s'%(event_name)))
+            return redirect('/events/%s'%(var.name))
     else:
         return redirect(url_for('login'))
     return render_template('editing_html.html',var=var,error=error)
@@ -305,9 +305,18 @@ def view_particular_event(event_name):
     else:
         return redirect(url_for('login'))
 
-@app.route('/delete/<name_of_thing>',methods=['GET','POST'])
-def deleteion(name_of_thing):
-    pass
+@app.route('/delete/<name>',methods=['GET','POST'])
+def deleteion(name):
+    delete_event = con.query(Events).filter_by(name=name).first()
+    if delete_event:
+         con.delete(delete_event)
+         con.commit()
+         return redirect('/')
+    else:
+        user_to_delete = con.query(Users).filter_by(name=name).first()
+        con.delete(user_to_delete)
+        con.commit()
+        return redirect('/login')
 
 
 
