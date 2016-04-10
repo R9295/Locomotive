@@ -2,6 +2,7 @@ from flask import * #web framework
 from DB import * #SQLalchemy database.py file
 
 import os
+from werkzeug import *
 from key import key # key for GoogleMaps API
 from mail_server_pass import email,password #mail server password info
 
@@ -28,6 +29,13 @@ details_url = "https://maps.googleapis.com/maps/api/place/details/json"
 #creating Flask app
 app = Flask(__name__)
 GoogleMaps(app)
+
+#configuring file uploads
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
 
 #configuring Mail server
 app.config['MAIL_SERVER']='smtp.gmail.com'
