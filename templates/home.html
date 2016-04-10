@@ -1,11 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="static/css/bootstrap.min.css">
+  <script src="static/js/jquery.min.js"></script>
+  <script src="static/js/bootstrap.min.js"></script>
     <meta charset="UTF-8">
     <title>{{user_name}} Home</title>
 </head>
 <body>
-You are logged in as {{user_name}}
+
+ <nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">WebSiteName</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Home</a></li>
+      <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1
+        <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="/login">Page 1-1</a></li>
+          <li><a href="/login">Page 1-2</a></li>
+          <li><a href="/login">Page 1-3</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Page 2</a></li>
+      <li><a href="#">Page 3</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+
+<h1>You are logged in as {{user_name}}</h1>
 <br>
 <a href="/login" align="left" style="color:black;position:absolute;right:0px;"><button>logout</button></a>
 <br>
@@ -32,6 +61,11 @@ Events you created:
 <a href="/events/create" style="color:black;">Create an Event!</a>
 <br>
 <a href="/events/edit" style="color:black;">Edit events</a>
+
+
+
+
+
 
 </body>
 </html>
