@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link  href="/static/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>Edit {{var.name}}</title>
 </head>
@@ -8,46 +10,45 @@
 <a href="/login" align="left" style="color:black;position:absolute;right:0px;"><button>logout</button></a>
 
     <div class="container">
-      <h1>Create Event</h1>
+      <h1>Edit {{var.name}}</h1>
       <br>
       <form action="" method="post" id="ww">
        Username
           <br>
-          <input type="text"  name="name" value="{{var.name}}">
+          <input type="text"  name="name" value="{{var.name}}" class="form-control">
           <br>
           <br>
        Email
           <br>
-          <input type="text"  name="email" value="{{var.email}}">
+          <input type="text"  name="email" value="{{var.email}}" class="form-control">
           <br>
           <br>
        Phone Number
           <br>
-          <input type="text"  name="phone_number" value="{{var.phone_number}}">
+          <input type="text"  name="phone_number" value="{{var.phone_number}}" class="form-control">
           <br>
           <br>
        Community
           <br>
-          <input type="text" name="community" value="{{var.community}}">
+          <input type="text" name="community" value="{{var.community}}" class="form-control">
        <br><br>
           Old Password
           <br>
-          <input type="password" name="old_password">
+          <input type="password" name="old_password" class="form-control">
           <br><br>
           New Password
           <br>
-          <input type="password" name="password">
+          <input type="password" name="password" class="form-control">
             <br><br>
           Re enter New Password
           <br>
-          <input type="password" name="new_password">
+          <input type="password" name="new_password" class="form-control">
             <br><br>
 </form>
 
 
 </div>
 <script>
-
 function myFunction() {
     var x;
     if (confirm("Are you sure about the changes?!") == true) {
@@ -57,14 +58,28 @@ function myFunction() {
     }
   }
 </script>
-          <button onclick="myFunction()">Confirm Changes</button>
-<br>
-<br>
+<script>
+function del() {
+    var x;
+    if (confirm("Are you sure you want to delete {{var.name}}") == true) {
+       window.location="/delete/{{var.name}}"
+    } else {
+        x = "You pressed Cancel!";
+    }
+  }
+</script>
+
+
+<div class="container">
+    <button onclick="myFunction()" class="btn btn-success">Confirm Changes</button><br>
+    <button onclick="del()" class="btn btn-danger">Delete {{var.name}}</button><br>
+    <a href ="/"><button  class="btn btn-default">Cancel</button></a>
+</div>
 
       {% if error %}
         <p class="error"><strong>Error:</strong> {{ error }}</p>
       {% endif %}
-<a href ="/"><button>Cancel</button></a>
+
 
 
 

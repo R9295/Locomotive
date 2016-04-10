@@ -76,15 +76,10 @@ function myFunction() {
     }
   }
 </script>
-
-<div class="container">
-<button onclick="myFunction()" class="btn btn-success">Confirm Changes</button>
-</div>
-
 <script>
 function del() {
     var x;
-    if (confirm("Are you sure you wont to commit these changes?") == true) {
+    if (confirm("Are you sure you want to delete {{var.name}}") == true) {
        window.location="/delete/{{var.name}}"
     } else {
         x = "You pressed Cancel!";
@@ -92,10 +87,14 @@ function del() {
   }
 </script>
 
+
 <div class="container">
-<button onclick="del()" class="btn btn-danger">Delete event</button>
+    <button onclick="del()" class="btn btn-danger">Delete {{var.name}}</button><br>
+    <button onclick="myFunction()" class="btn btn-success">Confirm Changes</button><br>
+    <a href ="/"><button class="btn btn-default">Cancel</button></a>
 
 </div>
+
 
 
 </body>
