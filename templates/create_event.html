@@ -62,17 +62,19 @@
 
 
 
+
+
     <div class="container">
       <h1>Create Event</h1>
       <br>
       <form action="" method="post" enctype="multipart/form-data">
        Name of the Event
           <br>
-          <input type="text"  name="name" class="form-control">
+          <input type="text"  name="name" class="form-control" value="{{request.form['name']}}">
           <br>
        Email of host
           <br>
-          <input type="text" placeholder="goldroger@gmail.com" name="email" class="form-control">
+          <input type="text" placeholder="goldroger@gmail.com" name="email" class="form-control" value="{{request.form['email']}}">
           <br>
           Venue
           <br>
@@ -80,27 +82,27 @@
           <br>
           Address(Will auto search GoogleMaps for you)
           <br>
-          <input type="text"  name="address" class="form-control">
+          <input type="text"  name="address" class="form-control" value="{{request.form['address']}}">
           <br>
        Description
           <br>
-        <textarea class="form-control" rows="7" name="description"></textarea>
+        <textarea class="form-control" rows="7" name="description" value="{{request.form['description']}}"></textarea>
           <br>
        Phone Number of host
           <br>
-          <input type="text" placeholder="Danil" name="phone_number" class="form-control">
+          <input type="text" placeholder="944xxxxxxx" name="phone_number" class="form-control" value="{{request.form['phone_number']}}">
           <br>
        Time event starts
           <br>
-          <input type="text" placeholder="" name="time" class="form-control">
+          <input type="text" placeholder="" name="time" class="form-control" value="{{request.form['time']}}">
           <br>
        Duration of event
           <br>
-          <input type="text" placeholder="" name="duration" class="form-control">
+          <input type="text" placeholder="" name="duration" class="form-control" value="{{request.form['duration']}}">
           <br>
        Date
           <br>
-          <input type="text" placeholder="in D/M/Y format" name="date" class="form-control">
+          <input type="text" placeholder="in D/M/Y format" name="date" class="form-control" value="{{request.form['date']}}">
           <br>
        Images!
           <br>

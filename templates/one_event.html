@@ -64,7 +64,9 @@
 
 
 <div class="container">
-
+{% if var.image != None: %}
+    <img src="/static/img/{{var.image}}" >
+{% end if %}
 
 <h3>Event created by:</h3>
 <br>

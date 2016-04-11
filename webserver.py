@@ -3,6 +3,7 @@ from DB import * #SQLalchemy database.py file
 
 import os
 from flask_uploads import UploadSet, configure_uploads, IMAGES
+import os.path
 
 from key import key # key for GoogleMaps API
 from mail_server_pass import email,password #mail server password info
@@ -32,11 +33,6 @@ details_url = "https://maps.googleapis.com/maps/api/place/details/json"
 #creating Flask app
 app = Flask(__name__)
 GoogleMaps(app)
-
-#configuring file uploads
-#directory = 'static/img/'
-#if not os.path.exists(directory):
- #   os.makedirs(directory)
 
 
 
@@ -76,7 +72,7 @@ def before_request():
 
 
 photos = UploadSet('photos', IMAGES)
-x = app.config['UPLOADED_PHOTOS_DEST'] = 'static/img'
+app.config['UPLOADED_PHOTOS_DEST'] = 'static/img'
 
 
 
@@ -253,8 +249,22 @@ def create_event():
             elif request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
                 error = 'Invalid phone number'
              #if all conditions are satisfied adds it to the DB
-            else:
+            #elif os.path.isfile("/static/img/%s" %(request.form['photo'].filename)) == True:
+             #   print "Filename exists, please try renaming"
+            elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
+                error = "Filename already exists please rename file"
+            elif request.files['photo'] == None:
+                error="Event must have an image"
+            elif 'photo' in request.files:
+                #$if request.method == 'POST' and 'photo' in request.files:
+
                 filename = photos.save(request.files['photo'])
+                print filename
+                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =request.form['date'],duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename)
+                con.add(add_event)
+                con.commit()
+                return redirect('/events/%s' %(request.form['name']))
+            else:
                 add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =request.form['date'],duration =request.form['duration'],who_made_me=g.user,address=request.form['address'])
                 con.add(add_event)
                 con.commit()

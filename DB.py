@@ -40,6 +40,7 @@ class Events(Base):
     duration = Column(String(25),nullable=False)
     who_made_me = Column(String(25),nullable=False)
     address = Column(String(50),nullable=False)
+    image = Column(String(40),nullable=True)
 
 
 
