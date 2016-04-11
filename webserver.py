@@ -300,6 +300,7 @@ def edit_particular_event(event_name):
             var.time = request.form['time']
             var.duration = request.form['duration']
             var.date = request.form['date']
+
             con.commit()
     else:
         return redirect(url_for('login'))
