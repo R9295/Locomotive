@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>{{var.name}}</title>
-
+    <meta charset="UTF-8">
+    <title>email {{user_to.name}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
  <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
@@ -11,13 +11,13 @@
 
 </head>
 <body>
-    <nav class="navbar navbar-inverse">
+ <nav class="navbar navbar-inverse">
 
 
 
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" >Logged in as {{user_in_use }}</a>
+      <a class="navbar-brand" >Logged in as {{user_in_use.name }}</a>
     </div>
     <ul class="nav navbar-nav">
 
@@ -61,87 +61,19 @@
   </div>
  </nav>
 
-
-
-<div class="container">
-{% if var.image != None: %}
-    <img src="/static/img/{{var.image}}" >
-{% endif %}
-
-<h3>Event created by:</h3>
-<br>
-<h4>{{var.who_made_me}}
+Email {{user_to.name}}! Locomotive will send the email from their automated email system with the message you send.<br>
+The reason being privacy, so that users' emails aren't publicly visible and only are if they accept your request.<br>
+You however must provide yours, which also, wouldn't be made public, just for {{user_to.name}} to get back to you; and to <br>
+notify if you will be accompanying them! Thanks for understanding!
 <br><br>
+Your request message MUST include the event name and if you're asking them to pick you up or to accompany you.<br>
+Further communications will be handled by what the two parties decide on
 
-
-<h3>Event Name:</h3>
-<br>
-<h4>{{var.name}}</h4>
-<br><br>
-
-
-<h3>Host's Email:</h3>
-<br>
-<h4>{{var.email}}</h4>
-<br><br>
-
-
-<h3>Host's phone number:</h3>
-<br>
-<h4>{{var.phone_number}}</h4>
-<br><br>
-
-
-<h3>Event Location:</h3>
-<br>
-<h4>{{var.venue}}</h4>
-<br><br>
-
-
-<h3>Event Address:</h3>
-<br>
-<h4>{{var.address}}  <a href="{{wololo}}" style="color:black;">View on Google Maps:</a></h4>
-<br><br>
-
-
-<h3>Event's Description:</h3>
-<br>
-<h4>{{var.description}}</h4>
-<br><br>
-
-
-<h3>When the event is happening:</h3>
-<br>
-<h4>{{var.date}}</h4>
-<br><br>
-
-
-<h3>Event Begins at:</h3>
-<br>
-<h4>{{var.time}}</h4>
-<br><br>
-
-
-<h3>Event duration:</h3>
-<br>
-<h4>{{var.duration}}</h4>
-<br><br>
-<form action="" method="post">
-    <input type="submit" value="Go to!" class="btn btn-success">
-<br><br>
+<br><br><br><br>
+<form method="post">
+    <textarea rows="7" class="form-control" placeholder="Your request message, your email and the event" name="message"></textarea>
+    <input type="submit" class="btn btn-success">
 </form>
 
-<h3>Who's coming:</h3>
-{% for people in var.who_is_coming %}
-    <h4>{{ people.name }}</h4><a href="/email/{{people.name}}"><button class="btn btn-default">Email</button></a>
-    <a href="/request/phone_number/{{people.name}}"><button class="btn btn-default">Request phone number</button></a>
-{% endfor %}
-
-<br>
-<br>
-
-
-</div>
 </body>
-
 </html>

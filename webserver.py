@@ -177,21 +177,26 @@ def edit_user(edit_user):
     my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     error = ""
     if g.user:
-        edit_user= con.query(Users).filter_by(name=g.user).first()
-        if request.method == 'POST':
-            if hashpw(request.form['old_password'].encode('utf-8'),edit_user.password) != edit_user.password:
-                error="Old password and New one don't match"
-            elif request.form['password'] != request.form['new_password']:
-                error = "New passwords don't match"
-            else:
-                edit_user.name = request.form['name']
-                edit_user.password = hashpw(request.form['password'].encode('utf-8'),gensalt())
-                edit_user.email = request.form['email']
-                edit_user.phone_number = request.form['phone_number']
-                edit_user.community = request.form['community']
-                con.commit()
-                return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button style="color:green;">logout</button></a></body></html>'
+        if con.query(Users).filter_by(name=g.user).first().name == edit_user:
+            edit_user= con.query(Users).filter_by(name=g.user).first()
+            if request.method == 'POST':
+                if hashpw(request.form['old_password'].encode('utf-8'),edit_user.password) != edit_user.password:
+                    error="Old password and New one don't match"
+                elif request.form['password'] != request.form['new_password']:
+                    error = "New passwords don't match"
+                else:
+                    edit_user.name = request.form['name']
+                    edit_user.password = hashpw(request.form['password'].encode('utf-8'),gensalt())
+                    edit_user.email = request.form['email']
+                    edit_user.phone_number = request.form['phone_number']
+                    edit_user.community = request.form['community']
+                    con.commit()
+
+                    return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button style="color:green;">logout</button></a></body></html>'
+        else:
+            return redirect('/')
     return render_template('edit_users.html', var=edit_user,error=error,my_events=my_events,user_in_use =user_in_use )
+
 
 
 
@@ -359,7 +364,21 @@ def deleteion(name):
         con.commit()
         return redirect('/login')
 
+@app.route('/email/<name>', methods=['GET','POST'])
+def email_request(name):
+    if g.user:
+        user_to = con.query(Users).filter_by(name=name).first()
+        who_am_i = con.query(Users).filter_by(name=g.user).first()
+        my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+        if request.method == 'POST':
+            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(g.user), sender = email, recipients = [user_to.email] )
+            msg.body =request.form['message']
+            mail.send(msg)
+            return redirect('/')
 
+    else:
+        return redirect(url_for('login'))
+    return render_template('email_request.html',user_to=user_to,user_in_use=who_am_i,my_events=my_events)
 
 #RUN IT GUT
 if __name__ == '__main__':
