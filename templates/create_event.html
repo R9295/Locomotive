@@ -65,7 +65,7 @@
     <div class="container">
       <h1>Create Event</h1>
       <br>
-      <form action="" method="post">
+      <form action="" method="post" enctype="multipart/form-data">
        Name of the Event
           <br>
           <input type="text"  name="name" class="form-control">
@@ -102,8 +102,11 @@
           <br>
           <input type="text" placeholder="in D/M/Y format" name="date" class="form-control">
           <br>
-
-          <input  type="submit" value="Create!" class="btn btn-default">
+       Images!
+          <br>
+          <input type="file" value="Browse" style="btn btn-defualt" name="photo">
+           <br>
+          <input  type="submit" value="Create!" class="btn btn-success">
       </form>
         {% if error %}
         <p class="text-danger bg-danger"><strong>Error:</strong> {{ error }}</p>

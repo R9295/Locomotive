@@ -2,9 +2,12 @@ from flask import * #web framework
 from DB import * #SQLalchemy database.py file
 
 import os
-from werkzeug import *
+from flask_uploads import UploadSet, configure_uploads, IMAGES
+
 from key import key # key for GoogleMaps API
 from mail_server_pass import email,password #mail server password info
+
+from flask_uploads import UploadSet,IMAGES,configure_uploads
 
 from bcrypt import hashpw, gensalt #module to hash passwords
 from validate_email import validate_email
@@ -31,9 +34,12 @@ app = Flask(__name__)
 GoogleMaps(app)
 
 #configuring file uploads
-UPLOAD_FOLDER = '/path/to/the/uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+#directory = 'static/img/'
+#if not os.path.exists(directory):
+ #   os.makedirs(directory)
+
+
+
 
 
 
@@ -66,6 +72,11 @@ def before_request():
     if 'user' in session:
         g.user = session['user']
 
+
+
+
+photos = UploadSet('photos', IMAGES)
+x = app.config['UPLOADED_PHOTOS_DEST'] = 'static/img'
 
 
 
@@ -241,11 +252,14 @@ def create_event():
             #Check if phone number is an INT and is 10 digits
             elif request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
                 error = 'Invalid phone number'
-            #if all conditions are satisfied adds it to the DB
+             #if all conditions are satisfied adds it to the DB
             else:
+                filename = photos.save(request.files['photo'])
                 add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =request.form['date'],duration =request.form['duration'],who_made_me=g.user,address=request.form['address'])
                 con.add(add_event)
                 con.commit()
+
+                return redirect('/events/%s' %(request.form['name']))
 
         return render_template('create_event.html',error=error,my_events=my_events,user_in_use =user_in_use )
     else:
@@ -277,7 +291,6 @@ def edit_particular_event(event_name):
             var.duration = request.form['duration']
             var.date = request.form['date']
             con.commit()
-            return redirect('/events/%s'%(var.name))
     else:
         return redirect(url_for('login'))
     return render_template('editing_html.html',var=var,error=error,my_events=my_events,user_in_use =user_in_use )
@@ -341,4 +354,6 @@ def deleteion(name):
 if __name__ == '__main__':
     app.debug = True
     app.secret_key='gnejrgbejberjekg'
+    configure_uploads(app, photos)
+
     app.run(host='0.0.0.0', port=5000)
