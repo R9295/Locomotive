@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>email {{user_to.name}}</title>
+    <title>request phone_number {{user_to.name}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
  <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
@@ -61,22 +61,25 @@
   </div>
  </nav>
 
-Email {{user_to.name}}! Locomotive will send the email from their automated email system with the message you send.<br>
-The reason being privacy, so that users' emails aren't publicly visible and only are if they accept your request.<br>
+Get the phone number of {{user_to.name}}! Locomotive will send the email from their automated email system with the message you send.<br>
+The reason being privacy, so that users' phone numbers aren't publicly visible and only are if they accept your request.<br>
 You however must provide yours, which also, wouldn't be made public, just for {{user_to.name}} to get back to you; and to <br>
 notify if you will be accompanying them! Thanks for understanding!
 <br><br>
-<b>Your request message MUST include the event name and if you're asking them to pick you up or to accompany you.</b><br>
+
+ <b>Your request message MUST include the event name and if you're asking them to pick you up or to accompany you.</b><br>
 Further communications will be handled by what the two parties decide on<br><br>
- An example request-email would be:<br>
- Hello, Duff Mckagan.<br>
- I was wondering if you could accompany me to the musical which is day after tomorrow at Visitor's Centre. My name is Axl Rose and my email is axlrose@gunsnroses.com<br>
+
+ An example request-phone number would be:<br>
+ Hello, Izzy Stradlin.<br>
+ I was wondering if you could accompany me to the musical which is day after tomorrow at Visitor's Centre. My name is Steven Adler and my phone number is 94425xxxxx<br>
  Please get back to me soon :)<br>
  Thanks,<br>
  Axl
 <br><br><br><br>
+
 <form method="post">
-    <textarea rows="7" class="form-control" placeholder="Your request message, your email and the event" name="message"></textarea>
+    <textarea rows="7" class="form-control" placeholder="Your request message, your phone number and the event" name="message"></textarea>
     <input type="submit" class="btn btn-success" value="Submit email">
 </form>
       {% if error %}

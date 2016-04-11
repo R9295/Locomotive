@@ -366,6 +366,7 @@ def deleteion(name):
 
 @app.route('/email/<name>', methods=['GET','POST'])
 def email_request(name):
+    error = None
     if g.user:
         user_to = con.query(Users).filter_by(name=name).first()
         who_am_i = con.query(Users).filter_by(name=g.user).first()
@@ -378,7 +379,23 @@ def email_request(name):
 
     else:
         return redirect(url_for('login'))
-    return render_template('email_request.html',user_to=user_to,user_in_use=who_am_i,my_events=my_events)
+    return render_template('email_request.html',user_to=user_to,user_in_use=who_am_i,my_events=my_events,error=error)
+
+@app.route('/request/phone_number/<who>',methods=['GET','POST'])
+def phone_number_response(who):
+    if g.user:
+        error = None
+        user_to = con.query(Users).filter_by(name=who).first()
+        who_am_i = con.query(Users).filter_by(name=g.user).first()
+        my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+        if request.method == 'POST':
+            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(g.user), sender = email, recipients = [user_to.email] )
+            msg.body =request.form['message']
+            mail.send(msg)
+            return redirect('/')
+    else:
+        return redirect(url_for('login'))
+    return render_template('phone_request.html',user_to=user_to,user_in_use=who_am_i,my_events=my_events,error=error)
 
 #RUN IT GUT
 if __name__ == '__main__':
