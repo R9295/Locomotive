@@ -219,15 +219,16 @@ def edit_user(edit_user):
 #Main event page, only shows the most recent ones
 @app.route('/search/<queries>', methods=['GET','POST'])
 def search_events(queries):
+    error = None
     #check if logged in
     if g.user:
-        y = '%s'%(queries)
+        my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+        user_in_use = g.user
         search_results= con.query(Events).filter(Events.name.like('%'+'%s'%(queries)+'%' )).all()
-        print y
         #for stuff in search_results:
          #   return stuff.name
                 #search_results= con.query(Events).filter(Events.name.like("y%")).all()
-        return render_template('events.html',events=search_results )
+        return render_template('search_results.html',events=search_results,error=error,my_events=my_events,user_in_use =user_in_use )
     else:
         return redirect(url_for('login'))
 
@@ -249,7 +250,6 @@ def view_events():
         return render_template('view_events.html',all_events=all_events,my_events=my_events,user_in_use =user_in_use )
     else:
         return redirect(url_for('login'))
-
 
 
 
