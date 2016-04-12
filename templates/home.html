@@ -54,7 +54,7 @@
             {% endfor %}
         </ul>
       </li>
-        <li class="navbar">
+        <li class="navbar-left">
         <a class="dropdown-toggle" data-toggle="dropdown" >User options
         <span class="caret"></span></a>
 
@@ -63,13 +63,11 @@
             <li><a href="/{{user_name}}/edit">Edit User</a> </li>
         </ul>
       </li>
-
-
-
         <li>
-            <form class="navbar-form navbar-right" role="search" method="post">
+            <form class="navbar-form navbar-right" method="post">
 
                     <input type="text" class="form-control" placeholder="Search Events">
+                    <input type="submit" class="btn btn-success" value="search">
 
 
             </form>
