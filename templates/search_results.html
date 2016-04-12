@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 
+<link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
  <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
@@ -17,7 +18,7 @@
 
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" >Logged in as {{user_in_use }}</a>
+      <a class="navbar-brand"style="font-family: 'Rock Salt', cursive;font-size:15px" >Logged in as {{user_in_use }}</a>
     </div>
     <ul class="nav navbar-nav">
 
@@ -56,9 +57,18 @@
         </ul>
       </li>
         <li>
-            <form class="navbar-form navbar-right" method="post">
 
-                    <input type="text" class="form-control" placeholder="Search Events">
+<script>
+function redirect(){
+var target = $('#search').val();
+var redirectTo = 'localhost:5000/search/' + target;
+window.location.replace(redirectTo);
+}
+
+            </script>
+            <form class="navbar-form navbar-right" onsubmit="redirect()">
+
+                    <input type="text" class="form-control" placeholder="Search Events" id="search" name="search">
                     <input type="submit" class="btn btn-success" value="search">
 
 

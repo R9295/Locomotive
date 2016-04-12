@@ -106,6 +106,10 @@ def homeof_user(user):
         user = con.query(Users).filter_by(name=g.user).first()
         user_name = user.name
         what_events_i_own =con.query(Events).filter_by(who_made_me=g.user).all()
+        if request.method == 'POST':
+            pass
+
+
         return render_template('home.html',user=user,user_name=user_name,what_events_i_own=what_events_i_own,date=date)
 
     else:
