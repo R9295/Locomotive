@@ -5,6 +5,8 @@ import os
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 import os.path
 
+import datetime
+
 from key import key # key for GoogleMaps API
 from mail_server_pass import email,password #mail server password info
 
@@ -68,9 +70,21 @@ def before_request():
     if 'user' in session:
         g.user = session['user']
 
-
-
-
+'''
+@app.before_request
+def after_event():
+    w = datetime.date.today()
+    print w.strftime("We are the %d,%m,%Y")
+    events = con.query(Events).all()
+    for past in events:
+        if past.date < w:
+            query_it = con.query(Events).filter_by(name=past.name).first()
+            add_to_past = Past_Events(name=query_it.name,email=query_it.email,phone_number=query_it.phone_number,venue=query_it.venue,description=query_it.description,date=query_it.date,time=query_it.time,duration=query_it.duration,who_made_me=query_it.who_made_me,address=query_it.address,image=query_it.image,who_came=query_it.who_is_coming)
+            con.add(add_to_past)
+            con.commit()
+            con.delete(query_it)
+            con.commit()
+'''
 photos = UploadSet('photos', IMAGES)
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/img'
 
@@ -87,11 +101,12 @@ def home():
 @app.route('/<user>', methods=['GET','POST'])
 def homeof_user(user):
     if g.user:
+        date = datetime.date.today()
 
         user = con.query(Users).filter_by(name=g.user).first()
         user_name = user.name
         what_events_i_own =con.query(Events).filter_by(who_made_me=g.user).all()
-        return render_template('home.html',user=user,user_name=user_name,what_events_i_own=what_events_i_own)
+        return render_template('home.html',user=user,user_name=user_name,what_events_i_own=what_events_i_own,date=date)
 
     else:
         return redirect(url_for('login'))
@@ -269,8 +284,9 @@ def create_event():
                 con.add(add_event)
                 con.commit()
                 return redirect('/events/%s' %(request.form['name']))
+
             else:
-                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =request.form['date'],duration =request.form['duration'],who_made_me=g.user,address=request.form['address'])
+                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(request.form['date']),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'])
                 con.add(add_event)
                 con.commit()
 

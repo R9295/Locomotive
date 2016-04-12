@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
 
 
@@ -90,21 +90,20 @@
 
 
 
-<a href="/login" align="left" style="color:black;position:absolute;right:0px;"><button>logout</button></a>
 
-<a href="/" style="color:black;">go home</a>
 <br><br><br>
-<div> <!--align="middle"-->
-    Events:
+<div class="container"> <!--align="middle"-->
+   <h1>Events:</h1>
     <br><br>
 <form method='post'>
-    <input type="text" placeholder="Search events" name="search_events" >
-    <input type="submit">
+    <input type="text" placeholder="Search events" name="search_events" class="form-control" >
+    <input type="submit" class="btn btn-success" value="Search event">
+    <a href="/events/search/advanced"><button class="btn btn-default">Advanced search options</button></a>
 
 </form>
 
     {% for eventz in all_events: %}
-<a href="/events/{{eventz.name}}" style="color:black;"> {% print eventz.name %}</a>
+<h3><a href="/events/{{eventz.name}}" style="color:black;"> {% print eventz.name %}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3>
 <br>
 {% endfor %}
 </div>
