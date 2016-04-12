@@ -74,7 +74,7 @@
     <div class="container">
       <h1>Edit {{var.name}}</h1>
       <br>
-      <form action="" method="post" id="ww" name="edit">
+      <form action="" method="post" id="ww" name="edit" enctype="multipart/form-data">
        Name of the Event
           <br>
           <input type="text"  name="name" value="{{var.name}}" class="form-control">
@@ -115,12 +115,17 @@
           <input type="text"  name="duration" value="{{var.duration}}" class="form-control">
           <br>
           <br>
-       Date
+       Year
+          <input type="text" placeholder=" Example: 2016" name="year" class="form-control">
+       Month
+          <input type="text" placeholder="Example: 12" name="month" class="form-control">
+       Day
+          <input type="text" placeholder="Example: 6" name="day" class="form-control">
           <br>
-          <input type="text"  name="date" value="{{var.date}}" class="form-control">
+       Images!
           <br>
-          <br>
-
+          <input type="file" value="Browse" style="btn btn-defualt" name="photo">
+           <br>
 
 </form>
       {% if error %}
@@ -151,8 +156,8 @@ function del() {
 
 
 <div class="container">
-    <button onclick="del()" class="btn btn-danger">Delete {{var.name}}</button><br>
     <button onclick="myFunction()" class="btn btn-success">Confirm Changes</button><br>
+    <button onclick="del()" class="btn btn-danger">Delete {{var.name}}</button><br>
     <a href ="/"><button class="btn btn-default">Cancel</button></a>
 
 </div>

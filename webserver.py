@@ -264,6 +264,7 @@ def create_event():
             year = int(request.form['year'])
             month = int(request.form['month'])
             day = int(request.form['day'])
+
             #check if event exists
             it_exists = con.query(Events).filter_by(name=request.form['name']).first()
             if it_exists:
@@ -277,10 +278,9 @@ def create_event():
                 error = "Filename already exists please rename file"
 
 
-            elif ValueError:
-                error = 'Incorrect date'
 
-            elif 'photo' in request.files['photo']:
+            elif 'photo' in request.files:
+
                 filename = photos.save(request.files['photo'])
                 print filename
                 add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename)
@@ -292,7 +292,7 @@ def create_event():
 
             else:
 
-                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'])
+                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=None)
                 con.add(add_event)
                 con.commit()
 
@@ -318,17 +318,83 @@ def edit_particular_event(event_name):
             return redirect('/')
         #updating all the entries
         if request.method == 'POST':
-            var.name = request.form['name']
-            var.email = request.form['email']
-            var.venue = request.form['venue']
-            var.address = request.form['address']
-            var.description = request.form['description']
-            var.phone_number = request.form['phone_number']
-            var.time = request.form['time']
-            var.duration = request.form['duration']
-            var.date = request.form['date']
+            year = int(request.form['year'])
+            month = int(request.form['month'])
+            day = int(request.form['day'])
+            print datetime.date(year,month,day)
 
-            con.commit()
+            #Check if phone number is an INT and is 10 digits
+            if request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
+                error = 'Invalid phone number'
+
+            elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
+                error = "Filename already exists please rename file"
+
+
+            elif ValueError:
+                error = 'LMAOJ incorrect dates'
+
+            if 'photo' in request.files:
+                filename = photos.save(request.files['photo'])
+                print filename
+                var.image = filename
+
+                if var.name  != request.form['name']:
+                    var.name = request.form['name']
+                    var.email = request.form['email']
+                    var.venue = request.form['venue']
+                    var.address = request.form['address']
+                    var.description = request.form['description']
+                    var.phone_number = request.form['phone_number']
+                    var.time = request.form['time']
+                    var.duration = request.form['duration']
+                    var.date = datetime.date(year,month,day)
+                    con.commit()
+                    return redirect('/')
+
+                else:
+                    var.email = request.form['email']
+                    var.venue = request.form['venue']
+                    var.address = request.form['address']
+                    var.description = request.form['description']
+                    var.phone_number = request.form['phone_number']
+                    var.time = request.form['time']
+                    var.duration = request.form['duration']
+                    var.date = datetime.date(year,month,day)
+                    con.commit()
+                    return redirect('/')
+
+
+
+            else:
+                if var.name  != request.form['name']:
+                    var.name = request.form['name']
+                    var.email = request.form['email']
+                    var.venue = request.form['venue']
+                    var.address = request.form['address']
+                    var.description = request.form['description']
+                    var.phone_number = request.form['phone_number']
+                    var.time = request.form['time']
+                    var.duration = request.form['duration']
+                    var.date = datetime.date(year,month,day)
+                    con.commit()
+
+                else:
+                    var.email = request.form['email']
+                    var.venue = request.form['venue']
+                    var.address = request.form['address']
+                    var.description = request.form['description']
+                    var.phone_number = request.form['phone_number']
+                    var.time = request.form['time']
+                    var.duration = request.form['duration']
+                    var.date = datetime.date(year,month,day)
+                    con.commit()
+                    return redirect('/')
+
+
+
+
+
     else:
         return redirect(url_for('login'))
     return render_template('editing_html.html',var=var,error=error,my_events=my_events,user_in_use =user_in_use )
