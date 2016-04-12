@@ -321,7 +321,6 @@ def edit_particular_event(event_name):
             year = int(request.form['year'])
             month = int(request.form['month'])
             day = int(request.form['day'])
-            print datetime.date(year,month,day)
 
             #Check if phone number is an INT and is 10 digits
             if request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
@@ -330,27 +329,20 @@ def edit_particular_event(event_name):
             elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
                 error = "Filename already exists please rename file"
 
-
-            elif ValueError:
-                error = 'LMAOJ incorrect dates'
-
             if 'photo' in request.files:
                 filename = photos.save(request.files['photo'])
                 print filename
                 var.image = filename
+                print var.image
+                con.commit()
+
 
                 if var.name  != request.form['name']:
                     var.name = request.form['name']
-                    var.email = request.form['email']
-                    var.venue = request.form['venue']
-                    var.address = request.form['address']
-                    var.description = request.form['description']
-                    var.phone_number = request.form['phone_number']
-                    var.time = request.form['time']
-                    var.duration = request.form['duration']
-                    var.date = datetime.date(year,month,day)
-                    con.commit()
-                    return redirect('/')
+                try:
+                    datetime.date(year,month,day)
+                except ValueError:
+                    error = 'Incorrect Dates'
 
                 else:
                     var.email = request.form['email']
@@ -362,13 +354,31 @@ def edit_particular_event(event_name):
                     var.duration = request.form['duration']
                     var.date = datetime.date(year,month,day)
                     con.commit()
+                    return redirect('/events/%s' %(var.name))
+                '''
+                else:
+                    var.email = request.form['email']
+                    var.venue = request.form['venue']
+                    var.address = request.form['address']
+                    var.description = request.form['description']
+                    var.phone_number = request.form['phone_number']
+                    var.time = request.form['time']
+                    var.duration = request.form['duration']
+                    var.date = datetime.date(year,month,day)
+                    con.commit()
                     return redirect('/')
-
+                '''
 
 
             else:
                 if var.name  != request.form['name']:
                     var.name = request.form['name']
+                try:
+                    datetime.date(year,month,day)
+                except ValueError:
+                    error = 'Incorrect Dates'
+
+                else:
                     var.email = request.form['email']
                     var.venue = request.form['venue']
                     var.address = request.form['address']
@@ -377,8 +387,10 @@ def edit_particular_event(event_name):
                     var.time = request.form['time']
                     var.duration = request.form['duration']
                     var.date = datetime.date(year,month,day)
+                    var.image = None
                     con.commit()
-
+                    return redirect('/events/%s'%(var.name))
+                '''
                 else:
                     var.email = request.form['email']
                     var.venue = request.form['venue']
@@ -391,7 +403,7 @@ def edit_particular_event(event_name):
                     con.commit()
                     return redirect('/')
 
-
+                '''
 
 
 
