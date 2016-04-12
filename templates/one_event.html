@@ -10,6 +10,13 @@
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
 
+<style>
+    .form_font{
+    font-family: 'Shadows Into Light', cursive;font-size:30px;
+    }
+
+
+</style>
 </head>
 <body>
     <nav class="navbar navbar-inverse">
@@ -73,78 +80,78 @@
 
 
 
-<div class="container">
+<div class="container form_font">
 {% if var.image != None: %}
     <img src="/static/img/{{var.image}}" >
 {% endif %}
 
-<h3>Event created by:</h3>
-<br>
-<h4>{{var.who_made_me}}
+Event created by:
+
+{{var.who_made_me}}
 <br><br>
 
 
-<h3>Event Name:</h3>
-<br>
-<h4>{{var.name}}</h4>
+Event Name:
+{{var.name}}
 <br><br>
 
 
-<h3>Host's Email:</h3>
-<br>
-<h4>{{var.email}}</h4>
+Host's Email:
+
+{{var.email}}
 <br><br>
 
 
-<h3>Host's phone number:</h3>
-<br>
-<h4>{{var.phone_number}}</h4>
+Host's phone number:
+
+{{var.phone_number}}
 <br><br>
 
 
-<h3>Event Location:</h3>
-<br>
-<h4>{{var.venue}}</h4>
+Event Location:
+
+{{var.venue}}
 <br><br>
 
 
-<h3>Event Address:</h3>
-<br>
-<h4>{{var.address}}  <a href="{{wololo}}" style="color:black;">View on Google Maps:</a></h4>
+Event Address:
+
+{{var.address}}  <a href="{{wololo}}" style="color:black;">View on Google Maps:</a>
 <br><br>
 
 
-<h3>Event's Description:</h3>
-<br>
-<h4>{{var.description}}</h4>
+Event's Description:
+    <br>
+
+{{var.description}}
 <br><br>
 
 
-<h3>When the event is happening:</h3>
-<br>
-<h4>{{var.date}}</h4>
+When the event is happening:
+
+{{var.date}}
 <br><br>
 
 
-<h3>Event Begins at:</h3>
-<br>
-<h4>{{var.time}}</h4>
+Event Begins at:
+
+{{var.time}}
 <br><br>
 
 
-<h3>Event duration:</h3>
-<br>
-<h4>{{var.duration}}</h4>
+Event duration:
+
+{{var.duration}}
 <br><br>
 <form action="" method="post">
-    <input type="submit" value="Go to!" class="btn btn-success">
+    <input type="submit" value="Go to!" class="btn btn-success" style="font-size:25px;">
 <br><br>
 </form>
 
-<h3>Who's coming:</h3>
+Who's coming:<br><br>
 {% for people in var.who_is_coming %}
-    <h4>{{ people.name }}</h4><a href="/email/{{people.name}}"><button class="btn btn-default">Email</button></a>
-    <a href="/request/phone_number/{{people.name}}"><button class="btn btn-default">Request phone number</button></a>
+    {{ people.name }}<a href="/email/{{people.name}}"><button class="btn btn-default">Email</button></a>
+    <a href="/request/phone_number/{{people.name}}"><button class="btn btn-default">Request phone number</button></a><br>
 {% endfor %}
 
 <br>

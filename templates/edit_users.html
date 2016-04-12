@@ -9,6 +9,13 @@
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+
+<style>
+    .form_font{
+    font-family: 'Shadows Into Light', cursive;font-size:30px;
+    {
+
+</style>
 </head>
     <nav class="navbar navbar-inverse">
 
@@ -71,39 +78,39 @@
 
 
     <div class="container">
-      <h1>Edit {{var.name}}</h1>
+      <h1 style="font-family:'Shadows Into Light', cursive;font-size:75px;">Edit {{var.name}}</h1>
       <br>
-      <form action="" method="post" id="ww">
+      <form action="" method="post" id="ww" class="form_font">
        Username
           <br>
-          <input type="text"  name="name" value="{{var.name}}" class="form-control">
+          <input type="text"  name="name" value="{{var.name}}" class="form-control form_font">
           <br>
           <br>
        Email
           <br>
-          <input type="text"  name="email" value="{{var.email}}" class="form-control">
+          <input type="text"  name="email" value="{{var.email}}" class="form-control form_font">
           <br>
           <br>
        Phone Number
           <br>
-          <input type="text"  name="phone_number" value="{{var.phone_number}}" class="form-control">
+          <input type="text"  name="phone_number" value="{{var.phone_number}}" class="form-control form_font">
           <br>
           <br>
        Community
           <br>
-          <input type="text" name="community" value="{{var.community}}" class="form-control">
+          <input type="text" name="community" value="{{var.community}}" class="form-control form_font">
        <br><br>
           Old Password
           <br>
-          <input type="password" name="old_password" class="form-control">
+          <input type="password" name="old_password" class="form-control form_font">
           <br><br>
           New Password
           <br>
-          <input type="password" name="password" class="form-control">
+          <input type="password" name="password" class="form-control form_font">
             <br><br>
           Re enter New Password
           <br>
-          <input type="password" name="new_password" class="form-control">
+          <input type="password" name="new_password" class="form-control form_font">
             <br><br>
 </form>
 
@@ -131,18 +138,19 @@ function del() {
 </script>
 
 
-<div class="container">
-    <button onclick="myFunction()" class="btn btn-success">Confirm Changes</button><br>
-    <button onclick="del()" class="btn btn-danger">Delete {{var.name}}</button><br>
-    <a href ="/"><button  class="btn btn-default">Cancel</button></a>
-</div>
-
-      {% if error %}
+<div class="container form_font">
+         {% if error %}
         <p class="text-danger bg-danger"><strong>Error:</strong> {{ error }}</p>
       {% endif %}
 
+    <button onclick="myFunction()" class="btn btn-success"  style="font-size:20px;">Confirm Changes</button><br>
+    <button onclick="del()" class="btn btn-danger"  style="font-size:20px;">Delete {{var.name}}</button><br>
+    <a href ="/"><button  class="btn btn-default"  style="font-size:20px;">Cancel</button></a>
 
 
 
+
+
+</div>
 </body>
 </html>

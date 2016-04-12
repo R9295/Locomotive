@@ -11,6 +11,14 @@
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
     <meta charset="UTF-8">
     <title>Search results</title>
+
+<style>
+    .form_font{
+    font-family: 'Shadows Into Light', cursive;font-size:30px;
+    {
+
+</style>
+
 </head>
 <body>
 <nav class="navbar navbar-inverse">
@@ -22,7 +30,7 @@
     </div>
     <ul class="nav navbar-nav">
 
-      <li class="active"><a href="/">Home</a></li>
+      <li ><a href="/">Home</a></li>
       <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">Events I Created
         <span class="caret"></span></a>
@@ -58,15 +66,8 @@
       </li>
         <li>
 
-<script>
-function redirect(){
-var target = $('#search').val();
-var redirectTo = 'localhost:5000/search/' + target;
-window.location.replace(redirectTo);
-}
 
-            </script>
-            <form class="navbar-form navbar-right" onsubmit="redirect()">
+            <form class="navbar-form navbar-right" class="form_fonts" >
 
                     <input type="text" class="form-control" placeholder="Search Events" id="search" name="search">
                     <input type="submit" class="btn btn-success" value="search">
@@ -80,10 +81,10 @@ window.location.replace(redirectTo);
   </div>
  </nav>
 
-<div class="container">
-    <h1>Search results:</h1>
+<div class="container form_fonts">
+    <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 75px">Search results:</h1>
 {% for search_results in events: %}
-<h2><a href="/events/{{search_results.name}}">{{search_results.name}}</a></h2>
+<h2 style="font-family: 'Shadows Into Light', cursive;font-size: 50px"><a href="/events/{{search_results.name}}">{{search_results.name}}</a></h2><br>
 {% endfor %}
 </div>
 </body>

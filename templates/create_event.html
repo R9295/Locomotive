@@ -9,7 +9,13 @@
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
-</head>
+<style>
+    .form_font{
+    font-family: 'Shadows Into Light', cursive;font-size:30px;
+    {
+
+</style>
+ </head>
 
  <body>
  <nav class="navbar navbar-inverse">
@@ -75,9 +81,9 @@
 
 
     <div class="container">
-      <h1>Create Event</h1>
+      <h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;">Create Event</h1>
       <br>
-      <form action="" method="post" enctype="multipart/form-data">
+      <form action="" method="post" enctype="multipart/form-data" class="form_font">
        Name of the Event
           <br>
           <input type="text"  name="name" class="form-control" value="{{request.form['name']}}">
@@ -121,7 +127,7 @@
           <br>
           <input type="file" value="Browse" style="btn btn-defualt" name="photo">
            <br>
-          <input  type="submit" value="Create!" class="btn btn-success">
+          <input  type="submit" value="Create!" class="btn btn-success" style="font-size:30px">
       </form>
         {% if error %}
         <p class="text-danger bg-danger"><strong>Error:</strong> {{ error }}</p>

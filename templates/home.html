@@ -10,7 +10,9 @@
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
 
+<style>
 
+</style>
 
 
 
@@ -20,16 +22,16 @@
 </head>
 <body style="background-image: url('static/img/fnr.png');background-size:cover;" >
 
- <nav class="navbar navbar-inverse">
+ <nav class="navbar navbar-inverse ">
 
 
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" style="font-family: 'Rock Salt', cursive;font-size:15px">Logged in as {{user_name}}</a>
+      <a class="navbar-brand " style="font-family: 'Rock Salt', cursive;font-size:15px">Logged in as {{user_name}}</a>
     </div>
     <ul class="nav navbar-nav">
 
-      <li class="active"><a href="/">Home</a></li>
+      <li><a href="/">Home</a></li>
       <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" >Events I Created
         <span class="caret"></span></a>
@@ -78,7 +80,7 @@
   </div>
  </nav>
 <div class="container">
-<h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;color:white;">Events you are attending:</h1>
+<h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;color:white;">Events {{user_name}} is attending:</h1>
 {% for t in user.going_to: %}
 <h1><a href="/events/{{t.name}}" style="font-family: 'Shadows Into Light', cursive;font-size:35px">{{t.name}}, Date: {{t.date}}, Time: {{t.time}} </a></h1>
 {% endfor %}

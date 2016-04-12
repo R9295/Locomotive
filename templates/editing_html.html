@@ -9,7 +9,20 @@
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
-<nav class="navbar navbar-inverse">
+
+<style>
+    .form_font{
+    font-family: 'Shadows Into Light', cursive;font-size:30px;
+    {
+.make_input_bigger{
+    font-family: 'Shadows Into Light', cursive;font-size:30px"
+    }
+</style>
+        <meta charset="UTF-8">
+    <title>Edit {{var.name}}</title>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
 
 
   <div class="container-fluid">
@@ -67,62 +80,61 @@
  </nav>
 
 
-    <meta charset="UTF-8">
-    <title>Edit {{var.name}}</title>
-</head>
-<body>
+
+
+
 
     <div class="container">
-      <h1>Edit {{var.name}}</h1>
+      <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 75px">Edit {{var.name}}</h1>
       <br>
-      <form action="" method="post" id="ww" name="edit" enctype="multipart/form-data">
+      <form action="" method="post" id="ww" name="edit" enctype="multipart/form-data" class="form_font">
        Name of the Event
           <br>
-          <input type="text"  name="name" value="{{var.name}}" class="form-control">
+          <input type="text"  name="name" value="{{var.name}}" class="form-control make_input_bigger" >
           <br>
           <br>
        Email of host
           <br>
-          <input type="text"  name="email" value="{{var.email}}" class="form-control">
+          <input type="text"  name="email" value="{{var.email}}" class="form-control form_font">
           <br>
           <br>
           Venue
           <br>
-          <input type="text" name="venue" value="{{var.venue}}" class="form-control">
+          <input type="text" name="venue" value="{{var.venue}}" class="form-control form_font">
           <br>
           <br>
           Address(Will auto search GoogleMaps for you)
           <br>
-          <input type="text"  name="address" value="{{var.address}}" class="form-control">
+          <input type="text"  name="address" value="{{var.address}}" class="form-control form_font">
           <br>
           <br>
        Description
           <br>
-            <textarea class="form-control" rows="7" placeholder="" name="description">{{var.description}}</textarea>
+            <textarea class="form-control form_font" rows="7" placeholder="" name="description" >{{var.description}}</textarea>
           <br>
           <br>
        Phone Number of host
           <br>
-          <input type="text"  name="phone_number" value="{{var.phone_number}}" class="form-control">
+          <input type="text"  name="phone_number" value="{{var.phone_number}}" class="form-control form_font">
           <br>
           <br>
        Time event starts
           <br>
-          <input type="text" name="time" value="{{var.time}}" class="form-control">
+          <input type="text" name="time" value="{{var.time}}" class="form-control form_font">
           <br>
           <br>
        Duration of event
           <br>
-          <input type="text"  name="duration" value="{{var.duration}}" class="form-control">
+          <input type="text"  name="duration" value="{{var.duration}}" class="form-control form_font">
           <br>
           <br>
           Date(Please re enter your dates. If you didn't want to change them, their values are {{var.date}} as Year-Month-Day):
           Year
-          <input type="text" placeholder=" Example: 2016" name="year" class="form-control">
+          <input type="text" placeholder=" Example: 2016" name="year" class="form-control form_font">
        Month
-          <input type="text" placeholder="Example: 12" name="month" class="form-control">
+          <input type="text" placeholder="Example: 12" name="month" class="form-control form_font">
        Day
-          <input type="text" placeholder="Example: 6" name="day" class="form-control">
+          <input type="text" placeholder="Example: 6" name="day" class="form-control form_font">
           <br>
        Images!
           <br>
@@ -130,9 +142,7 @@
            <br>
 
 </form>
-      {% if error %}
-        <p class="text-danger bg-danger"><strong>Error:</strong> {{ error }}</p>
-      {% endif %}
+
 </div>
 
 <script>
@@ -157,10 +167,13 @@ function del() {
 </script>
 
 
-<div class="container">
-    <button onclick="myFunction()" class="btn btn-success">Confirm Changes</button><br>
-    <button onclick="del()" class="btn btn-danger">Delete {{var.name}}</button><br>
-    <a href ="/"><button class="btn btn-default">Cancel</button></a>
+<div class="container form_font">
+          {% if error %}
+        <p class="text-danger bg-danger"><strong>Error:</strong> {{ error }}</p>
+      {% endif %}
+    <button onclick="myFunction()" class="btn btn-success" style="font-size:20px;">Confirm Changes</button><br>
+    <button onclick="del()" class="btn btn-danger" style="font-size:20px;">Delete {{var.name}}</button><br>
+    <a href ="/"><button class="btn btn-default" style="font-size:20px;" >Cancel</button></a>
 
 </div>
 

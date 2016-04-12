@@ -15,6 +15,12 @@
 
     <meta charset="UTF-8">
     <title>View all Events</title>
+<style>
+    .form_font{
+    font-family: 'Shadows Into Light', cursive;font-size:30px;
+    {
+
+</style>
 </head>
 <body>
 <nav class="navbar navbar-inverse">
@@ -26,7 +32,7 @@
     </div>
     <ul class="nav navbar-nav">
 
-      <li class="active"><a href="/">Home</a></li>
+      <li><a href="/">Home</a></li>
       <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">Events I Created
         <span class="caret"></span></a>
@@ -75,36 +81,19 @@
  </nav>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <br><br><br>
-<div class="container"> <!--align="middle"-->
-   <h1>Events:</h1>
+<div class="container" class="form_fonts"> <!--align="middle"-->
+   <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 75px">Events:</h1>
     <br><br>
 <form method='post'>
-    <input type="text" placeholder="Search events" name="search_events" class="form-control" >
+    <input type="text" placeholder="Search events" name="search_events" class="form-control form_font"><br>
     <input type="submit" class="btn btn-success" value="Search event">
     <a href="/events/search/advanced"><button class="btn btn-default">Advanced search options</button></a>
 
 </form>
 
     {% for eventz in all_events: %}
-<h3><a href="/events/{{eventz.name}}" style="color:black;"> {% print eventz.name %}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3>
+<h3 style="font-family: 'Shadows Into Light', cursive;font-size: 50px"><a href="/events/{{eventz.name}}" > {{ eventz.name }}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3><br><br>
 <br>
 {% endfor %}
 </div>

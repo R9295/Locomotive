@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace|Martel:300' rel='stylesheet' type='text/css'>
 
     <meta charset="UTF-8">
     <title>email {{user_to.name}}</title>
@@ -11,6 +11,12 @@
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
 
+<style>
+    .form_font{
+    font-family: 'Shadows Into Light', cursive;font-size:30px;
+    {
+
+</style>
 </head>
 <body>
  <nav class="navbar navbar-inverse">
@@ -70,7 +76,7 @@
 
   </div>
  </nav>
-
+<div style="font-family: 'Martel', serif;">
 Email {{user_to.name}}! Locomotive will send the email from their automated email system with the message you send.<br>
 The reason being privacy, so that users' emails aren't publicly visible and only are if they accept your request.<br>
 You however must provide yours, which also, wouldn't be made public, just for {{user_to.name}} to get back to you; and to <br>
@@ -84,6 +90,7 @@ Further communications will be handled by what the two parties decide on<br><br>
  Please get back to me soon :)<br>
  Thanks,<br>
  Axl
+</div>
 <br><br><br><br>
 <form method="post">
     <textarea rows="7" class="form-control" placeholder="Your request message, your email and the event" name="message"></textarea>
