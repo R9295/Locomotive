@@ -261,6 +261,9 @@ def create_event():
     if g.user:
         error = None
         if request.method == 'POST':
+            year = int(request.form['year'])
+            month = int(request.form['month'])
+            day = int(request.form['day'])
             #check if event exists
             it_exists = con.query(Events).filter_by(name=request.form['name']).first()
             if it_exists:
@@ -268,25 +271,28 @@ def create_event():
             #Check if phone number is an INT and is 10 digits
             elif request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
                 error = 'Invalid phone number'
-             #if all conditions are satisfied adds it to the DB
-            #elif os.path.isfile("/static/img/%s" %(request.form['photo'].filename)) == True:
-             #   print "Filename exists, please try renaming"
+
+
             elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
                 error = "Filename already exists please rename file"
-            elif request.files['photo'] == None:
-                error="Event must have an image"
-            elif 'photo' in request.files:
-                #$if request.method == 'POST' and 'photo' in request.files:
 
+
+            elif ValueError:
+                error = 'Incorrect date'
+
+            elif 'photo' in request.files['photo']:
                 filename = photos.save(request.files['photo'])
                 print filename
-                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =request.form['date'],duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename)
+                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename)
                 con.add(add_event)
                 con.commit()
                 return redirect('/events/%s' %(request.form['name']))
 
+
+
             else:
-                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(request.form['date']),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'])
+
+                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'])
                 con.add(add_event)
                 con.commit()
 
