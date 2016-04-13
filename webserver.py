@@ -387,8 +387,8 @@ def edit_particular_event(event_name):
                 if var.date  != datetime.date(year,month,day):
                     var.date = datetime.date(year,month,day)
                     changes['date'] = var.date
-                msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
-                msg.body = ""
+                msg = Message('Hello %s, You just edited %s !' %(g.user,var.name), sender = email, recipients = [request.form['email']])
+                msg.body = " Your changes:    "
                 for key,values in changes.iteritems():
 
                     if values != 'Not changed':
