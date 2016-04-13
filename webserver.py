@@ -290,6 +290,10 @@ def create_event():
                 add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename)
                 con.add(add_event)
                 con.commit()
+                msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
+                msg.body ='Your event %s was successfully added! Check it out here:locahost:5000/events/%s' %(request.form['name'],request.form['name'])
+                mail.send(msg)
+
                 return redirect('/events/%s' %(request.form['name']))
 
 
@@ -299,6 +303,10 @@ def create_event():
                 add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=None)
                 con.add(add_event)
                 con.commit()
+                msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
+                msg.body ='Your event %s was successfully added! Check it out here: localhost:5000/events/%s' %(request.form['name'],request.form['name'])
+                mail.send(msg)
+
 
                 return redirect('/events/%s' %(request.form['name']))
 
@@ -335,30 +343,63 @@ def edit_particular_event(event_name):
 
             if 'photo' in request.files:
                 filename = photos.save(request.files['photo'])
-                print filename
                 var.image = filename
                 print var.image
                 con.commit()
 
-
+                changes = {'name':'Not changed', 'email':'Not changed', 'venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'phone_number': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed' }
                 if var.name  != request.form['name']:
                     var.name = request.form['name']
+                    changes['name'] = request.form['name']
                 try:
                     datetime.date(year,month,day)
                 except ValueError:
                     error = 'Incorrect Dates'
 
-                else:
+                if  var.email !=request.form['email']:
                     var.email = request.form['email']
+                    changes['email'] = request.form['email']
+
+                if var.venue != request.form['venue']:
                     var.venue = request.form['venue']
+                    changes['venue'] = request.form['venue']
+
+                if var.address != request.form['address']:
                     var.address = request.form['address']
+                    changes['address'] = request.form['address']
+                if var.description != request.form['description']:
                     var.description = request.form['description']
+                    changes['description'] = request.form['description']
+
+                if var.phone_number != request.form['phone_number']:
                     var.phone_number = request.form['phone_number']
+                    changes['phone_number'] = request.form['phone_number']
+
+
+                if var.time  != request.form['time']:
                     var.time = request.form['time']
+                    changes['time'] = request.form['time']
+
+                if var.duration  != request.form['duration']:
                     var.duration = request.form['duration']
+                    changes['duration'] = request.form['duration']
+
+                if var.date  != datetime.date(year,month,day):
                     var.date = datetime.date(year,month,day)
-                    con.commit()
-                    return redirect('/events/%s' %(var.name))
+                    changes['date'] = var.date
+                msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
+                for key,values in changes.iteritems():
+                    msg.body = None
+                    msg.body += key+':'+values
+
+
+                mail.send(msg)
+                print changes
+
+
+                con.commit()
+
+                return redirect('/events/%s' %(var.name))
                 '''
                 else:
                     var.email = request.form['email']
@@ -445,7 +486,7 @@ def view_particular_event(event_name):
             con.commit()
             return redirect(url_for('home'))
 
-        return render_template('one_event.html', var=var,wololo=wololo,my_events=my_events,user_in_use =user_in_use )
+        return render_template('one_event.html', var=var,wololo=wololo,my_events=my_events,user_in_use =user_in_use,keys=key )
     else:
         return redirect(url_for('login'))
 
