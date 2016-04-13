@@ -11,9 +11,35 @@
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
 
 <style>
+    .a{
+    font-family: 'Shadows Into Light', cursive;
+    }
+    .a:hover{
+    text-transform: uppercase;
+    font-size:30px
+    }
 
 </style>
+<script>
+    $('table div')
+    .on('mouseenter', function(){
+        var div = $(this);
+        div.stop(true, true).animate({
+            margin: -10,
+            width: "+=20",
+            height: "+=20"
+        }, 'fast');
+    })
+    .on('mouseleave', function(){
+        var div = $(this);
+        div.stop(true, true).animate({
+            margin: 0,
+            width: "-=20",
+            height: "-=20"
+        }, 'fast');
+    })
 
+</script>
 
 
 
@@ -79,13 +105,16 @@
 
   </div>
  </nav>
-<div class="container">
+
+<div class="container a">
 <h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;color:white;">Events {{user_name}} is attending:</h1>
 {% for t in user.going_to: %}
 <h1><a href="/events/{{t.name}}" style="font-family: 'Shadows Into Light', cursive;font-size:35px">{{t.name}}, Date: {{t.date}}, Time: {{t.time}} </a></h1>
 {% endfor %}
 <br>
+
 </div>
+
 
 
 
