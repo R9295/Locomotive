@@ -388,9 +388,11 @@ def edit_particular_event(event_name):
                     var.date = datetime.date(year,month,day)
                     changes['date'] = var.date
                 msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
+                msg.body = ""
                 for key,values in changes.iteritems():
-                    msg.body = None
-                    msg.body += key+':'+values
+
+                    if values != 'Not changed':
+                        msg.body += key+'  :  '+values+'  '
 
 
                 mail.send(msg)
@@ -400,20 +402,6 @@ def edit_particular_event(event_name):
                 con.commit()
 
                 return redirect('/events/%s' %(var.name))
-                '''
-                else:
-                    var.email = request.form['email']
-                    var.venue = request.form['venue']
-                    var.address = request.form['address']
-                    var.description = request.form['description']
-                    var.phone_number = request.form['phone_number']
-                    var.time = request.form['time']
-                    var.duration = request.form['duration']
-                    var.date = datetime.date(year,month,day)
-                    con.commit()
-                    return redirect('/')
-                '''
-
 
             else:
                 if var.name  != request.form['name']:
