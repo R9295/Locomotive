@@ -283,7 +283,7 @@ def create_event():
 
 
 
-            if 'photo' in request.files['photo']:
+            if request.files['photo'].filename != '':
 
                 filename = photos.save(request.files['photo'])
                 print filename
@@ -341,7 +341,7 @@ def edit_particular_event(event_name):
             elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
                 error = "Filename already exists please rename file"
 
-            if 'photo' in request.files:
+            if request.files['photo'].filename != '':
                 filename = photos.save(request.files['photo'])
                 var.image = filename
                 print var.image
@@ -404,6 +404,8 @@ def edit_particular_event(event_name):
 
             else:
                 changes = {'name':'Not changed', 'email':'Not changed', 'venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'phone_number': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed' }
+                if var.image != "":
+                    var.image = ""
                 if var.name  != request.form['name']:
                     var.name = request.form['name']
                     changes['name'] = request.form['name']
@@ -442,14 +444,14 @@ def edit_particular_event(event_name):
 
                 if var.date  != datetime.date(year,month,day):
                     var.date = datetime.date(year,month,day)
-                    changes['date'] = var.date
+                    changes['date'] = str(var.date)
 
                 var.image = None
                 msg = Message('Hello %s, You just edited %s !' %(g.user,var.name), sender = email, recipients = [request.form['email']])
                 msg.body = " Your changes:    "
                 for key,values in changes.iteritems():
 
-                    if values != 'Not changed':
+                    if values != 'Not changed' :
                         msg.body += key+'  :  '+values+'  '
 
 
@@ -457,42 +459,8 @@ def edit_particular_event(event_name):
 
 
                 con.commit()
+                return redirect('/events/%s' %(var.name))
 
-                '''
-                if var.name  != request.form['name']:
-                    var.name = request.form['name']
-                try:
-                    datetime.date(year,month,day)
-                except ValueError:
-                    error = 'Incorrect Dates'
-
-                else:
-                    var.email = request.form['email']
-                    var.venue = request.form['venue']
-                    var.address = request.form['address']
-                    var.description = request.form['description']
-                    var.phone_number = request.form['phone_number']
-                    var.time = request.form['time']
-                    var.duration = request.form['duration']
-                    var.date = datetime.date(year,month,day)
-                    var.image = None
-                    con.commit()
-                    return redirect('/events/%s'%(var.name))
-                '''
-                '''
-                else:
-                    var.email = request.form['email']
-                    var.venue = request.form['venue']
-                    var.address = request.form['address']
-                    var.description = request.form['description']
-                    var.phone_number = request.form['phone_number']
-                    var.time = request.form['time']
-                    var.duration = request.form['duration']
-                    var.date = datetime.date(year,month,day)
-                    con.commit()
-                    return redirect('/')
-
-                '''
 
 
 
