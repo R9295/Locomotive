@@ -58,7 +58,13 @@
     <ul class="nav navbar-nav">
 
       <li><a href="/">Home</a></li>
-      <li class="dropdown">
+
+
+        <li><a href="/events/create">Create an Event</a></li>
+      <li><a href="/events/view">View Events</a></li>
+        <li class="navbar-left"><a href="/events/all/past"> View past events</a>
+
+        <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" >Events I Created
         <span class="caret"></span></a>
 
@@ -68,11 +74,6 @@
             {% endfor %}
         </ul>
       </li>
-
-        <li><a href="/events/create">Create an Event</a></li>
-      <li><a href="/events/view">View Events</a></li>
-
-
         <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">Edit my events
         <span class="caret"></span></a>
@@ -83,6 +84,15 @@
             {% endfor %}
         </ul>
       </li>
+
+
+
+
+        </li>
+
+
+
+
         <li class="navbar-left">
         <a class="dropdown-toggle" data-toggle="dropdown" >User options
         <span class="caret"></span></a>
@@ -92,12 +102,14 @@
             <li><a href="/{{user_name}}/edit">Edit User</a> </li>
         </ul>
       </li>
+
         <li>
             <form class="navbar-form navbar-right" method="post">
 
                     <input type="text" class="form-control" placeholder="Search Events">
                     <input type="submit" class="btn btn-success" value="search">
           </form>
+        </li>
 
 
 
