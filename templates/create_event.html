@@ -129,9 +129,8 @@
            <br>
           <input  type="submit" value="Create!" class="btn btn-success" style="font-size:30px">
       </form>
-        {% if error %}
-        <p class="text-danger bg-danger"><strong>Error:</strong> {{ error }}</p>
-      {% endif %}
+        {% if error != None: %}
+<p class="text-danger bg-danger"style="font-family: 'Shadows Into Light', cursive;font-size:25px" ><strong>Error:</strong> {{ error }}</p>      {% endif %}
     </div>
   <div class="container">
       <a href="/events/view"><button class="btn btn-default">View events</button></a>

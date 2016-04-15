@@ -6,7 +6,7 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES
 import os.path
 
 import datetime
-
+import time
 from key import key # key for GoogleMaps API
 from mail_server_pass import email,password #mail server password info
 
@@ -35,7 +35,6 @@ details_url = "https://maps.googleapis.com/maps/api/place/details/json"
 #creating Flask app
 app = Flask(__name__)
 GoogleMaps(app)
-
 
 
 
@@ -70,9 +69,11 @@ def before_request():
     if 'user' in session:
         g.user = session['user']
 
+
+
 '''
-@app.before_request
-def after_event():
+
+def check_if_event_expired():
     w = datetime.date.today()
     print w.strftime("We are the %d,%m,%Y")
     events = con.query(Events).all()
@@ -84,6 +85,9 @@ def after_event():
             con.commit()
             con.delete(query_it)
             con.commit()
+            time.sleep(43200)
+
+
 '''
 photos = UploadSet('photos', IMAGES)
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/img'
@@ -106,8 +110,6 @@ def homeof_user(user):
         user = con.query(Users).filter_by(name=g.user).first()
         user_name = user.name
         what_events_i_own =con.query(Events).filter_by(who_made_me=g.user).all()
-        if request.method == 'POST':
-            pass
 
 
         return render_template('home.html',user=user,user_name=user_name,what_events_i_own=what_events_i_own,date=date)
@@ -171,7 +173,6 @@ def add_user(url,user_name):
 @app.route('/login', methods=['GET','POST'])
 def login():
     session.pop('user',None) # kills the already logged in session cookie
-    querying = con.query(Users).all()
     error = None
     if request.method == 'POST':
         look_for = con.query(Users).filter_by(name = request.form['username']).first()
@@ -241,6 +242,7 @@ def search_events(queries):
 #Views all events
 @app.route('/events/view',methods=['GET','POST'])
 def view_events():
+    #check_if_event_expired()
     user_in_use = g.user
     my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     #check if logged in
@@ -262,31 +264,37 @@ def view_events():
 def create_event():
     user_in_use = g.user
     my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+    error = ""
     if g.user:
-        error = None
         if request.method == 'POST':
+
             year = int(request.form['year'])
             month = int(request.form['month'])
             day = int(request.form['day'])
 
             #check if event exists
             it_exists = con.query(Events).filter_by(name=request.form['name']).first()
+
             if it_exists:
                 error = 'Event exists!!!!'
-            #Check if phone number is an INT and is 10 digits
+
+#Check if phone number is an INT and is 10 digits
+
             elif request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
                 error = 'Invalid phone number'
 
 
             elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
                 error = "Filename already exists please rename file"
+            elif ValueError:
+                error = 'Incorrect dates'
 
+            elif datetime.date.now > datetime.date(year,month,day):
+                error = 'Cannot create events in the past XD'
 
-
-            if request.files['photo'].filename != '':
+            elif request.files['photo'].filename != '':
 
                 filename = photos.save(request.files['photo'])
-                print filename
                 add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename)
                 con.add(add_event)
                 con.commit()
@@ -310,7 +318,8 @@ def create_event():
 
                 return redirect('/events/%s' %(request.form['name']))
 
-        return render_template('create_event.html',error=error,my_events=my_events,user_in_use =user_in_use )
+        return render_template('create_event.html', error=error ,my_events=my_events ,user_in_use =user_in_use )
+
     else:
         return redirect(url_for('login'))
 
@@ -341,7 +350,7 @@ def edit_particular_event(event_name):
             elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
                 error = "Filename already exists please rename file"
 
-            if request.files['photo'].filename != '':
+            elif request.files['photo'].filename != '':
                 filename = photos.save(request.files['photo'])
                 var.image = filename
                 print var.image
@@ -478,27 +487,45 @@ def view_particular_event(event_name):
     if g.user:
         #querying the map from GoogleMap API. It takes the Address of the location as GoogleMap search and spits out a link
         event=con.query(Events).filter_by(name=event_name).first()
+        if_past = con.query(Past_Events).filter_by(name=event_name).first()
         var = event
-        i_am_coming = con.query(Users).filter_by(name=g.user).first()
-        search_payload = {"key":key, "query":var.address}
-        search_req = requests.get(search_url, params=search_payload)
-        search_json = search_req.json()
+        if event:
+            i_am_coming = con.query(Users).filter_by(name=g.user).first()
+            search_payload = {"key":key, "query":var.address}
+            search_req = requests.get(search_url, params=search_payload)
+            search_json = search_req.json()
 
-        place_id = search_json["results"][0]["place_id"]
+            place_id = search_json["results"][0]["place_id"]
 
-        details_payload = {"key":key, "placeid":place_id}
-        details_resp = requests.get(details_url, params=details_payload)
-        details_json = details_resp.json()
+            details_payload = {"key":key, "placeid":place_id}
+            details_resp = requests.get(details_url, params=details_payload)
+            details_json = details_resp.json()
 
-        wololo=details_json["result"]["url"]
+            wololo=details_json["result"]["url"]
 
 
-        if request.method == 'POST':
-            event.who_is_coming.append(i_am_coming)
-            con.commit()
-            return redirect(url_for('home'))
+            if request.method == 'POST':
+                event.who_is_coming.append(i_am_coming)
+                con.commit()
+                return redirect(url_for('home'))
 
-        return render_template('one_event.html', var=var,wololo=wololo,my_events=my_events,user_in_use =user_in_use,keys=key )
+        else:
+            past = True
+            var = if_past
+            i_am_coming = con.query(Users).filter_by(name=g.user).first()
+            search_payload = {"key":key, "query":var.address}
+            search_req = requests.get(search_url, params=search_payload)
+            search_json = search_req.json()
+
+            place_id = search_json["results"][0]["place_id"]
+
+            details_payload = {"key":key, "placeid":place_id}
+            details_resp = requests.get(details_url, params=details_payload)
+            details_json = details_resp.json()
+
+            wololo=details_json["result"]["url"]
+
+        return render_template('one_event.html', var=var,wololo=wololo,my_events=my_events,user_in_use =user_in_use,keys=key,past = past )
     else:
         return redirect(url_for('login'))
 
@@ -554,10 +581,28 @@ def phone_number_response(who):
         return redirect(url_for('login'))
     return render_template('phone_request.html',user_to=user_to,user_in_use=who_am_i,my_events=my_events,error=error)
 
+
+@app.route('/events/past' ,methods = ['GET','POST'] )
+def view_past_events():
+    user_in_use = g.user
+    my_events = con.query(Past_Events).filter_by(who_made_me=g.user).all()
+    #check if logged in
+    if g.user:
+        all_events = con.query(Past_Events).all()
+        what_event = ""
+        if request.method == 'POST':
+            what_event = request.form['search_events'].encode('utf-8')
+            return redirect('/search'+'/'+what_event)
+
+        return render_template('view_past_events.html',all_events=all_events,my_events=my_events,user_in_use =user_in_use )
+    else:
+        return redirect(url_for('login'))
+
+
 #RUN IT GUT
 if __name__ == '__main__':
     app.debug = True
     app.secret_key='gnejrgbejberjekg'
     configure_uploads(app, photos)
 
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, threaded = True)

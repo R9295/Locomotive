@@ -149,11 +149,12 @@ Event duration:
 
 {{var.duration}}
 <br><br>
+    {% if past != True %}
 <form action="" method="post">
     <input type="submit" value="Go to!" class="btn btn-success" style="font-size:25px;">
 <br><br>
 </form>
-
+ {% endif %}
 Who's coming:<br><br>
 {% for people in var.who_is_coming %}
     {{ people.name }}<a href="/email/{{people.name}}"><button class="btn btn-default">Email</button></a>
