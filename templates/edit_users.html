@@ -26,7 +26,7 @@
 
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand " style="font-family: 'Rock Salt', cursive;font-size:15px">Logged in as {{user_name}}</a>
+      <a class="navbar-brand " style="font-family: 'Rock Salt', cursive;font-size:15px">Logged in as {{user_in_use}}</a>
     </div>
     <ul class="nav navbar-nav">
 
@@ -42,8 +42,8 @@
         <span class="caret"></span></a>
 
         <ul class="dropdown-menu">
-            {%for my_events in what_events_i_own: %}
-            <li><a href="/events/{{my_events.name}}">{{my_events.name}}</a></li>
+            {%for my_eventz in my_events: %}
+            <li><a href="/events/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
             {% endfor %}
         </ul>
       </li>
@@ -52,8 +52,8 @@
         <span class="caret"></span></a>
 
         <ul class="dropdown-menu">
-            {%for my_events in what_events_i_own: %}
-            <li><a href="/events/edit/{{my_events.name}}">{{my_events.name}}</a></li>
+            {%for my_eventz in my_events: %}
+            <li><a href="/events/edit/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
             {% endfor %}
         </ul>
       </li>
@@ -72,7 +72,7 @@
 
         <ul class="dropdown-menu">
             <li><a href="/login">Logout</a></li>
-            <li><a href="/{{user_name}}/edit">Edit User</a> </li>
+            <li><a href="/{{user_in_use}}/edit">Edit User</a> </li>
         </ul>
       </li>
 
