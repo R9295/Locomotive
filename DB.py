@@ -3,6 +3,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String,Binary,INT,Date,Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
+from sqlalchemy.pool import StaticPool
 
 Base = declarative_base()
 
@@ -84,7 +85,7 @@ class Past_Events(Base):
 
 
 
-engine = create_engine('sqlite:///users.db')
+engine = create_engine('sqlite:///users.db',connect_args={'check_same_thread':False},poolclass=StaticPool)
 
 
 Base.metadata.create_all(engine)

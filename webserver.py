@@ -4,7 +4,7 @@ from DB import * #SQLalchemy database.py file
 import os
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 import os.path
-
+import threading
 import datetime
 
 from key import key # key for GoogleMaps API
@@ -15,7 +15,7 @@ from flask_uploads import UploadSet,IMAGES,configure_uploads
 from bcrypt import hashpw, gensalt #module to hash passwords
 from validate_email import validate_email
 
-from sqlalchemy.orm import sessionmaker # SQL API
+from sqlalchemy.orm import sessionmaker, scoped_session # SQL API
 from sqlalchemy import create_engine # SQL API
 
 from flask_googlemaps import GoogleMaps#GoogleMaps API
@@ -54,10 +54,12 @@ mail = Mail(app)
 
 
 #DB connection and creating session
-engine = create_engine('sqlite:///users.db')
+
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 con = DBSession()
+
+
 
 #To generate random characters to add to URL
 def url_gen(size=6, chars=string.ascii_uppercase + string.digits):
@@ -70,21 +72,11 @@ def before_request():
     if 'user' in session:
         g.user = session['user']
 
-'''
-@app.before_request
-def after_event():
-    w = datetime.date.today()
-    print w.strftime("We are the %d,%m,%Y")
-    events = con.query(Events).all()
-    for past in events:
-        if past.date < w:
-            query_it = con.query(Events).filter_by(name=past.name).first()
-            add_to_past = Past_Events(name=query_it.name,email=query_it.email,phone_number=query_it.phone_number,venue=query_it.venue,description=query_it.description,date=query_it.date,time=query_it.time,duration=query_it.duration,who_made_me=query_it.who_made_me,address=query_it.address,image=query_it.image,who_came=query_it.who_is_coming)
-            con.add(add_to_past)
-            con.commit()
-            con.delete(query_it)
-            con.commit()
-'''
+
+
+
+
+
 photos = UploadSet('photos', IMAGES)
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/img'
 
@@ -93,7 +85,7 @@ app.config['UPLOADED_PHOTOS_DEST'] = 'static/img'
 @app.route('/')
 def home():
     if g.user:
-        return redirect('/'+g.user)
+            return redirect('/'+g.user)
     else:
         return redirect(url_for('login'))
 
@@ -104,7 +96,7 @@ def homeof_user(user):
         date = datetime.date.today()
 
         user = con.query(Users).filter_by(name=g.user).first()
-        user_name = user.name
+        user_name = g.user
         what_events_i_own =con.query(Events).filter_by(who_made_me=g.user).all()
         if request.method == 'POST':
             pass
@@ -475,21 +467,37 @@ def view_particular_event(event_name):
     my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     #check if logged in
     if g.user:
+        try:
         #querying the map from GoogleMap API. It takes the Address of the location as GoogleMap search and spits out a link
-        event=con.query(Events).filter_by(name=event_name).first()
-        var = event
-        i_am_coming = con.query(Users).filter_by(name=g.user).first()
-        search_payload = {"key":key, "query":var.address}
-        search_req = requests.get(search_url, params=search_payload)
-        search_json = search_req.json()
+            event=con.query(Events).filter_by(name=event_name).first()
+            var = event
+            i_am_coming = con.query(Users).filter_by(name=g.user).first()
+            search_payload = {"key":key, "query":var.address}
+            search_req = requests.get(search_url, params=search_payload)
+            search_json = search_req.json()
 
-        place_id = search_json["results"][0]["place_id"]
+            place_id = search_json["results"][0]["place_id"]
 
-        details_payload = {"key":key, "placeid":place_id}
-        details_resp = requests.get(details_url, params=details_payload)
-        details_json = details_resp.json()
+            details_payload = {"key":key, "placeid":place_id}
+            details_resp = requests.get(details_url, params=details_payload)
+            details_json = details_resp.json()
 
-        wololo=details_json["result"]["url"]
+            wololo=details_json["result"]["url"]
+        except AttributeError:
+            event=con.query(Past_Events).filter_by(name=event_name).first()
+            var = event
+            i_am_coming = con.query(Users).filter_by(name=g.user).first()
+            search_payload = {"key":key, "query":var.address}
+            search_req = requests.get(search_url, params=search_payload)
+            search_json = search_req.json()
+
+            place_id = search_json["results"][0]["place_id"]
+
+            details_payload = {"key":key, "placeid":place_id}
+            details_resp = requests.get(details_url, params=details_payload)
+            details_json = details_resp.json()
+
+            wololo=details_json["result"]["url"]
 
 
         if request.method == 'POST':
@@ -581,6 +589,31 @@ def search_past_events(queries):
         return render_template('search_results.html',events=search_results,error=error,my_events=my_events,user_in_use =user_in_use )
     else:
         return redirect(url_for('login'))
+
+def check_if_past():
+    # do something here ...
+    w = datetime.date.today()
+    events = con.query(Events).all()
+    #ws =  con.query(Past_Events).first()
+    #rint ws.name
+    for i in events:
+       #if i.date < w:
+        print i.name, i.date
+
+        if i.date < w:
+           query_it = con.query(Events).filter_by(name=i.name).first()
+           add_to_past = Past_Events(name=query_it.name,email=query_it.email,phone_number=query_it.phone_number,venue=query_it.venue,description=query_it.description,date=query_it.date,time=query_it.time,duration=query_it.duration,who_made_me=query_it.who_made_me,address=query_it.address,image=query_it.image,who_came=query_it.who_is_coming)
+           con.add(add_to_past)
+           con.commit()
+           con.delete(query_it)
+           con.commit()
+
+
+
+    threading.Timer(86400, check_if_past).start()
+check_if_past()
+
+
 #RUN IT GUT
 if __name__ == '__main__':
     app.debug = True
