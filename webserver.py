@@ -36,8 +36,21 @@ details_url = "https://maps.googleapis.com/maps/api/place/details/json"
 app = Flask(__name__)
 GoogleMaps(app)
 
-
-
+# TODO OSMOSMOSMOSM XD
+# TODO OSMOSMOSMOSM XD
+# TODO OSMOSMOSMOSM XD
+# TODO OSMOSMOSMOSM XD
+# TODO OSMOSMOSMOSM XD
+# TODO OSMOSMOSMOSM XD
+# TODO OSMOSMOSMOSM XD
+# TODO OSMOSMOSMOSM XD
+# TODO Finish data validation 100% and get all navbars to display 'my past_events' alongside 'my events'.
+# TODO Create a log that displays all the events you went to or are going go delete it from the homepage if want
+# TODO Get responsive images where needed
+# TODO Confirm and eliminate security issues.
+# TODO Add recent events and Get OSM(Open Street Map)
+# TODO Add events closeby
+# TODO Add a 'latest' added event, a 'lot of people' going to event, and a 'closeby' event
 
 
 
