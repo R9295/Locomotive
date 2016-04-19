@@ -264,7 +264,6 @@ def view_events():
 
 
 
-#creates an event and registers it. need to add which user did made it
 @app.route('/events/create',methods=['GET','POST'])
 def create_event():
     user_in_use = g.user
@@ -275,14 +274,20 @@ def create_event():
 
             validates =  validate_event_input(phone=request.form['phone_number'],y=request.form['year'],m=request.form['month'],d=request.form['day'],name=request.form['name'])
             if validates != None:
-                error = w
+                error = validates
+
+
+            elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
+                error = "Filename already exists please rename file"
 
 
             elif 'photo' in request.files['photo']:
+                year = int(request.form['year'])
+                month = int(request.form['month'])
+                day = int(request.form['day'])
 
                 filename = photos.save(request.files['photo'])
-                print filename
-                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename)
+                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename)
                 con.add(add_event)
                 con.commit()
                 msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
@@ -294,6 +299,9 @@ def create_event():
 
 
             else:
+                year = int(request.form['year'])
+                month = int(request.form['month'])
+                day = int(request.form['day'])
 
 
 
@@ -327,17 +335,10 @@ def edit_particular_event(event_name):
             return redirect('/')
         #updating all the entries
         if request.method == 'POST':
+            validates =validate_event_edit_input(phone=request.form['phone_number'],y=request.form['year'],m=request.form['month'],d=request.form['day'])
+            if validates != None:
+                    error = validates
 
-            year = int(request.form['year'])
-            month = int(request.form['month'])
-            day = int(request.form['day'])
-
-#            except ValueError:
- #               error = 'Incorrect Dates'
-
-            #Check if phone number is an INT and is 10 digits
-            if request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
-                error = 'Invalid phone number'
 
             elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
                 error = "Filename already exists please rename file"
@@ -350,6 +351,9 @@ def edit_particular_event(event_name):
                 con.commit()
 
                 changes = {'name':'Not changed', 'email':'Not changed', 'venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'phone_number': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed' }
+                year = int(request.form['year'])
+                month = int(request.form['month'])
+                day = int(request.form['day'])
                 if var.name  != request.form['name']:
                     var.name = request.form['name']
                     changes['name'] = request.form['name']
@@ -402,7 +406,9 @@ def edit_particular_event(event_name):
                 return redirect('/events/%s' %(var.name))
 
             else:
-
+                year = int(request.form['year'])
+                month = int(request.form['month'])
+                day = int(request.form['day'])
                 changes = {'name':'Not changed', 'email':'Not changed', 'venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'phone_number': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed' }
                 if var.name  != request.form['name']:
                     var.name = request.form['name']

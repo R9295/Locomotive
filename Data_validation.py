@@ -16,7 +16,7 @@ def validate_event_input(phone,y,m,d,name):
     try:
         datetime.date(year,month,day)
     except ValueError or NameError:
-        error = 'Wring dates'
+        error = 'Wrong dates'
     if phone.isdigit() != True or len(str(phone)) != 10 :
                 error = 'Invalid phone number'
     try:
@@ -30,8 +30,21 @@ def validate_event_input(phone,y,m,d,name):
     if error:
         return error
 
-w = validate_event_input(phone='9442599858',y=2016,m=112,d=6,name='R9')
-if w == None:
-    print 'kkkkkkkkkkk'
-else:
-    print w
+def validate_event_edit_input(phone,y,m,d):
+    error = None
+    year  = int(y)
+    month = int(m)
+    day = int(d)
+    try:
+        datetime.date(year,month,day)
+    except ValueError or NameError:
+        error = 'Wrong dates'
+    if phone.isdigit() != True or len(str(phone)) != 10 :
+                error = 'Invalid phone number'
+    try:
+        if datetime.date(year,month,day) < datetime.date.today():
+            error = "Can't create events in the past"
+    except ValueError or NameError:
+        error = "Incorrect dates"
+    if error:
+        return error
