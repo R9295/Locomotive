@@ -27,6 +27,7 @@ from flask_mail import Mail, Message#Auto email sending module
 import random#To generate random URLs
 import string#To generate random URLs
 
+from Data_validation import *
 #GoogleMaps API URLs that I need to request
 search_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
 details_url = "https://maps.googleapis.com/maps/api/place/details/json"
@@ -269,31 +270,19 @@ def create_event():
     user_in_use = g.user
     my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     if g.user:
-        error = None
+        error = ''
         if request.method == 'POST':
-            year = int(request.form['year'])
-            month = int(request.form['month'])
-            day = int(request.form['day'])
 
-            #check if event exists
-            it_exists = con.query(Events).filter_by(name=request.form['name']).first()
-            if it_exists:
-                error = 'Event exists!!!!'
-            #Check if phone number is an INT and is 10 digits
-            elif request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
-                error = 'Invalid phone number'
-
-
-            elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
-                error = "Filename already exists please rename file"
-
+            validates =  validate_event_input(phone=request.form['phone_number'],y=request.form['year'],m=request.form['month'],d=request.form['day'],name=request.form['name'])
+            if validates != None:
+                error = w
 
 
             elif 'photo' in request.files['photo']:
 
                 filename = photos.save(request.files['photo'])
                 print filename
-                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename)
+                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename)
                 con.add(add_event)
                 con.commit()
                 msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
@@ -306,6 +295,8 @@ def create_event():
 
             else:
 
+
+
                 add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=None)
                 con.add(add_event)
                 con.commit()
@@ -316,7 +307,7 @@ def create_event():
 
                 return redirect('/events/%s' %(request.form['name']))
 
-        return render_template('create_event.html',error=error,my_events=my_events,user_in_use =user_in_use )
+        return render_template('create_event.html',error=error,my_events=my_events,user_in_use =user_in_use)
     else:
         return redirect(url_for('login'))
 
