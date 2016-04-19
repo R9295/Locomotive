@@ -51,7 +51,7 @@ GoogleMaps(app)
 # TODO Add recent events and Get OSM(Open Street Map)
 # TODO Add events closeby
 # TODO Add a 'latest' added event, a 'lot of people' going to event, and a 'closeby' event
-
+# TODO need to fix all font sizes
 
 
 #configuring Mail server
@@ -336,9 +336,13 @@ def edit_particular_event(event_name):
             return redirect('/')
         #updating all the entries
         if request.method == 'POST':
+
             year = int(request.form['year'])
             month = int(request.form['month'])
             day = int(request.form['day'])
+
+#            except ValueError:
+ #               error = 'Incorrect Dates'
 
             #Check if phone number is an INT and is 10 digits
             if request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
@@ -347,7 +351,8 @@ def edit_particular_event(event_name):
             elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
                 error = "Filename already exists please rename file"
 
-            if 'photo' in request.files:
+            elif request.files['photo'].filename != '':
+                print request.files['photo'].filename
                 filename = photos.save(request.files['photo'])
                 var.image = filename
                 print var.image
@@ -357,10 +362,7 @@ def edit_particular_event(event_name):
                 if var.name  != request.form['name']:
                     var.name = request.form['name']
                     changes['name'] = request.form['name']
-                try:
-                    datetime.date(year,month,day)
-                except ValueError:
-                    error = 'Incorrect Dates'
+
 
                 if  var.email !=request.form['email']:
                     var.email = request.form['email']
@@ -392,7 +394,7 @@ def edit_particular_event(event_name):
 
                 if var.date  != datetime.date(year,month,day):
                     var.date = datetime.date(year,month,day)
-                    changes['date'] = var.date
+                    changes['date'] = str(var.date)
                 msg = Message('Hello %s, You just edited %s !' %(g.user,var.name), sender = email, recipients = [request.form['email']])
                 msg.body = " Your changes:    "
                 for key,values in changes.iteritems():
@@ -409,6 +411,7 @@ def edit_particular_event(event_name):
                 return redirect('/events/%s' %(var.name))
 
             else:
+
                 changes = {'name':'Not changed', 'email':'Not changed', 'venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'phone_number': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed' }
                 if var.name  != request.form['name']:
                     var.name = request.form['name']
@@ -448,7 +451,7 @@ def edit_particular_event(event_name):
 
                 if var.date  != datetime.date(year,month,day):
                     var.date = datetime.date(year,month,day)
-                    changes['date'] = var.date
+                    changes['date'] = str(var.date)
 
                 var.image = None
                 msg = Message('Hello %s, You just edited %s !' %(g.user,var.name), sender = email, recipients = [request.form['email']])
@@ -604,15 +607,12 @@ def search_past_events(queries):
         return redirect(url_for('login'))
 
 def check_if_past():
-    # do something here ...
     w = datetime.date.today()
     events = con.query(Events).all()
     #ws =  con.query(Past_Events).first()
-    #rint ws.name
+    #rint ws.
+    print 'checking for past events'
     for i in events:
-       #if i.date < w:
-        print i.name, i.date
-
         if i.date < w:
            query_it = con.query(Events).filter_by(name=i.name).first()
            add_to_past = Past_Events(name=query_it.name,email=query_it.email,phone_number=query_it.phone_number,venue=query_it.venue,description=query_it.description,date=query_it.date,time=query_it.time,duration=query_it.duration,who_made_me=query_it.who_made_me,address=query_it.address,image=query_it.image,who_came=query_it.who_is_coming)
