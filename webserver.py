@@ -616,6 +616,11 @@ def check_if_past():
     threading.Timer(86400, check_if_past).start()
 check_if_past()
 
+@app.route('/osm')
+def osm():
+    kden = requests.get('http://nominatim.openstreetmap.org/search?q=135+youth+centre+auroville+india&format=json&polygon=1&addressdetails=1')
+    print kden.json()
+    return render_template('osm.html',kden=kden)
 
 #RUN IT GUT
 if __name__ == '__main__':
