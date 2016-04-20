@@ -40,11 +40,24 @@ def validate_event_edit_input(phone,y,m,d):
     except ValueError or NameError:
         error = 'Wrong dates'
     if phone.isdigit() != True or len(str(phone)) != 10 :
-                error = 'Invalid phone number'
+        error = 'Invalid phone number'
     try:
         if datetime.date(year,month,day) < datetime.date.today():
             error = "Can't create events in the past"
     except ValueError or NameError:
         error = "Incorrect dates"
+    if error:
+        return error
+
+def validate_create_user_input(password,username,password_again,phone):
+    error = None
+    if password != password_again:
+        error = "Passwords don't mach"
+    elif con.query(Users).filter_by(name=username).first() or con.query(AUTH).filter_by(name=username).first():
+        error = 'User already exists. Please rename'
+    elif phone.isdigit() != True or len(str(phone)) != 10 :
+        error = 'Invalid phone number'
+    else:
+        error= ''
     if error:
         return error

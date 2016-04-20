@@ -127,18 +127,11 @@ def homeof_user(user):
 def create_user():
     error = None
     if request.method == 'POST':
+        validates =validate_create_user_input(password=request.form['create_password'],username=request.form['create_username'],password_again=request.form['password_re_enter'],phone=request.form['phone_number'])
 
-        #if passwords entered didn't match
-        if request.form['create_password'] != request.form['password_re_enter']:
-            error = "Passwords don't match, re enter!"
 
-        #checks if a user with the same username exists
-        elif con.query(Users).filter_by(name = request.form['create_username']).first() or con.query(AUTH).filter_by(name=request.form['create_username']).first():
-             error = "Username already exists"
-
-        #If phone number is an integer or if it isn't 10 raise error
-        elif request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
-             error = 'Invalid phone number'
+        if validates != None:
+            error = validates
 
         #calls the password from the form, hashes it and appends it to the Database. and finally, creates user
         else:
