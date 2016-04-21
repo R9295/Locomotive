@@ -28,6 +28,7 @@ import random#To generate random URLs
 import string#To generate random URLs
 
 from Data_validation import *
+import geocoder
 #GoogleMaps API URLs that I need to request
 search_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
 details_url = "https://maps.googleapis.com/maps/api/place/details/json"
@@ -473,37 +474,15 @@ def view_particular_event(event_name):
     my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     #check if logged in
     if g.user:
-        try:
         #querying the map from GoogleMap API. It takes the Address of the location as GoogleMap search and spits out a link
-            event=con.query(Events).filter_by(name=event_name).first()
-            var = event
-            i_am_coming = con.query(Users).filter_by(name=g.user).first()
-            search_payload = {"key":key, "query":var.address}
-            search_req = requests.get(search_url, params=search_payload)
-            search_json = search_req.json()
+        event=con.query(Events).filter_by(name=event_name).first()
+        var = event
+        i_am_coming = con.query(Users).filter_by(name=g.user).first()
+        geocode = geocoder.osm(var.address)
+        lat_of_event = geocode.json["lat"]
+        lng_of_event = geocode.json["lng"]
 
-            place_id = search_json["results"][0]["place_id"]
 
-            details_payload = {"key":key, "placeid":place_id}
-            details_resp = requests.get(details_url, params=details_payload)
-            details_json = details_resp.json()
-
-            wololo=details_json["result"]["url"]
-        except AttributeError:
-            event=con.query(Past_Events).filter_by(name=event_name).first()
-            var = event
-            i_am_coming = con.query(Users).filter_by(name=g.user).first()
-            search_payload = {"key":key, "query":var.address}
-            search_req = requests.get(search_url, params=search_payload)
-            search_json = search_req.json()
-
-            place_id = search_json["results"][0]["place_id"]
-
-            details_payload = {"key":key, "placeid":place_id}
-            details_resp = requests.get(details_url, params=details_payload)
-            details_json = details_resp.json()
-
-            wololo=details_json["result"]["url"]
 
 
         if request.method == 'POST':
@@ -511,7 +490,7 @@ def view_particular_event(event_name):
             con.commit()
             return redirect(url_for('home'))
 
-        return render_template('one_event.html', var=var,wololo=wololo,my_events=my_events,user_in_use =user_in_use,keys=key )
+        return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,keys=key,lat=lat_of_event,lng=lng_of_event )
     else:
         return redirect(url_for('login'))
 
@@ -616,11 +595,6 @@ def check_if_past():
     threading.Timer(86400, check_if_past).start()
 check_if_past()
 
-@app.route('/osm')
-def osm():
-    kden = requests.get('http://nominatim.openstreetmap.org/search?q=135+youth+centre+auroville+india&format=json&polygon=1&addressdetails=1')
-    print kden.json()
-    return render_template('osm.html',kden=kden)
 
 #RUN IT GUT
 if __name__ == '__main__':

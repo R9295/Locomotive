@@ -9,6 +9,14 @@
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+    <link
+        rel="stylesheet"
+        href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"
+    />
+    <link
+        rel="stylesheet"
+        href="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.css"
+    />
 
 <style>
     .form_font{
@@ -89,14 +97,31 @@
 
   </div>
  </nav>
+<br><br><br>
+    <div id="map" style="width: 1000px; height: 500px"></div>
 
-<iframe
-  width="600"
-  height="450"
-  frameborder="0" style="border:0"
-  src="https://www.google.com/maps/embed/v1/place?key={{keys}}&q={{var.address}}
-    &q=Space+Needle,Seattle+WA" allowfullscreen>
-</iframe>
+    <script
+        src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js">
+    </script>
+    <script
+        src="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.js">
+    </script>
+
+    <script>
+        var map = L.map('map').setView([{{lat}},{{lng}}], 16);
+        mapLink =
+            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; ' + mapLink + ' Contributors',
+            maxZoom: 25,
+            }).addTo(map);
+        var marker = L.marker([{{lat}},{{lng}}]).addTo(map);
+        marker.bindPopup("<b>This is where {{var.name}} is happening!</b><br>{{var.venue}}").openPopup();
+
+
+    </script>
+<br><br><br>
 
 
 <div class="container form_font">
@@ -135,7 +160,7 @@ Event Location:
 
 Event Address:
 
-{{var.address}}  <a href="{{wololo}}" style="color:black;">View on Google Maps:</a>
+{{var.address}} 
 <br><br>
 
 
