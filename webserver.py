@@ -18,8 +18,7 @@ from validate_email import validate_email
 from sqlalchemy.orm import sessionmaker, scoped_session # SQL API
 from sqlalchemy import create_engine # SQL API
 
-from flask_googlemaps import GoogleMaps#GoogleMaps API
-import googlemaps #GoogleMaps API
+
 
 import requests#To ping GoogleMaps API for maps
 from flask_mail import Mail, Message#Auto email sending module
@@ -36,16 +35,7 @@ details_url = "https://maps.googleapis.com/maps/api/place/details/json"
 
 #creating Flask app
 app = Flask(__name__)
-GoogleMaps(app)
 
-# TODO OSMOSMOSMOSM XD
-# TODO OSMOSMOSMOSM XD
-# TODO OSMOSMOSMOSM XD
-# TODO OSMOSMOSMOSM XD
-# TODO OSMOSMOSMOSM XD
-# TODO OSMOSMOSMOSM XD
-# TODO OSMOSMOSMOSM XD
-# TODO OSMOSMOSMOSM XD
 # TODO Finish data validation 100% and get all navbars to display 'my past_events' alongside 'my events'.
 # TODO Create a log that displays all the events you went to or are going go delete it from the homepage if want
 # TODO Get responsive images where needed
@@ -263,7 +253,7 @@ def create_event():
     user_in_use = g.user
     my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     if g.user:
-        error = ''
+        error = None
         if request.method == 'POST':
 
             validates =  validate_event_input(phone=request.form['phone_number'],y=request.form['year'],m=request.form['month'],d=request.form['day'],name=request.form['name'])

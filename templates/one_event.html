@@ -108,6 +108,7 @@
     </script>
 
     <script>
+
         var map = L.map('map').setView([{{lat}},{{lng}}], 16);
         mapLink =
             '<a href="http://openstreetmap.org">OpenStreetMap</a>';
@@ -117,7 +118,8 @@
             maxZoom: 25,
             }).addTo(map);
         var marker = L.marker([{{lat}},{{lng}}]).addTo(map);
-        marker.bindPopup("<b>This is where {{var.name}} is happening!</b><br>{{var.venue}}").openPopup();
+        marker.bindPopup("<b>This is where {{var.name}} is happening!</b><br>Venue:{{var.venue}}").openPopup();
+
 
 
     </script>

@@ -11,7 +11,8 @@
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
 <style>
     .form_font{
-    font-family: 'Shadows Into Light', cursive;font-size:30px;
+    font-family: 'Shadows Into Light', cursive;font-size:26px;
+
     {
 
 </style>
@@ -115,7 +116,7 @@
           <br>
        Description
           <br>
-        <textarea class="form-control" rows="7" name="description" value="{{request.form['description']}}"></textarea>
+        <textarea class="form-control" rows="7" name="description" >{{request.form['description']}}</textarea>
           <br>
        Phone Number of host
           <br>
