@@ -28,6 +28,7 @@ import string#To generate random URLs
 
 from Data_validation import *
 import geocoder
+from sqlalchemy import and_
 #GoogleMaps API URLs that I need to request
 search_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
 details_url = "https://maps.googleapis.com/maps/api/place/details/json"
@@ -226,7 +227,6 @@ def search_events(queries):
         return render_template('search_results.html',events=search_results,error=error,my_events=my_events,user_in_use =user_in_use )
     else:
         return redirect(url_for('login'))
-
 
 
 #Views all events
@@ -460,6 +460,7 @@ def edit_particular_event(event_name):
 #Each individual event's page auto generated
 @app.route('/events/<event_name>',methods=['GET','POST'])
 def view_particular_event(event_name):
+    past = False
     user_in_use = g.user
     my_events = con.query(Events).filter_by(who_made_me=g.user).all()
     #check if logged in
@@ -468,19 +469,35 @@ def view_particular_event(event_name):
         event=con.query(Events).filter_by(name=event_name).first()
         var = event
         i_am_coming = con.query(Users).filter_by(name=g.user).first()
-        geocode = geocoder.osm(var.address)
-        lat_of_event = geocode.json["lat"]
-        lng_of_event = geocode.json["lng"]
+        try:
+            geocode = geocoder.osm(var.address)
+            lat_of_event = geocode.json["lat"]
+            lng_of_event = geocode.json["lng"]
+        except AttributeError:
+            past = True
+            event = con.query(Past_Events).filter_by(name=event_name).first()
+            var = event
+            geocode = geocoder.osm(var.address)
+            lat_of_event = geocode.json["lat"]
+            lng_of_event = geocode.json["lng"]
 
 
 
-
+        search_results = None
         if request.method == 'POST':
-            event.who_is_coming.append(i_am_coming)
+            event.who_is_coming.append(i_am_coming.name)
             con.commit()
-            return redirect(url_for('home'))
+            return redirect('/')
 
-        return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,keys=key,lat=lat_of_event,lng=lng_of_event )
+            #if request.form['search_user'] != None:
+             #   search_results= con.query(Events).filter(
+                                                            #  Events.who_is_coming.like('%'+'%s'%(request.form['search_user'].encode('utf-8'))+'%' ))
+              #  print search_results
+               # if search_results == None:
+                #    search_results = 'No user found'
+
+
+        return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,keys=key,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past)
     else:
         return redirect(url_for('login'))
 
@@ -579,6 +596,7 @@ def check_if_past():
            con.commit()
            con.delete(query_it)
            con.commit()
+
 
 
 

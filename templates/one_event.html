@@ -195,7 +195,23 @@ Event duration:
 <br><br>
 </form>
  {% endif %}
-Who's coming:<br><br>
+Who's coming:
+    <br>
+<form method="post" id="search">
+<input type="text" name="search_user" placeholder="Search Users">
+<input type="submit" class="btn btn-default" value="Search" onclick="form_search(results)">
+</form>
+<script>
+    function form_search(results) {
+    $(window).scrollTop(results.offset().top).scrollLeft(ele.offset().left);
+    search.submit();
+}
+</script>
+<div id="results">
+    {% if search_results != None %}
+    {{search_results}}
+{% endif %}
+</div>
 {% for people in var.who_is_coming %}
     {{ people.name }}<a href="/email/{{people.name}}"><button class="btn btn-default">Email</button></a>
     <a href="/request/phone_number/{{people.name}}"><button class="btn btn-default">Request phone number</button></a><br>
