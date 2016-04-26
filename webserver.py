@@ -265,7 +265,7 @@ def create_event():
                 error = "Filename already exists please rename file"
 
 
-            elif 'photo' in request.files['photo']:
+            elif request.files['photo'].filename != '':
                 year = int(request.form['year'])
                 month = int(request.form['month'])
                 day = int(request.form['day'])
@@ -328,7 +328,6 @@ def edit_particular_event(event_name):
                 error = "Filename already exists please rename file"
 
             elif request.files['photo'].filename != '':
-                print request.files['photo'].filename
                 filename = photos.save(request.files['photo'])
                 var.image = filename
                 print var.image
@@ -484,14 +483,14 @@ def view_particular_event(event_name):
 
 
         search_results = None
-        if request.method == 'POST':
-            event.who_is_coming.append(i_am_coming.name)
+        if request.method == 'POST' and request.form['search_user'] == None:
+            event.who_is_coming.append(i_am_coming)
             con.commit()
             return redirect('/')
 
-            #if request.form['search_user'] != None:
-             #   search_results= con.query(Events).filter(
-                                                            #  Events.who_is_coming.like('%'+'%s'%(request.form['search_user'].encode('utf-8'))+'%' ))
+        #if request.form['search_user'] != None:
+         #    search_results= con.query(Events).filter(
+          #                                    Events.who_is_coming.like('%'+'%s'%(request.form['search_user'].encode('utf-8'))+'%' ))
               #  print search_results
                # if search_results == None:
                 #    search_results = 'No user found'

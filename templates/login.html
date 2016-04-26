@@ -41,9 +41,9 @@ input[type=password]:focus {
 <!-- font-family: 'Martel', serif; -->
 
   </head>
-  <body style="background: url(https://dl.dropboxusercontent.com/u/159328383/background.jpg) no-repeat center center fixed;">
+  <body style="background: url('/static/img/background.jpg');background-size:cover;">
     <div class="container">
-      <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 100px">Login to Locomotive!</h1>
+      <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 100px;color:white;">Login to Locomotive!</h1>
       <br>
       <form action="" method="post">
         <input type="text" placeholder="Username" name="username"  class="form-control" style="font-family: 'Shadows Into Light', cursive;font-size:20px">
@@ -51,7 +51,7 @@ input[type=password]:focus {
         <br>
         <input class="btn btn-success" type="submit" value="Login" style="font-family: 'Shadows Into Light', cursive;font-size:20px">
       </form>
-      <a href="/create" style="color:black;font-family: 'Shadows Into Light', cursive;font-size:25px">Create an account</a>
+      <a href="/create" style="color:white;font-family: 'Shadows Into Light', cursive;font-size:25px">Create an account</a>
       {% if error %}
         <p class="text-danger bg-danger"style="font-family: 'Shadows Into Light', cursive;font-size:25px" ><strong>Error:</strong> {{ error }}</p>
       {% endif %}

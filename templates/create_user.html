@@ -12,19 +12,19 @@
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
 
   </head>
-  <body  style="background-image: url('static/img/GNR.jpg');background-size:cover;">
+  <body  style="background: url('/static/img/background.jpg');background-size:cover;">
     <div class="container">
-      <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 100px">Create a User @ Locomotive</h1>
+      <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 100px;color:white;">Create a User @ Locomotive</h1>
       <br>
       <form action="" method="post">
-        <input type="text" placeholder="Username" name="create_username" style="font-family: 'Shadows Into Light', cursive;font-size: 22px" >
-         <input type="password" placeholder="Password" name="create_password"style="font-family: 'Shadows Into Light', cursive;font-size: 22px">
-          <input type="password" placeholder=" Re-enter Password" name="password_re_enter"style="font-family: 'Shadows Into Light', cursive;font-size: 22px">
-          <br>
-          <input type="text" placeholder="Phone Number" name="phone_number"style="font-family: 'Shadows Into Light', cursive;font-size: 22px">
-          <input type="text" placeholder="Email" name="email"style="font-family: 'Shadows Into Light', cursive;font-size: 22px">
-          <input type="text" placeholder="Community" name="community"style="font-family: 'Shadows Into Light', cursive;font-size: 22px">
-          <input class="btn btn-success" type="submit" value="Create!"style="font-family: 'Shadows Into Light', cursive;font-size: 22px">
+        <input type="text" placeholder="Username" name="create_username" style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control" ><br><br>
+         <input type="password" placeholder="Password" name="create_password"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
+          <input type="password" placeholder=" Re-enter Password" name="password_re_enter"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
+
+          <input type="text" placeholder="Phone Number" name="phone_number"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
+          <input type="text" placeholder="Email" name="email"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
+          <input type="text" placeholder="Community" name="community"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
+          <input class="btn btn-success" type="submit" value="Create!"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
       </form>
 
       {% if error %}

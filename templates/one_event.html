@@ -23,7 +23,6 @@
     font-family: 'Shadows Into Light', cursive;font-size:30px;
     }
 
-
 </style>
 </head>
 <body>
@@ -68,7 +67,6 @@
 
 
 
-        </li>
 
 
 
@@ -97,13 +95,14 @@
 
   </div>
  </nav>
-<br><br><br>
-    <div id="map" style="width: 1000px; height: 500px"></div>
+
+    <div id="map" style="height:500px;"></div>
 
     <script
         src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js">
     </script>
     <script
+
         src="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.js">
     </script>
 
@@ -119,6 +118,9 @@
             }).addTo(map);
         var marker = L.marker([{{lat}},{{lng}}]).addTo(map);
         marker.bindPopup("<b>This is where {{var.name}} is happening!</b><br>Venue:{{var.venue}}").openPopup();
+        $("#map").width($(window).width());
+        map.invalidateSize();
+
 
 
 
@@ -128,7 +130,7 @@
 
 <div class="container form_font">
 {% if var.image != None: %}
-    <img src="/static/img/{{var.image}}" >
+    <img src="/static/img/{{var.image}}" height="640" width="480">
 {% endif %}
 
 Event created by:
