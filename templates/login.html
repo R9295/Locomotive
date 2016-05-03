@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>Login to Locomotive!</title>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.16/vue.js"></script>
 
 <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
       <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,6 +57,19 @@ input[type=password]:focus {
         <p class="text-danger bg-danger"style="font-family: 'Shadows Into Light', cursive;font-size:25px" ><strong>Error:</strong> {{ error }}</p>
       {% endif %}
     </div>
+{% raw %}
+    <div id="app">
+  {{ message }}
+{% endraw %}
+  </div>
+  <script>
+    new Vue({
+  el: '#app',
+  data: {
+    message: 'Hello Vue.js!'
+  }
+})
+  </script>
 
 
 </body>

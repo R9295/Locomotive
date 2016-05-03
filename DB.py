@@ -4,7 +4,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from sqlalchemy.pool import StaticPool
-
+from sqlalchemy import DateTime
+import datetime
 Base = declarative_base()
 
 association_table =Table("who's_going_where", Base.metadata,
@@ -54,7 +55,8 @@ class Events(Base):
     who_made_me = Column(String(25),nullable=False)
     address = Column(String(50),nullable=False)
     image = Column(String(40),nullable=True)
-
+    when_made = Column(DateTime,nullable=False)
+  #  type_of = Column(String(40),nullable=False)
 
 
 class AUTH(Base):

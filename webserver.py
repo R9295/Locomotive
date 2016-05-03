@@ -271,7 +271,7 @@ def create_event():
                 day = int(request.form['day'])
 
                 filename = photos.save(request.files['photo'])
-                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename)
+                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename,when_made=datetime.date.today())
                 con.add(add_event)
                 con.commit()
                 msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
@@ -289,7 +289,7 @@ def create_event():
 
 
 
-                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=None)
+                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=None,when_made=datetime.date.today())
                 con.add(add_event)
                 con.commit()
                 msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
@@ -483,17 +483,17 @@ def view_particular_event(event_name):
 
 
         search_results = None
-        if request.method == 'POST' and request.form['search_user'] == None:
+        if request.method == 'POST':
             event.who_is_coming.append(i_am_coming)
             con.commit()
             return redirect('/')
 
-        #if request.form['search_user'] != None:
+        #if request.form['search_user'] != None and request.method == 'POST':
          #    search_results= con.query(Events).filter(
-          #                                    Events.who_is_coming.like('%'+'%s'%(request.form['search_user'].encode('utf-8'))+'%' ))
-              #  print search_results
-               # if search_results == None:
-                #    search_results = 'No user found'
+          #                                    Events.who_is_coming.name.like('%'+'%s'%(request.form['search_user'].encode('utf-8'))+'%' ))
+           #  print search_results
+            # if search_results == None:
+             #   search_results = 'No user found'
 
 
         return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,keys=key,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past)
