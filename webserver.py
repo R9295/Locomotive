@@ -1,5 +1,6 @@
 from flask import * #web framework
 from DB import * #SQLalchemy database.py file
+from pymongo import *
 
 import os
 from flask_uploads import UploadSet, configure_uploads, IMAGES
@@ -7,19 +8,15 @@ import os.path
 import threading
 import datetime
 
-from key import key # key for GoogleMaps API
-from mail_server_pass import email,password #mail server password info
 
 from flask_uploads import UploadSet,IMAGES,configure_uploads
 
 from bcrypt import hashpw, gensalt #module to hash passwords
-from validate_email import validate_email
 
-from sqlalchemy.orm import sessionmaker, scoped_session # SQL API
-from sqlalchemy import create_engine # SQL API
+from pymongo import MongoClient
 
 
-
+from emaildata import *
 import requests#To ping GoogleMaps API for maps
 from flask_mail import Mail, Message#Auto email sending module
 
@@ -28,10 +25,6 @@ import string#To generate random URLs
 
 from Data_validation import *
 import geocoder
-from sqlalchemy import and_
-#GoogleMaps API URLs that I need to request
-search_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
-details_url = "https://maps.googleapis.com/maps/api/place/details/json"
 
 
 #creating Flask app
@@ -58,12 +51,9 @@ app.config['MAIL_USE_SSL'] = True
 #creating instance of flask-mail
 mail = Mail(app)
 
-
-#DB connection and creating session
-
-Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-con = DBSession()
+#Connecting to DB
+client = MongoClient()
+db = client.users
 
 
 
@@ -101,9 +91,9 @@ def homeof_user(user):
     if g.user:
         date = datetime.date.today()
 
-        user = con.query(Users).filter_by(name=g.user).first()
+        user = db.users.find({"name":g.user})
         user_name = g.user
-        what_events_i_own =con.query(Events).filter_by(who_made_me=g.user).all()
+        what_events_i_own = db.events.find({"who_made_me":g.user})
         if request.method == 'POST':
             pass
 
@@ -130,13 +120,19 @@ def create_user():
             #to generate random url for creating user
             try:
                 hashed_password = hashpw(request.form['create_password'].encode('utf-8'),gensalt())
-                adding_user = AUTH(name=request.form['create_username'], password=hashed_password, email=request.form['email'],community=request.form['community'],phone_number=request.form['phone_number'])
-                con.add(adding_user)
-                con.commit()
-                usr_name = con.query(AUTH).filter_by(name=request.form['create_username']).first()
+                add_user = {
+                    'name' : request.form['create_username'],
+                    'password' : hashed_password,
+                    'phone_number' : request.form['phone_number'],
+                    'email' : request.form['email'],
+                    'community' : request.form['community']
+
+
+                }
+                added = db.user_auth.insert_one(add_user)
                 url = url_gen()#Creating a random part of URL to use
-                msg = Message('Hello, Thanks for creating a user @ Locomotive!', sender = email, recipients = [request.form['email']])
-                msg.body = "Hello, Thanks for creating a user @ Locomotive! click this URL to activate your account!   "+"localhost:5000"+'/adduser/'+url+'/'+usr_name.name
+                msg = Message('Thanks for creating a user @ Locomotive!', sender = email, recipients = [request.form['email']])
+                msg.body = "Hello, Thanks for creating a user @ Locomotive! click this URL to activate your account!   "+"localhost:5000"+'/adduser/'+url+'/'+request.form['create_username']
                 mail.send(msg)
                 return redirect(url_for('login'))
 
@@ -147,28 +143,27 @@ def create_user():
 
 @app.route('/adduser/<url>/<user_name>',methods=['GET'])
 def add_user(url,user_name):
-
-    #move data from auth to the registered user DB
-    w = con.query(AUTH).filter_by(name=user_name).first()
-    e = Users(name=w.name,password=w.password,email=w.email,phone_number=w.phone_number,community=w.community)
-    con.add(e)
-    con.commit()
-    #delete the data in AUTH
-    con.query(AUTH).filter_by(name=user_name).delete()
-    con.commit()
+    user = db.user_auth.find({'name':user_name})
+    adding_user = {
+        'name': user['name'],
+        'password': user['password'],
+        'email': user['email'],
+        'phone_number': user['phone_number'],
+        'community': user['community']
+    }
+    add_to_db = db.users.insert_one(adding_user)
     return "User verified    "+user_name + "    login@"+"   localhost:5000/login"
 
 #Login page,need to add forgot password option
 @app.route('/login', methods=['GET','POST'])
 def login():
     session.pop('user',None) # kills the already logged in session cookie
-    querying = con.query(Users).all()
     error = None
     if request.method == 'POST':
-        look_for = con.query(Users).filter_by(name = request.form['username']).first()
+        look_for = db.users.find({'name':request.form['username']})
         if look_for : #if user exists then check password
             passwd = request.form['password'].encode('utf-8')
-            if hashpw(passwd,look_for.password) == look_for.password:
+            if hashpw(passwd,look_for.password) == look_for['password']:
                 session['user'] = request.form['username'] #adds  status 'I am logged in as USERNAME' to the cookies
                 return redirect(url_for('home')) #Might wanna change the page it redirects to if login is successful
 
@@ -184,23 +179,22 @@ def login():
 @app.route('/<edit_user>/edit', methods=['GET','POST'])
 def edit_user(edit_user):
     user_in_use = g.user
-    my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+    my_events = db.events.find({'who_made_me':g.user})
     error = ""
     if g.user:
-        if con.query(Users).filter_by(name=g.user).first().name == edit_user:
-            edit_user= con.query(Users).filter_by(name=g.user).first()
+        k = db.events.find({'name': g.user})
+        if k['name'] == edit_user:
             if request.method == 'POST':
-                if hashpw(request.form['old_password'].encode('utf-8'),edit_user.password) != edit_user.password:
+                if hashpw(request.form['old_password'].encode('utf-8'),k['password']) != edit_user.password:
                     error="Old password and New one don't match"
                 elif request.form['password'] != request.form['new_password']:
                     error = "New passwords don't match"
                 else:
-                    edit_user.name = request.form['name']
-                    edit_user.password = hashpw(request.form['password'].encode('utf-8'),gensalt())
-                    edit_user.email = request.form['email']
-                    edit_user.phone_number = request.form['phone_number']
-                    edit_user.community = request.form['community']
-                    con.commit()
+                    k['password'] = hashpw(request.form['password'].encode('utf-8'),gensalt())
+                    k['email'] = request.form['email']
+                    k['phone_number'] = request.form['phone_number']
+                    k['community'] = request.form['community']
+                    db.users.save(k)
 
                     return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button style="color:green;">logout</button></a></body></html>'
         else:
@@ -217,13 +211,9 @@ def search_events(queries):
     error = None
     #check if logged in
     if g.user:
-        my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+        my_events = db.events.find({'who_made_me':g.user})
         user_in_use = g.user
-        search_results= con.query(Events).filter(Events.name.like('%'+'%s'%(queries)+'%' )).all()
-
-        #for stuff in search_results:
-         #   return stuff.name
-                #search_results= con.query(Events).filter(Events.name.like("y%")).all()
+        search_results= db.events.find({'name':{'$regex': queries}})
         return render_template('search_results.html',events=search_results,error=error,my_events=my_events,user_in_use =user_in_use )
     else:
         return redirect(url_for('login'))
@@ -233,10 +223,10 @@ def search_events(queries):
 @app.route('/events/view',methods=['GET','POST'])
 def view_events():
     user_in_use = g.user
-    my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+    my_events = db.events.find({'who_made_me':g.user})
     #check if logged in
     if g.user:
-        all_events = con.query(Events).all()
+        all_events = db.events.find()
         what_event = ""
         if request.method == 'POST':
             what_event = request.form['search_events'].encode('utf-8')
@@ -251,7 +241,7 @@ def view_events():
 @app.route('/events/create',methods=['GET','POST'])
 def create_event():
     user_in_use = g.user
-    my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+    my_events = db.events.find({'who_made_me':g.user})
     if g.user:
         error = None
         if request.method == 'POST':
@@ -265,15 +255,29 @@ def create_event():
                 error = "Filename already exists please rename file"
 
 
-            elif request.files['photo'].filename != '':
+            else:
+                filename = None
                 year = int(request.form['year'])
                 month = int(request.form['month'])
                 day = int(request.form['day'])
-
-                filename = photos.save(request.files['photo'])
-                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=filename,when_made=datetime.date.today())
-                con.add(add_event)
-                con.commit()
+                if request.files['photo'].filename != '':
+                    filename = photos.save(request.files['photo'])
+                event_data =  {
+                    'name': request.form['name'],
+                    'email': request.form['email'],
+                    'phone_number' : request.form['phone_number'],
+                    'venue' : request.form['venue'],
+                    'address' : request.form['address'],
+                    'description' : request.form['description'],
+                    'time' : request.form['time'],
+                    'duration' : request.form['duration'],
+                    'year' : year,
+                    'day' : day,
+                    'month' : month,
+                    'image' : filename,
+                    'who_is_coming': []
+                }
+                insert = db.events.insert(event_data)
                 msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
                 msg.body ='Your event %s was successfully added! Check it out here:locahost:5000/events/%s' %(request.form['name'],request.form['name'])
                 mail.send(msg)
@@ -281,40 +285,14 @@ def create_event():
                 return redirect('/events/%s' %(request.form['name']))
 
 
-
-            else:
-                year = int(request.form['year'])
-                month = int(request.form['month'])
-                day = int(request.form['day'])
-
-
-
-                add_event = Events(name= request.form['name'],email=request.form['email'],phone_number=request.form['phone_number'],venue=request.form['venue'],description=request.form['description'],time = request.form['time'],date =datetime.date(year,month,day),duration =request.form['duration'],who_made_me=g.user,address=request.form['address'],image=None,when_made=datetime.date.today())
-                con.add(add_event)
-                con.commit()
-                msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
-                msg.body ='Your event %s was successfully added! Check it out here: localhost:5000/events/%s' %(request.form['name'],request.form['name'])
-                mail.send(msg)
-
-
-                return redirect('/events/%s' %(request.form['name']))
-
-        return render_template('create_event.html',error=error,my_events=my_events,user_in_use =user_in_use)
-    else:
-        return redirect(url_for('login'))
-
-
-
-
-
 #edit a particular event
 @app.route('/events/edit/<event_name>',methods=['GET','POST'])
 def edit_particular_event(event_name):
     user_in_use = g.user
-    my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+    my_events = db.events.find({'who_made_me':g.user})
     if g.user:
         error = None
-        var = con.query(Events).filter_by(who_made_me=g.user,name=event_name).first()
+        var = db.events.find_one({'who_made_me':g.user,'name': event_name})
         if not var:
             return redirect('/')
         #updating all the entries
@@ -327,52 +305,64 @@ def edit_particular_event(event_name):
             elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
                 error = "Filename already exists please rename file"
 
-            elif request.files['photo'].filename != '':
-                filename = photos.save(request.files['photo'])
-                var.image = filename
-                print var.image
-                con.commit()
-
+            else:
+                if request.files['photo'].filename != '':
+                    filename = photos.save(request.files['photo'])
+                var['image'] = filename
+                db.events.save(var)
                 changes = {'name':'Not changed', 'email':'Not changed', 'venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'phone_number': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed' }
+
                 year = int(request.form['year'])
                 month = int(request.form['month'])
                 day = int(request.form['day'])
-                if var.name  != request.form['name']:
-                    var.name = request.form['name']
+
+                if var['name']  != request.form['name']:
+                    var['name'] = request.form['name']
                     changes['name'] = request.form['name']
+                    db.events.save(var)
 
 
-                if  var.email !=request.form['email']:
-                    var.email = request.form['email']
+                if  var['email'] !=request.form['email']:
+                    var['email'] = request.form['email']
                     changes['email'] = request.form['email']
+                    db.events.save(var)
 
-                if var.venue != request.form['venue']:
-                    var.venue = request.form['venue']
+                if var['venue'] != request.form['venue']:
+                    var['venue'] = request.form['venue']
                     changes['venue'] = request.form['venue']
+                    db.events.save(var)
 
-                if var.address != request.form['address']:
-                    var.address = request.form['address']
+                if var['address'] != request.form['address']:
+                    var['address'] = request.form['address']
                     changes['address'] = request.form['address']
-                if var.description != request.form['description']:
-                    var.description = request.form['description']
+                    db.events.save(var)
+
+                if var['description'] != request.form['description']:
+                    var['description'] = request.form['description']
                     changes['description'] = request.form['description']
+                    db.events.save(var)
 
-                if var.phone_number != request.form['phone_number']:
-                    var.phone_number = request.form['phone_number']
+                if var['phone_number'] != request.form['phone_number']:
+                    var['phone_number'] = request.form['phone_number']
                     changes['phone_number'] = request.form['phone_number']
+                    db.events.save(var)
 
 
-                if var.time  != request.form['time']:
-                    var.time = request.form['time']
+                if var['time']  != request.form['time']:
+                    var['time'] = request.form['time']
                     changes['time'] = request.form['time']
+                    db.events.save(var)
 
-                if var.duration  != request.form['duration']:
+                if var['duration']  != request.form['duration']:
                     var.duration = request.form['duration']
                     changes['duration'] = request.form['duration']
+                    db.events.save(var)
 
-                if var.date  != datetime.date(year,month,day):
-                    var.date = datetime.date(year,month,day)
+                if var['date']  != datetime.date(year,month,day):
+                    var['date'] = datetime.date(year,month,day)
                     changes['date'] = str(var.date)
+                    db.events.save(var)
+
                 msg = Message('Hello %s, You just edited %s !' %(g.user,var.name), sender = email, recipients = [request.form['email']])
                 msg.body = " Your changes:    "
                 for key,values in changes.iteritems():
@@ -388,67 +378,6 @@ def edit_particular_event(event_name):
 
                 return redirect('/events/%s' %(var.name))
 
-            else:
-                year = int(request.form['year'])
-                month = int(request.form['month'])
-                day = int(request.form['day'])
-                changes = {'name':'Not changed', 'email':'Not changed', 'venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'phone_number': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed' }
-                if var.name  != request.form['name']:
-                    var.name = request.form['name']
-                    changes['name'] = request.form['name']
-                try:
-                    datetime.date(year,month,day)
-                except ValueError:
-                    error = 'Incorrect Dates'
-
-                if  var.email !=request.form['email']:
-                    var.email = request.form['email']
-                    changes['email'] = request.form['email']
-
-                if var.venue != request.form['venue']:
-                    var.venue = request.form['venue']
-                    changes['venue'] = request.form['venue']
-
-                if var.address != request.form['address']:
-                    var.address = request.form['address']
-                    changes['address'] = request.form['address']
-                if var.description != request.form['description']:
-                    var.description = request.form['description']
-                    changes['description'] = request.form['description']
-
-                if var.phone_number != request.form['phone_number']:
-                    var.phone_number = request.form['phone_number']
-                    changes['phone_number'] = request.form['phone_number']
-
-
-                if var.time  != request.form['time']:
-                    var.time = request.form['time']
-                    changes['time'] = request.form['time']
-
-                if var.duration  != request.form['duration']:
-                    var.duration = request.form['duration']
-                    changes['duration'] = request.form['duration']
-
-                if var.date  != datetime.date(year,month,day):
-                    var.date = datetime.date(year,month,day)
-                    changes['date'] = str(var.date)
-
-                var.image = None
-                msg = Message('Hello %s, You just edited %s !' %(g.user,var.name), sender = email, recipients = [request.form['email']])
-                msg.body = " Your changes:    "
-                for key,values in changes.iteritems():
-
-                    if values != 'Not changed':
-                        msg.body += key+'  :  '+values+'  '
-
-
-                mail.send(msg)
-
-
-                con.commit()
-
-
-
 
 
     else:
@@ -461,22 +390,22 @@ def edit_particular_event(event_name):
 def view_particular_event(event_name):
     past = False
     user_in_use = g.user
-    my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+    my_events = db.events.find({'who_made_me':g.user})
     #check if logged in
     if g.user:
         #querying the map from GoogleMap API. It takes the Address of the location as GoogleMap search and spits out a link
-        event=con.query(Events).filter_by(name=event_name).first()
+        event=db.events.find_one({'name':event_name})
         var = event
         i_am_coming = con.query(Users).filter_by(name=g.user).first()
         try:
-            geocode = geocoder.osm(var.address)
+            geocode = geocoder.osm(var['address'])
             lat_of_event = geocode.json["lat"]
             lng_of_event = geocode.json["lng"]
         except AttributeError:
             past = True
-            event = con.query(Past_Events).filter_by(name=event_name).first()
+            event = db.past_events.find_one({'name':event_name})
             var = event
-            geocode = geocoder.osm(var.address)
+            geocode = geocoder.osm(var['address'])
             lat_of_event = geocode.json["lat"]
             lng_of_event = geocode.json["lng"]
 
@@ -484,50 +413,33 @@ def view_particular_event(event_name):
 
         search_results = None
         if request.method == 'POST':
-            event.who_is_coming.append(i_am_coming)
-            con.commit()
+            event['who_is_coming'].append(g.user)
             return redirect('/')
 
-        #if request.form['search_user'] != None and request.method == 'POST':
-         #    search_results= con.query(Events).filter(
-          #                                    Events.who_is_coming.name.like('%'+'%s'%(request.form['search_user'].encode('utf-8'))+'%' ))
-           #  print search_results
-            # if search_results == None:
-             #   search_results = 'No user found'
-
-
-        return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,keys=key,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past)
+        return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past)
     else:
         return redirect(url_for('login'))
 
 @app.route('/delete/<name>',methods=['GET','POST'])
 def deleteion(name):
-    delete_event = con.query(Events).filter_by(name=name).first()
+    delete_event = db.events.find_one({'name':name})
     if delete_event:
-         con.delete(delete_event)
-         con.commit()
+         db.events.remove({'name':delete_event['name']})
          return redirect('/')
     else:
-        user_to_delete = con.query(Users).filter_by(name=name).first()
-
-        events_of_user = con.query(Events).filter_by(who_made_me=user_to_delete.name).all()
-        con.delete(user_to_delete)
-        for events in events_of_user:
-            con.delete(events.name)
-        con.commit()
-        con.delete(user_to_delete)
-        con.commit()
+        user_to_delete = db.users.find_one({'name':name})
+        db.events.remove({'name':name})
         return redirect('/login')
 
 @app.route('/email/<name>', methods=['GET','POST'])
 def email_request(name):
     error = None
     if g.user:
-        user_to = con.query(Users).filter_by(name=name).first()
-        who_am_i = con.query(Users).filter_by(name=g.user).first()
-        my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+        user_to = db.events.find_one({'name':name})
+        who_am_i = db.users.find_one({'name':g.user})
+        my_events = db.events.find({'who_made_me':g.user})
         if request.method == 'POST':
-            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(g.user), sender = email, recipients = [user_to.email] )
+            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(g.user), sender = email, recipients = [user_to['email']] )
             msg.body =request.form['message']
             mail.send(msg)
             return redirect('/')
@@ -540,11 +452,11 @@ def email_request(name):
 def phone_number_response(who):
     if g.user:
         error = None
-        user_to = con.query(Users).filter_by(name=who).first()
-        who_am_i = con.query(Users).filter_by(name=g.user).first()
-        my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+        user_to = db.users.find_one({'name':who})
+        who_am_i = db.users.find_one({'name':g.user})
+        my_events = db.events.find({'who_made_me':g.user})
         if request.method == 'POST':
-            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(g.user), sender = email, recipients = [user_to.email] )
+            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(g.user), sender = email, recipients = [user_to['email']] )
             msg.body =request.form['message']
             mail.send(msg)
             return redirect('/')
@@ -557,8 +469,8 @@ def phone_number_response(who):
 def view_past_events():
     if g.user:
         error = None
-        past_events =con.query(Past_Events).all()
-        my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+        past_events =db.past_events.find()
+        my_events = db.events.find({'who_made_me':g.user})
         if request.method == 'POST':
             what_event = request.form['search_events'].encode('utf-8')
             return redirect('/search'+'/past''/'+what_event)
@@ -573,9 +485,9 @@ def search_past_events(queries):
     error = None
     #check if logged in
     if g.user:
-        my_events = con.query(Events).filter_by(who_made_me=g.user).all()
+        my_events = db.events.find({'who_made_me':g.user})
         user_in_use = g.user
-        search_results= con.query(Past_Events).filter(Past_Events.name.like('%'+'%s'%(queries)+'%' )).all()
+        search_results= db.past_events.find({'name':{'$regex': queries}})
 
         return render_template('search_results.html',events=search_results,error=error,my_events=my_events,user_in_use =user_in_use )
     else:
@@ -583,24 +495,35 @@ def search_past_events(queries):
 
 def check_if_past():
     w = datetime.date.today()
-    events = con.query(Events).all()
+    events = db.events.find()
     #ws =  con.query(Past_Events).first()
     #rint ws.
     print 'checking for past events'
     for i in events:
-        if i.date < w:
-           query_it = con.query(Events).filter_by(name=i.name).first()
-           add_to_past = Past_Events(name=query_it.name,email=query_it.email,phone_number=query_it.phone_number,venue=query_it.venue,description=query_it.description,date=query_it.date,time=query_it.time,duration=query_it.duration,who_made_me=query_it.who_made_me,address=query_it.address,image=query_it.image,who_came=query_it.who_is_coming)
-           con.add(add_to_past)
-           con.commit()
-           con.delete(query_it)
-           con.commit()
+        if i['date'] < w:
+           query_it = db.events.find_one({'name':i['name']})
+           add_to_past =  {
+               'name': i['name'],
+               'email': i['email'],
+               'phone_number': i['phone_number'],
+               'venue': i['venue'],
+               'address': i['address'],
+               'description': i['description'],
+               'time': i['time'],
+               'duration': i['duration'],
+               'year': i['year'],
+               'day': i['day'],
+               'month': i['month'],
+               'image': i['filename'],
+               'who_is_coming': i['who_is_coming']
 
-
+           }
+        db.past_events.insert_one(add_to_past)
+        db.events.remove({'name':i['name']})
 
 
     threading.Timer(86400, check_if_past).start()
-check_if_past()
+
 
 
 #RUN IT GUT
@@ -608,5 +531,6 @@ if __name__ == '__main__':
     app.debug = True
     app.secret_key='gnejrgbejberjekg'
     configure_uploads(app, photos)
+    check_if_past()
 
     app.run(host='0.0.0.0', port=5000)
