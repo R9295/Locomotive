@@ -1,13 +1,8 @@
-from sqlalchemy.orm import sessionmaker, scoped_session # SQL API
-from sqlalchemy import create_engine # SQL API
-from DB import *
+from pymongo import *
 import datetime
 
-
-Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-con = DBSession()
-
+client = MongoClient()
+db = client.events
 def validate_event_input(phone,y,m,d,name):
     error = None
     year  = int(y)
@@ -24,7 +19,7 @@ def validate_event_input(phone,y,m,d,name):
             error = "Can't create events in the past"
     except ValueError or NameError:
         error = "Incorrect dates"
-    it_exists = con.query(Events).filter_by(name=name).first()
+    it_exists = db.events.find_one({'name':name})
     if it_exists:
         error = 'Event name already exists'
     if error:
@@ -53,7 +48,7 @@ def validate_create_user_input(password,username,password_again,phone):
     error = None
     if password != password_again:
         error = "Passwords don't mach"
-    elif con.query(Users).filter_by(name=username).first() or con.query(AUTH).filter_by(name=username).first():
+    elif db.users.find_one({'name':username}) or db.user_auth.find_one({'name':username}) != None:
         error = 'User already exists. Please rename'
     elif phone.isdigit() != True or len(str(phone)) != 10 :
         error = 'Invalid phone number'

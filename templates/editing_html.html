@@ -142,13 +142,13 @@
           <input type="text"  name="duration" value="{{var.duration}}" class="form-control form_font">
           <br>
           <br>
-          Date(Please re enter your dates. If you didn't want to change them, their values are {{var.date}} as Year-Month-Day):
+          Date(If you didn't want to change them, their values are {{var.date}} as Year-Month-Day):
           Year
-          <input type="text" placeholder=" Example: 2016" name="year" class="form-control form_font">
+          <input type="text" value="{{var.date[0:4]}}" name="year" class="form-control form_font">
        Month
-          <input type="text" placeholder="Example: 12" name="month" class="form-control form_font">
+          <input type="text" value="{{var.date[5:7]}}" name="month" class="form-control form_font">
        Day
-          <input type="text" placeholder="Example: 6" name="day" class="form-control form_font">
+          <input type="text" value="{{var.date[8:10]}}" name="day" class="form-control form_font">
           <br>
        Images!
           <br>

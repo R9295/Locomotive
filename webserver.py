@@ -1,7 +1,7 @@
 from flask import * #web framework
 from DB import * #SQLalchemy database.py file
 from pymongo import *
-
+from datetime import datetime
 import os
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 import os.path
@@ -91,9 +91,10 @@ def homeof_user(user):
     if g.user:
         date = datetime.date.today()
 
-        user = db.users.find({"name":g.user})
+        user = db.users.find_one({"name":g.user})
         user_name = g.user
         what_events_i_own = db.events.find({"who_made_me":g.user})
+
         if request.method == 'POST':
             pass
 
@@ -125,7 +126,8 @@ def create_user():
                     'password' : hashed_password,
                     'phone_number' : request.form['phone_number'],
                     'email' : request.form['email'],
-                    'community' : request.form['community']
+                    'community' : request.form['community'],
+                    'going_to' : []
 
 
                 }
@@ -143,13 +145,14 @@ def create_user():
 
 @app.route('/adduser/<url>/<user_name>',methods=['GET'])
 def add_user(url,user_name):
-    user = db.user_auth.find({'name':user_name})
+    user = db.user_auth.find_one({'name':user_name})
     adding_user = {
         'name': user['name'],
         'password': user['password'],
         'email': user['email'],
         'phone_number': user['phone_number'],
-        'community': user['community']
+        'community': user['community'],
+        'going_to': []
     }
     add_to_db = db.users.insert_one(adding_user)
     return "User verified    "+user_name + "    login@"+"   localhost:5000/login"
@@ -160,15 +163,15 @@ def login():
     session.pop('user',None) # kills the already logged in session cookie
     error = None
     if request.method == 'POST':
-        look_for = db.users.find({'name':request.form['username']})
+        look_for = db.users.find_one({'name':request.form['username']})
         if look_for : #if user exists then check password
             passwd = request.form['password'].encode('utf-8')
-            if hashpw(passwd,look_for.password) == look_for['password']:
+            if hashpw(passwd,look_for['password'].encode('utf-8')) == look_for['password']:
                 session['user'] = request.form['username'] #adds  status 'I am logged in as USERNAME' to the cookies
                 return redirect(url_for('home')) #Might wanna change the page it redirects to if login is successful
 
             else:
-                error = 'Incorrect Password'
+                   error = 'Incorrect Password'
         else:
             error = "Username doesn't exist"
 
@@ -257,9 +260,11 @@ def create_event():
 
             else:
                 filename = None
+
                 year = int(request.form['year'])
                 month = int(request.form['month'])
                 day = int(request.form['day'])
+
                 if request.files['photo'].filename != '':
                     filename = photos.save(request.files['photo'])
                 event_data =  {
@@ -271,11 +276,12 @@ def create_event():
                     'description' : request.form['description'],
                     'time' : request.form['time'],
                     'duration' : request.form['duration'],
-                    'year' : year,
-                    'day' : day,
-                    'month' : month,
+                    'date' : '%s-%s-%s'%(year,month,day),
                     'image' : filename,
-                    'who_is_coming': []
+                    'who_is_coming': [],
+                    'who_made_me': g.user,
+                    'when_made' : datetime.datetime.today()
+
                 }
                 insert = db.events.insert(event_data)
                 msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
@@ -283,6 +289,7 @@ def create_event():
                 mail.send(msg)
 
                 return redirect('/events/%s' %(request.form['name']))
+        return render_template('create_event.html',user_in_use=user_in_use,error=error,my_events=my_events)
 
 
 #edit a particular event
@@ -297,19 +304,20 @@ def edit_particular_event(event_name):
             return redirect('/')
         #updating all the entries
         if request.method == 'POST':
-            validates =validate_event_edit_input(phone=request.form['phone_number'],y=request.form['year'],m=request.form['month'],d=request.form['day'])
-            if validates != None:
-                    error = validates
+            try:
+                validates =validate_event_edit_input(phone=request.form['phone_number'],y=request.form['year'],m=request.form['month'],d=request.form['day'])
+                if validates != None:
+                        error = validates
 
 
-            elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
-                error = "Filename already exists please rename file"
+                elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
+                    error = "Filename already exists please rename file"
 
-            else:
-                if request.files['photo'].filename != '':
-                    filename = photos.save(request.files['photo'])
-                var['image'] = filename
-                db.events.save(var)
+                else:
+                    if request.files['photo'].filename != '':
+                        filename = photos.save(request.files['photo'])
+                        var['image'] = filename
+                        db.events.save(var)
                 changes = {'name':'Not changed', 'email':'Not changed', 'venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'phone_number': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed' }
 
                 year = int(request.form['year'])
@@ -354,29 +362,25 @@ def edit_particular_event(event_name):
                     db.events.save(var)
 
                 if var['duration']  != request.form['duration']:
-                    var.duration = request.form['duration']
+                    var['duration'] = request.form['duration']
                     changes['duration'] = request.form['duration']
                     db.events.save(var)
 
                 if var['date']  != datetime.date(year,month,day):
-                    var['date'] = datetime.date(year,month,day)
-                    changes['date'] = str(var.date)
+                    var['date'] ='%s-%s-%s'%(year,month,day)
+                    changes['date'] = '%s-%s-%s'%(year,month,day)
+                    changes['date'].encode('utf-8')
                     db.events.save(var)
+                    msg = Message('Hello %s, You just edited an event: %s!' % (g.user,var['name']), sender=email,recipients=[request.form['email']])
+                    msg.body ='Your changes: '
+                    for key,values in changes.iteritems():
+                        if values != 'Not changed':
+                            msg.body += key +': '+values+'  '
 
-                msg = Message('Hello %s, You just edited %s !' %(g.user,var.name), sender = email, recipients = [request.form['email']])
-                msg.body = " Your changes:    "
-                for key,values in changes.iteritems():
-
-                    if values != 'Not changed':
-                        msg.body += key+'  :  '+values+'  '
-
-
-                mail.send(msg)
-
-
-                con.commit()
-
-                return redirect('/events/%s' %(var.name))
+                    mail.send(msg)
+                    return redirect('/events/%s' %(var['name']))
+            except:
+                error = 'Incorrect Email'
 
 
 
@@ -396,7 +400,6 @@ def view_particular_event(event_name):
         #querying the map from GoogleMap API. It takes the Address of the location as GoogleMap search and spits out a link
         event=db.events.find_one({'name':event_name})
         var = event
-        i_am_coming = con.query(Users).filter_by(name=g.user).first()
         try:
             geocode = geocoder.osm(var['address'])
             lat_of_event = geocode.json["lat"]
@@ -494,13 +497,11 @@ def search_past_events(queries):
         return redirect(url_for('login'))
 
 def check_if_past():
-    w = datetime.date.today()
+    w = datetime.datetime.today()
     events = db.events.find()
-    #ws =  con.query(Past_Events).first()
-    #rint ws.
     print 'checking for past events'
     for i in events:
-        if i['date'] < w:
+        if datetime.datetime.strptime(i['date'].encode('utf-8'),'%Y-%m-%d') < w:
            query_it = db.events.find_one({'name':i['name']})
            add_to_past =  {
                'name': i['name'],
@@ -511,26 +512,26 @@ def check_if_past():
                'description': i['description'],
                'time': i['time'],
                'duration': i['duration'],
-               'year': i['year'],
-               'day': i['day'],
-               'month': i['month'],
+               'date':i['date'],
                'image': i['filename'],
-               'who_is_coming': i['who_is_coming']
+               'who_is_coming': i['who_is_coming'],
+               'when_made': i['when_made']
 
            }
-        db.past_events.insert_one(add_to_past)
-        db.events.remove({'name':i['name']})
+           db.past_events.insert_one(add_to_past)
+           db.events.remove({'name':i['name']})
 
 
-    threading.Timer(86400, check_if_past).start()
+        threading.Timer(86400, check_if_past).start()
 
 
+check_if_past()
 
 #RUN IT GUT
 if __name__ == '__main__':
     app.debug = True
     app.secret_key='gnejrgbejberjekg'
     configure_uploads(app, photos)
-    check_if_past()
 
-    app.run(host='0.0.0.0', port=5000)
+
+    app.run(host='0.0.0.0', port=5000,threaded=True)

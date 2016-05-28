@@ -140,8 +140,8 @@ div.desc {
 
  <div class="container a">
 <h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;color:white;">Events {{user_name}} is attending:</h1>
-{% for t in user.going_to: %}
-<h1><a href="/events/{{t.name}}" style="font-family: 'Shadows Into Light', cursive;font-size:35px">{{t.name}}, Date: {{t.date}}, Time: {{t.time}} </a></h1>
+{% for t in user['going_to']: %}
+<h1><a href="/events/{{t['name']}}" style="font-family: 'Shadows Into Light', cursive;font-size:35px"></a></h1>
 {% endfor %}
 <br>
  <br><br><br>
