@@ -397,7 +397,7 @@ def view_particular_event(event_name):
     my_events = db.events.find({'who_made_me':g.user})
     #check if logged in
     if g.user:
-        #querying the map from GoogleMap API. It takes the Address of the location as GoogleMap search and spits out a link
+        #querying the map from OSM API. It takes the Address of the location as OSM search and spits out a lat and lng
         event=db.events.find_one({'name':event_name})
         var = event
         try:
@@ -416,8 +416,9 @@ def view_particular_event(event_name):
 
         search_results = None
         if request.method == 'POST':
-            event['who_is_coming'].append(g.user)
+            db.events.update({'name':event['name']}, {'$push': {'who_is_coming': g.user}})
             return redirect('/')
+        #if request.method == 'POST' and
 
         return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past)
     else:
@@ -438,7 +439,7 @@ def deleteion(name):
 def email_request(name):
     error = None
     if g.user:
-        user_to = db.events.find_one({'name':name})
+        user_to = db.users.find_one({'name':name})
         who_am_i = db.users.find_one({'name':g.user})
         my_events = db.events.find({'who_made_me':g.user})
         if request.method == 'POST':

@@ -216,7 +216,7 @@ Who's coming:
 {% endif %}
 </div>
 {% for people in var.who_is_coming %}
-    {{ people.name }}<a href="/email/{{people.name}}"><button class="btn btn-default">Email</button></a>
+    {{ people}}<a href="/email/{{people}}"><button class="btn btn-default">Email</button></a>
     <a href="/request/phone_number/{{people.name}}"><button class="btn btn-default">Request phone number</button></a><br>
 {% endfor %}
 
