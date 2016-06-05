@@ -36,6 +36,8 @@
       <li><a href="/events/view">View Events</a></li>
         <li class="navbar-left"><a href="/events/all/past"> View past events</a>
 
+
+
         <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" >Events I Created
         <span class="caret"></span></a>
@@ -46,13 +48,15 @@
             {% endfor %}
         </ul>
       </li>
+
+
         <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">Edit my events
         <span class="caret"></span></a>
 
         <ul class="dropdown-menu">
             {%for my_eventz in my_events: %}
-            <li><a href="/events/edit/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
+            <li><a href="/events/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
             {% endfor %}
         </ul>
       </li>
@@ -96,6 +100,9 @@
     <div class="container">
       <h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;">Create Event</h1>
       <br>
+        {%for i in my_events: %}
+        {{i.name}}
+        {%endfor%}
       <form action="" method="post" enctype="multipart/form-data" class="form_font">
        Name of the Event
           <br>

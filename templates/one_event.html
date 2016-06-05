@@ -218,7 +218,18 @@ Who's coming:
 <script>
     $('#search').keyup(function(){
     var search_term = $(this).val();
-    xd.submit();
+
+$.ajax({
+  type: "POST",
+  contentType: "application/json; charset=utf-8",
+  url: "/events/{{var.name}}",
+  data: JSON.stringify({'search': search_term}),
+  success: function (data) {
+    console.log(data.search_term);
+  },
+  dataType: "json"
+});
+
 
 
 
@@ -226,7 +237,6 @@ Who's coming:
 
 </script>
 <div id="results">
-
 
 </div>
 

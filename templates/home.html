@@ -64,7 +64,7 @@ div.desc {
 
 
     <meta charset="UTF-8">
-    <title>{{user_name}} Home</title>
+    <title>{{user['name']}} Home</title>
 </head>
 <body style="background-image: url('static/img/fnr.png');background-size:cover;" >
 
@@ -73,7 +73,7 @@ div.desc {
 
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand " style="font-family: 'Rock Salt', cursive;font-size:15px">Logged in as {{user_name}}</a>
+      <a class="navbar-brand " style="font-family: 'Rock Salt', cursive;font-size:15px">Logged in as {{user['name']}}</a>
     </div>
     <ul class="nav navbar-nav">
 
@@ -118,7 +118,7 @@ div.desc {
 
         <ul class="dropdown-menu">
             <li><a href="/login">Logout</a></li>
-            <li><a href="/{{user_name}}/edit">Edit User</a> </li>
+            <li><a href="/{{user['name']}}/edit">Edit User</a> </li>
         </ul>
       </li>
 
@@ -139,9 +139,10 @@ div.desc {
 
 
  <div class="container a">
-<h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;color:white;">Events {{user_name}} is attending:</h1>
+<h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;color:white;">Events {{user['name']}} is attending:</h1>
+
 {% for t in user['going_to']: %}
-<h1><a href="/events/{{t['name']}}" style="font-family: 'Shadows Into Light', cursive;font-size:35px"></a></h1>
+<h1><a href="/events/{{t}}" style="font-family: 'Shadows Into Light', cursive;font-size:35px">{{t}}</a></h1>
 {% endfor %}
 <br>
  <br><br><br>

@@ -1,5 +1,4 @@
 from flask import * #web framework
-from DB import * #SQLalchemy database.py file
 from pymongo import *
 from datetime import datetime
 import os
@@ -11,14 +10,13 @@ import datetime
 
 from flask_uploads import UploadSet,IMAGES,configure_uploads
 
-from bcrypt import hashpw, gensalt #module to hash passwords
+from bcrypt import hashpw, gensalt
 
 from pymongo import MongoClient
 
 
 from emaildata import *
-import requests#To ping GoogleMaps API for maps
-from flask_mail import Mail, Message#Auto email sending module
+from flask_mail import Mail, Message
 
 import random#To generate random URLs
 import string#To generate random URLs
@@ -30,21 +28,12 @@ import geocoder
 #creating Flask app
 app = Flask(__name__)
 
-# TODO Finish data validation 100% and get all navbars to display 'my past_events' alongside 'my events'.
-# TODO Create a log that displays all the events you went to or are going go delete it from the homepage if want
-# TODO Get responsive images where needed
-# TODO Confirm and eliminate security issues.
-# TODO Add recent events and Get OSM(Open Street Map)
-# TODO Add events closeby
-# TODO Add a 'latest' added event, a 'lot of people' going to event, and a 'closeby' event
-# TODO need to fix all font sizes
-
 
 #configuring Mail server
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = email #Email is stored on different file due to github
-app.config['MAIL_PASSWORD'] = password#password of that email is also stored on a different file
+app.config['MAIL_USERNAME'] = email
+app.config['MAIL_PASSWORD'] = password
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
@@ -54,7 +43,6 @@ mail = Mail(app)
 #Connecting to DB
 client = MongoClient()
 db = client.users
-
 
 
 #To generate random characters to add to URL
@@ -92,14 +80,14 @@ def homeof_user(user):
         date = datetime.date.today()
 
         user = db.users.find_one({"name":g.user})
-        user_name = g.user
+
         what_events_i_own = db.events.find({"who_made_me":g.user})
 
         if request.method == 'POST':
             pass
 
 
-        return render_template('home.html',user=user,user_name=user_name,what_events_i_own=what_events_i_own,date=date)
+        return render_template('home.html',user=user,what_events_i_own=what_events_i_own,date=date)
 
     else:
         return redirect(url_for('login'))
@@ -395,7 +383,6 @@ def view_particular_event(event_name):
     past = False
     user_in_use = g.user
     my_events = db.events.find({'who_made_me':g.user})
-    #check if logged in
     if g.user:
         #querying the map from OSM API. It takes the Address of the location as OSM search and spits out a lat and lng
         event=db.events.find_one({'name':event_name})
@@ -417,9 +404,13 @@ def view_particular_event(event_name):
         search_results = None
         search_term = None
         if request.method == 'POST' :
-            print 'yay'
+
+            search_term = request.json['search']
             print search_term
-            search_results = db.events.find({'who_is_coming': {'$regex': search_term}})
+            search_results = db.users.find({'going_to':var['name'], 'name':{'$regex': search_term}})
+            for k in search_results:
+                print k['going_to']
+
 
 
 
@@ -490,15 +481,17 @@ def view_past_events():
 
 
 
-@app.route('/search/user/<name>',methods=['GET','POST'])
+@app.route('/search/users/<name>',methods=['GET','POST'])
 def search_user(name):
-    search_results = db.events.find({'who_is_coming':{'$regex': name}})
-    return search_results
+    if request.method == 'POST':
+        search_results = db.events.find_one({'who_is_coming':{'$regex': name}})
+        print search_results
 
 
 @app.route('/goto/<name>')
 def goto(name):
      db.events.update({'name': name}, {'$push': {'who_is_coming': g.user}})
+     db.users.update({'name': g.user}, {'$push': {'going_to': name}})
      return redirect('/')
 
 
