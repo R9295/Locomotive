@@ -225,7 +225,8 @@ $.ajax({
   url: "/events/{{var.name}}",
   data: JSON.stringify({'search': search_term}),
   success: function (data) {
-    console.log(data.search_term);
+    $('#results').html(data.results);
+    console.log(data.results);
   },
   dataType: "json"
 });
@@ -237,7 +238,7 @@ $.ajax({
 
 </script>
 <div id="results">
-
+{{results}}
 </div>
 
 </div>

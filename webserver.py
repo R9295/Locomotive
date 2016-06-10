@@ -399,24 +399,26 @@ def view_particular_event(event_name):
             lat_of_event = geocode.json["lat"]
             lng_of_event = geocode.json["lng"]
 
-
-
+        results = []
         search_results = None
         search_term = None
         if request.method == 'POST' :
 
             search_term = request.json['search']
-            print search_term
             search_results = db.users.find({'going_to':var['name'], 'name':{'$regex': search_term}})
-            for k in search_results:
-                print k['going_to']
+            for i in search_results:
+                results.append(i['name'])
+            print results
+            return  jsonify(results=results)
 
 
 
 
 
 
-        return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past)
+
+
+        return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past,results=results)
     else:
         return redirect(url_for('login'))
 
