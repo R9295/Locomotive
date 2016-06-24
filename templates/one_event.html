@@ -225,8 +225,13 @@ $.ajax({
   url: "/events/{{var.name}}",
   data: JSON.stringify({'search': search_term}),
   success: function (data) {
-    $('#results').html(data.results);
+
     console.log(data.results);
+    for (var i = 0, j = data.results.length; i <= j;i++){
+    $('#results').html(data.results);
+
+    }
+
   },
   dataType: "json"
 });
@@ -240,7 +245,10 @@ $.ajax({
 <div id="results">
 {{results}}
 </div>
+<div id="ffs">
 
+
+</div>
 </div>
 </body>
 
