@@ -1,14 +1,20 @@
 <html>
+
+
   <head>
     <title>Login to Locomotive!</title>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.16/vue.js"></script>
 
-<link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+      <!--Googe Fonts API -->
+      <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+
       <meta name="viewport" content="width=device-width, initial-scale=1">
- <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+
+
+<!--Script to Highlight input field -->
 <style>
     img{
     max-width:100%
@@ -34,33 +40,37 @@ input[type=password]:focus {
 </style>
 
 
-<!--  font families to check out -->
-<!-- font-family: 'Shadows Into Light', cursive; -->
-<!-- font-family: 'Indie Flower', cursive; -->
-<!-- font-family: 'Covered By Your Grace', cursive; -->
-<!-- font-family: 'Rock Salt', cursive; -->
-<!-- font-family: 'Martel', serif; -->
-
   </head>
+
+  <!-- Login Form -->
   <body style="background: url('/static/img/background.jpg');background-size:cover;">
+
+
     <div class="container">
       <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 100px;color:white;">Login to Locomotive!</h1>
       <br>
+
       <form action="" method="post">
+
         <input type="text" placeholder="Username" name="username"  class="form-control" style="font-family: 'Shadows Into Light', cursive;font-size:20px">
-         <input type="password" placeholder="Password" name="password" class="form-control" style="font-family: 'Shadows Into Light', cursive;font-size:20px">
         <br>
-        <input class="btn btn-success" type="submit" value="Login" style="font-family: 'Shadows Into Light', cursive;font-size:20px">
+
+          <input type="password" placeholder="Password" name="password" class="form-control" style="font-family: 'Shadows Into Light', cursive;font-size:20px">
+
+        <br>
+
+          <input class="btn btn-success" type="submit" value="Login" style="font-family: 'Shadows Into Light', cursive;font-size:20px">
+
       </form>
+
       <a href="/create" style="color:white;font-family: 'Shadows Into Light', cursive;font-size:25px">Create an account</a>
+   <!-- If error -->
       {% if error %}
         <p class="text-danger bg-danger"style="font-family: 'Shadows Into Light', cursive;font-size:25px" ><strong>Error:</strong> {{ error }}</p>
       {% endif %}
+
     </div>
-{% raw %}
-    <div id="app">
-{% endraw %}
-  </div>
+
 
 
 </body>

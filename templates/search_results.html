@@ -1,17 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-
-<link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
- <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
-    <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
-   <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
-    <meta charset="UTF-8">
     <title>Search results</title>
 
+<!-- Google Fonts API -->
+<link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+
+    <!--Importing necessary JS and CSS files -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+    <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+    <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
+    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+
+<!-- Form font -->
 <style>
     .form_font{
     font-family: 'Shadows Into Light', cursive;font-size:30px;
@@ -20,8 +22,9 @@
 </style>
 
 </head>
-<body>
 
+<body>
+<!-- Navbar -->
  <nav class="navbar navbar-inverse ">
 
 
@@ -62,7 +65,7 @@
 
 
 
-        </li>
+
 
 
 
@@ -92,6 +95,7 @@
   </div>
  </nav>
 
+<!-- Displays search results given from the server with name -->
 <div class="container form_fonts">
     <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 75px">Search results:</h1>
 {% for search_results in events: %}

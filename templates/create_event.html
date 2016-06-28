@@ -1,39 +1,48 @@
 <html>
- <head>
-     <title>Create an Event!</title>
-
-<link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
- <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
-    <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
-   <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
-<style>
-    .form_font{
-    font-family: 'Shadows Into Light', cursive;font-size:26px;
-
-    }
-
-</style>
- </head>
-
- <body>
-
- <nav class="navbar navbar-inverse ">
 
 
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand " style="font-family: 'Rock Salt', cursive;font-size:15px">Logged in as {{user_in_use}}</a>
-    </div>
-    <ul class="nav navbar-nav">
-
-      <li><a href="/">Home</a></li>
+    <head>
+        <title>Create an Event!</title>
 
 
+        <!-- connecting to Google Fonts API -->
+        <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Adding necessary CSS and JS files  -->
+        <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+        <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+        <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
+        <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+
+        <!-- Form Font size -->
+        <style>
+            .form_font{
+                font-family: 'Shadows Into Light', cursive;font-size:26px;
+
+                       }
+
+        </style>
+    </head>
+
+
+
+    <body>
+        <!-- Navigation bar begin -->
+        <nav class="navbar navbar-inverse ">
+
+
+        <div class="container-fluid">
+        <div class="navbar-header">
+        <a class="navbar-brand " style="font-family: 'Rock Salt', cursive;font-size:15px">Logged in as {{user_in_use}}</a>
+        </div>
+
+            <ul class="nav navbar-nav">
+
+        <li><a href="/">Home</a></li>
         <li><a href="/events/create">Create an Event</a></li>
-      <li><a href="/events/view">View Events</a></li>
+        <li><a href="/events/view">View Events</a></li>
         <li class="navbar-left"><a href="/events/all/past"> View past events</a>
 
 
@@ -42,6 +51,7 @@
         <a class="dropdown-toggle" data-toggle="dropdown" >Events I Created
         <span class="caret"></span></a>
 
+
         <ul class="dropdown-menu">
             {%for my_eventz in my_events: %}
             <li><a href="/events/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
@@ -50,27 +60,26 @@
       </li>
 
 
-        <li class="dropdown">
+
+      <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">Edit my events
         <span class="caret"></span></a>
 
+
+
         <ul class="dropdown-menu">
             {%for my_eventz in my_events: %}
             <li><a href="/events/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
             {% endfor %}
         </ul>
-      </li>
 
-
-
-
-
-
+       </li>
 
 
         <li class="navbar-left">
         <a class="dropdown-toggle" data-toggle="dropdown" >User options
         <span class="caret"></span></a>
+
 
         <ul class="dropdown-menu">
             <li><a href="/login">Logout</a></li>
@@ -78,82 +87,87 @@
         </ul>
       </li>
 
-        <li>
-            <form class="navbar-form navbar-right" method="post">
-
-                    <input type="text" class="form-control" placeholder="Search Events">
-                    <input type="submit" class="btn btn-success" value="search">
-          </form>
-        </li>
-
-
-
-    </ul>
+       </ul>
 
   </div>
  </nav>
+<!-- Navbar end -->
 
 
 
-
-
+<!-- Form Begin -->
     <div class="container">
       <h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;">Create Event</h1>
       <br>
-        {%for i in my_events: %}
-        {{i.name}}
-        {%endfor%}
       <form action="" method="post" enctype="multipart/form-data" class="form_font">
-       Name of the Event
+          Name of the Event
           <br>
           <input type="text"  name="name" class="form-control" value="{{request.form['name']}}">
           <br>
-       Email of host
+
+          Email of host
           <br>
           <input type="text" placeholder="goldroger@gmail.com" name="email" class="form-control" value="{{request.form['email']}}">
           <br>
+
           Venue
           <br>
           <input type="text" name="venue" class="form-control">
           <br>
-          Address(Will auto search GoogleMaps for you)
+
+          Address(Will auto search Maps for you)
           <br>
           <input type="text"  name="address" class="form-control" value="{{request.form['address']}}">
           <br>
-       Description
+
+          Description
           <br>
         <textarea class="form-control" rows="7" name="description" >{{request.form['description']}}</textarea>
           <br>
-       Phone Number of host
+
+          Phone Number of host
           <br>
           <input type="text" placeholder="944xxxxxxx" name="phone_number" class="form-control" value="{{request.form['phone_number']}}">
           <br>
-       Time event starts
+
+          Time event starts
           <br>
           <input type="text" placeholder="" name="time" class="form-control" value="{{request.form['time']}}">
           <br>
-       Duration of event
+
+          Duration of event
           <br>
           <input type="text" placeholder="" name="duration" class="form-control" value="{{request.form['duration']}}">
           <br>
-       Year
+
+          Year
           <input type="text" placeholder=" Example: 2016" name="year" class="form-control">
-       Month
+
+          Month
           <input type="text" placeholder="Example: 12" name="month" class="form-control">
-       Day
+
+          Day
           <input type="text" placeholder="Example: 6" name="day" class="form-control">
           <br>
-       Images!
+
+          Image(Optional)
           <br>
           <input type="file" value="Browse" style="btn btn-defualt" name="photo">
            <br>
+
           <input  type="submit" value="Create!" class="btn btn-success" style="font-size:30px">
       </form>
+        <!--In case of an error -->
         {% if error != None: %}
 <p class="text-danger bg-danger"style="font-family: 'Shadows Into Light', cursive;font-size:25px" ><strong>Error:</strong> {{ error }}</p>      {% endif %}
     </div>
-  <div class="container">
+
+
+    <div class="container">
       <a href="/events/view"><button class="btn btn-default">View events</button></a>
   </div>
-  </body>
+
+
+
+    </body>
 </html>

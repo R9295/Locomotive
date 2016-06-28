@@ -1,9 +1,11 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html>
 <head>
+<title>View all Events</title>
+
+<!-- Google Fonts API -->
 <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
 
-
+    <!-- Importing necessary JS and CSS files  -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
  <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
@@ -13,17 +15,19 @@
 
 
 
-    <meta charset="UTF-8">
-    <title>View all Events</title>
+
+<!-- Form Font -->
 <style>
     .form_font{
     font-family: 'Shadows Into Light', cursive;font-size:30px;
     {
 
 </style>
-</head>
-<body>
 
+</head>
+
+<body>
+<!--Navbar -->
  <nav class="navbar navbar-inverse ">
 
 
@@ -64,7 +68,7 @@
 
 
 
-        </li>
+
 
 
 
@@ -96,16 +100,18 @@
 
 
 <br><br><br>
+
 <div class="container" class="form_fonts"> <!--align="middle"-->
    <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 75px">Past Events:</h1>
     <br><br>
 <form method='post'>
+    <!--Search past events -->
     <input type="text" placeholder="Search events" name="search_events" class="form-control form_font"><br>
     <input type="submit" class="btn btn-success" value="Search event">
     <a href="/events/search/advanced"><button class="btn btn-default">Advanced search options</button></a>
 
 </form>
-
+<!-- Displays all past events -->
     {% for eventz in past_events: %}
 <h3 style="font-family: 'Shadows Into Light', cursive;font-size: 50px"><a href="/events/{{eventz.name}}" > {{ eventz.name }}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3><br><br>
 <br>

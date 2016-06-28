@@ -1,15 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html>
 
-<link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
- <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
-    <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
-   <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
 
+    <head>
+        <!--Google Fonts API -->
+        <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+
+        <!--Importing necessary JS and CSS files -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+        <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+        <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
+        <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+
+<!-- style and script to popup text when hovered over -->
 <style>
     .a{
     font-family: 'Shadows Into Light', cursive;
@@ -63,11 +67,13 @@ div.desc {
 
 
 
-    <meta charset="UTF-8">
+
     <title>{{user['name']}} Home</title>
 </head>
-<body style="background-image: url('static/img/fnr.png');background-size:cover;" >
+    <!-- background image -->
+    <body style="background-image: url('static/img/fnr.png');background-size:cover;" >
 
+    <!--navbar -->
  <nav class="navbar navbar-inverse ">
 
 
@@ -137,7 +143,7 @@ div.desc {
   </div>
  </nav>
 
-
+<!-- List of events the user is attending -->
  <div class="container a">
 <h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;color:white;">Events {{user['name']}} is attending:</h1>
 
@@ -151,7 +157,7 @@ div.desc {
 </div>
 
 
-
+<!-- More data will be displayed on the home page-->
 
 
 

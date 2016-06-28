@@ -7,12 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
  <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='geo.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
     <link
         rel="stylesheet"
         href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"
     />
+
     <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.16/vue.js"></script>
 
     <link
@@ -107,8 +109,12 @@
 
         src="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.js">
     </script>
+<script>
 
-    <script>
+</script>
+ <script>
+
+
 
         var map = L.map('map').setView([{{lat}},{{lng}}], 16);
         mapLink =
@@ -118,8 +124,11 @@
             attribution: '&copy; ' + mapLink + ' Contributors',
             maxZoom: 25,
             }).addTo(map);
+
         var marker = L.marker([{{lat}},{{lng}}]).addTo(map);
         marker.bindPopup("<b>This is where {{var.name}} is happening!</b><br>Venue:{{var.venue}}").openPopup();
+
+
         $("#map").width($(window).width());
         map.invalidateSize();
 

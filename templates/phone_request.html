@@ -1,25 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace|Martel:300' rel='stylesheet' type='text/css'>
+<html>
 
-    <meta charset="UTF-8">
-    <title>request phone number: {{user_to.name}}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
- <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
-    <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
-   <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
 
+    <head>
+        <!-- Google Fonts API -->
+        <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace|Martel:300' rel='stylesheet' type='text/css'>
+
+        <title>request phone number: {{user_to.name}}</title>
+
+        <!-- Importing necessary JS and CSS files -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+        <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+        <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
+        <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+
+<!-- Style to set font -->
 <style>
     .form_font{
     font-family:  'Martel', serif;
     {
 
 </style>
-</head>
-<body>
+    </head>
 
+    <body>
+<!--Navbar -->
  <nav class="navbar navbar-inverse ">
 
 
@@ -60,7 +65,6 @@
 
 
 
-        </li>
 
 
 
@@ -89,7 +93,7 @@
 
   </div>
  </nav>
-
+<!-- Explaining how to write a request. Needs change after Text messaging API and needs to be auto generated-->
 <div class="form_font">
 Get the phone number of {{user_to.name}}! Locomotive will send the email from their automated email system with the message you send.<br>
 The reason being privacy, so that users' phone numbers aren't publicly visible and only are if they accept your request.<br>
@@ -113,6 +117,7 @@ Further communications will be handled by what the two parties decide on<br><br>
     <textarea rows="7" class="form-control" placeholder="Your request message, your phone number and the event" name="message" ></textarea>
     <input type="submit" class="btn btn-success" value="Submit email" >
 </form>
+<!-- If error -->
       {% if error %}
         <p class="text-danger bg-danger"><strong>Error:</strong> {{ error }}</p>
       {% endif %}

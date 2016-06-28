@@ -1,29 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+<html>
 
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
- <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
-    <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
-   <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
 
-<style>
-    .form_font{
-    font-family: 'Shadows Into Light', cursive;font-size:20px;
-    {
-.make_input_bigger{
-    font-family: 'Shadows Into Light', cursive;font-size:20px"
-    }
-</style>
-        <meta charset="UTF-8">
-    <title>Edit {{var.name}}</title>
+        <head>
+            <title>Edit {{var.name}}</title>
+
+            <!-- connecting to Google Fonts API -->
+            <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+
+        <!--Adding necessary CSS and JS files -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+        <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+        <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
+        <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+
+        <!-- style for form fonts and input -->
+        <style>
+            .form_font{
+                font-family: 'Shadows Into Light', cursive;font-size:20px;
+                       {
+            .make_input_bigger{
+                font-family: 'Shadows Into Light', cursive;font-size:20px"
+                        }
+        </style>
+
+
+
 </head>
-<body style="background-color:whitesmoke;">
 
- <nav class="navbar navbar-inverse ">
+    <body style="background-color:whitesmoke;">
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-inverse ">
 
 
   <div class="container-fluid">
@@ -63,7 +72,7 @@
 
 
 
-        </li>
+
 
 
 
@@ -102,55 +111,67 @@
       <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 75px">Edit {{var.name}}</h1>
       <br>
       <form action="" method="post" id="ww" name="edit" enctype="multipart/form-data" class="form_font">
-       Name of the Event
+
+          Name of the Event
           <br>
           <input type="text"  name="name" value="{{var.name}}" class="form-control form_font" >
           <br>
           <br>
-       Email of host
+
+          Email of host
           <br>
           <input type="text"  name="email" value="{{var.email}}" class="form-control form_font">
           <br>
           <br>
+
           Venue
           <br>
           <input type="text" name="venue" value="{{var.venue}}" class="form-control form_font">
           <br>
           <br>
+
           Address(Will auto search GoogleMaps for you)
           <br>
           <input type="text"  name="address" value="{{var.address}}" class="form-control form_font">
           <br>
           <br>
-       Description
+
+          Description
           <br>
             <textarea class="form-control form_font" rows="7" placeholder="" name="description" >{{var.description}}</textarea>
           <br>
           <br>
-       Phone Number of host
+
+          Phone Number of host
           <br>
           <input type="text"  name="phone_number" value="{{var.phone_number}}" class="form-control form_font">
           <br>
           <br>
-       Time event starts
+
+          Time event starts
           <br>
           <input type="text" name="time" value="{{var.time}}" class="form-control form_font">
           <br>
           <br>
-       Duration of event
+
+          Duration of event
           <br>
           <input type="text"  name="duration" value="{{var.duration}}" class="form-control form_font">
           <br>
           <br>
+
           Date(If you didn't want to change them, their values are {{var.date}} as Year-Month-Day):
           Year
           <input type="text" value="{{var.date[0:4]}}" name="year" class="form-control form_font">
-       Month
+
+          Month
           <input type="text" value="{{var.date[5:7]}}" name="month" class="form-control form_font">
-       Day
+
+          Day
           <input type="text" value="{{var.date[8:10]}}" name="day" class="form-control form_font">
           <br>
-       Images!
+
+          Images!
           <br>
           <input type="file" value="Browse" style="btn btn-defualt" name="photo">
            <br>
@@ -159,6 +180,7 @@
 
 </div>
 
+<!-- script to confirm if the changes should be committed -->
 <script>
 function myFunction() {
     var x;
@@ -169,6 +191,8 @@ function myFunction() {
     }
   }
 </script>
+
+<!-- script to confirm if the deletion of the user -->
 <script>
 function del() {
     var x;
@@ -182,9 +206,11 @@ function del() {
 
 
 <div class="container form_font">
-          {% if error %}
-        <p class="text-danger bg-danger"><strong>Error:</strong> {{ error }}</p>
-      {% endif %}
+    <!-- If error -->
+    {% if error %}
+    <p class="text-danger bg-danger"><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+    <!-- commits the function after confirmed changes or deletion -->
     <button onclick="myFunction()" class="btn btn-success" style="font-size:20px;">Confirm Changes</button><br>
     <button onclick="del()" class="btn btn-danger" style="font-size:20px;">Delete {{var.name}}</button><br>
     <a href ="/"><button class="btn btn-default" style="font-size:20px;" >Cancel</button></a>

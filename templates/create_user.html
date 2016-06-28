@@ -1,35 +1,53 @@
 <html>
-  <head>
 
-    <title>Create a User @ Locomotive</title>
 
-<link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+    <head>
+        <title>Create a User @ Locomotive</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
- <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
-  <script src="{{url_for('static', filename='bootstrap.min.js')}}"></script>
-  <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
-   <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+        <!-- Connecting to Google Fonts API -->
+        <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Adding necessary JS and CSS files -->
+        <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+        <script src="{{url_for('static', filename='bootstrap.min.js')}}"></script>
+        <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+        <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
 
   </head>
+
+
+
+  <!-- Form Begin -->
   <body  style="background: url('/static/img/background.jpg');background-size:cover;">
+
+
     <div class="container">
-      <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 100px;color:white;">Create a User @ Locomotive</h1>
-      <br>
-      <form action="" method="post">
-        <input type="text" placeholder="Username" name="create_username" style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control" ><br><br>
-         <input type="password" placeholder="Password" name="create_password"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
-          <input type="password" placeholder=" Re-enter Password" name="password_re_enter"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
+        <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 100px;color:white;">Create a User @ Locomotive</h1>
+        <br>
 
-          <input type="text" placeholder="Phone Number" name="phone_number"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
-          <input type="text" placeholder="Email" name="email"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
-          <input type="text" placeholder="Community" name="community"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
-          <input class="btn btn-success" type="submit" value="Create!"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
-      </form>
+        <!-- Need to clean up styles here -->
+        <form action="" method="post">
+            <input type="text" placeholder="Username" name="create_username" style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control" ><br><br>
+            <input type="password" placeholder="Password" name="create_password"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
+            <input type="password" placeholder=" Re-enter Password" name="password_re_enter"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
 
+            <input type="text" placeholder="Phone Number" name="phone_number"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
+            <input type="text" placeholder="Email" name="email"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
+            <input type="text" placeholder="Community" name="community"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
+            <input class="btn btn-success" type="submit" value="Create!"style="font-family: 'Shadows Into Light', cursive;font-size: 22px" class="form-control"><br><br>
+        </form>
+
+      <!--Incase of errors -->
       {% if error %}
         <p class="text-danger bg-danger"style="font-family: 'Shadows Into Light', cursive;font-size: 22px"><strong>Error:</strong> {{ error }}</p>
       {% endif %}
     </div>
+
+
   </body>
+
+
+
 </html>
