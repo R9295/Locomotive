@@ -25,3 +25,9 @@ password = your email's password
 ```
 After that, go to your gmail's setttings at https://myaccount.google.com/security .
 Under the section 'Connected apps & sites', switch on Allowed Less Secure Apps
+
+After this, open up a terminal and navigate to the Locomotive directory, and then run the webserver by this command
+```
+python webserver.py
+```
+Keep the terminal open and go to your web browser and enter: 0.0.0.0:5000/
