@@ -10,3 +10,18 @@ An open source community platform in Auroville for carpooling
 * Pymongo
 * Threading
 * Geocoder
+
+#Set up
+
+Start the MongoDB process
+```
+sudo mongod
+```
+
+Create a file called emaildata.py, in their you need to add two variables:
+```
+email = your email address
+password = your email's password
+```
+After that, go to your gmail's setttings at https://myaccount.google.com/security .
+Under the section 'Connected apps & sites', switch on Allowed Less Secure Apps
