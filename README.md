@@ -31,3 +31,5 @@ After this, open up a terminal and navigate to the Locomotive directory, and the
 python webserver.py
 ```
 Keep the terminal open and go to your web browser and enter: 0.0.0.0:5000/
+
+#Queries at aarnavbos@gmail.com
