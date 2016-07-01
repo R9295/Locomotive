@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
  <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
-    <script src="{{url_for('static', filename='geo.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
     <link
@@ -235,11 +234,12 @@ $.ajax({
   data: JSON.stringify({'search': search_term}),
   success: function (data) {
 
-    console.log(data.results);
-    for (var i = 0, j = data.results.length; i <= j;i++){
-    $('#results').html(data.results);
+    for (i = 0; i < data.results.length; i++){
+    document.getElementById("results").innerHTML = data.results[i]+ "<br>"
+    console.log(i);
 
     }
+
 
   },
   dataType: "json"
@@ -252,12 +252,10 @@ $.ajax({
 
 </script>
 <div id="results">
-{{results}}
+<script>
+</script>
 </div>
-<div id="ffs">
 
-
-</div>
 </div>
 </body>
 
