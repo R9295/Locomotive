@@ -1,39 +1,35 @@
-Right,
-<br>
-<br>
-<br>
+#Locomotive
+An open source community platform in Auroville for carpooling
 
-The modules needed to run Locomotive are(BTW, not sure about pip names of these, so please google):<br>
-1.bcrypt(hashing passwords)<br>
-2.Flask<br>
-3.GoogleMaps python API<br>
-4.flask-googlemaps<br>
-5.flask_mail<br>
-6.requests<br>
-7.random<br>
-8.string<br>
+#Requirements
+* Python V2.7
+* MongoDB V2.6.10
+* Bcrypt
+* Flask_Uploads
+* Flask_Mail
+* Pymongo
+* Threading
+* Geocoder
 
-<br><br><br>
-You'll also need two python files locally that are:<br>
-1.key.py<br>
-which should have a variable key='YOUR GOOGLE MAPS API KEY' which you can get from console.developers.google.com.<br> 
-Enable all APIs under the MapsAPI section except the Android,iOS,SDK. and after enabling, generate credentials which should give you a key.<br><br>
-2.mail_server_pass.py<br>
-which should have two variables:<br>
-email = 'your email id'<br>
-password = 'your email's password'<br>
-This is for auto email sending. BTW, Gmail disables this feature, it doesn't let external apps send auto emails from your email ID.<br>
-Inorder to change that, go to https://myaccount.google.com/security and scroll all the way down and enable Allow less secure apps.<br>
-Both of these files should be stored alongside webserver.py and DB.py
-<br><br><br>
-To get started running it<br>
-Run DB.py<br>
-run webserver.py<br>
-(host = 0.0.0.0 and port = 5000 as configured in the web server)<br>
-go to localhost:5000/create <br>
-create a user<br>
-Go to your email, get the URL and paste it, on the new tab. Alas! you're created a user. Login and everything's straight forward from there.
+#Set up
 
+Start the MongoDB process
+```
+sudo mongod
+```
 
+Create a file called emaildata.py, in their you need to add two variables:
+```
+email = your email address
+password = your email's password
+```
+After that, go to your gmail's setttings at https://myaccount.google.com/security .
+Under the section 'Connected apps & sites', switch on Allowed Less Secure Apps
 
+After this, open up a terminal and navigate to the Locomotive directory, and then run the webserver by this command
+```
+python webserver.py
+```
+Keep the terminal open and go to your web browser and enter: 0.0.0.0:5000/
 
+#Queries at aarnavbos@gmail.com

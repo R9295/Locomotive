@@ -48,10 +48,16 @@ def validate_create_user_input(password,username,password_again,phone):
     error = None
     if password != password_again:
         error = "Passwords don't mach"
-    elif db.users.find_one({'name':username}) or db.user_auth.find_one({'name':username}) != None:
+
+    elif db.users.find_one({'name':username})  != None:
         error = 'User already exists. Please rename'
+
+    elif  db.user_auth.find_one({'name':username}) != None:
+        error = 'User exists,Please rename'
+
     elif phone.isdigit() != True or len(str(phone)) != 10 :
         error = 'Invalid phone number'
+
     else:
         error= ''
     if error:

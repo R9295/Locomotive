@@ -15,6 +15,7 @@ I need to be able to cache it so I can take it from the cookies, but I don't how
 #web framework
 from flask import *
 
+import time
 #Python driver for DB(MongoDB)
 from pymongo import *
 from pymongo import MongoClient
@@ -189,9 +190,10 @@ def add_user(url,user_name):
         'community': user['community'],
         'going_to': []
     }
-
+    print adding_user
     #add to users. Verified!
     add_to_db = db.users.insert_one(adding_user)
+    print 'k'
     return "User verified    "+user_name + "    login@"+"   localhost:5000/login"
 
 #Login page,need to add forgot password option. The URL will be locomotive.com/login
@@ -626,6 +628,17 @@ def email_request(name):
             msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(g.user), sender = email, recipients = [user_to['email']] )
             msg.body =request.form['message']
             mail.send(msg)
+
+            # Data to append to log
+            log_data = {
+                'from': g.user,
+                'to': user_to['name'],
+                'when': time.asctime(time.localtime(time.time)),
+                'message': request.form['message']
+            }
+            # add to log
+            db.transaction_log.insert_one(log_data)
+
             return redirect('/')
 
     else:
@@ -726,6 +739,8 @@ def check_if_past():
 
         #Do it every 24 hours. It spawns a differnet thread to run along side the server
         threading.Timer(86400, check_if_past).start()
+
+
 
 #Run the if_past script
 check_if_past()
