@@ -133,7 +133,7 @@ def create_user():
     #if it receives a POST with data:
     if request.method == 'POST':
         #Sends it to the Datavalidation script to validate input Data
-        validates =validate_create_user_input(password=request.form['create_password'],username=request.form['create_username'],password_again=request.form['password_re_enter'],phone=request.form['phone_number'])
+        validates =validate_create_user_input(password=request.form['create_password'],username=request.form['create_username'],password_again=request.form['password_re_enter'],phone=request.form['phone_number'],email=request.form['email'])
 
         #if the validate script returns something then there is an error; it will return that error to be rectified.
         if validates != None:
@@ -142,7 +142,7 @@ def create_user():
         #If no errors, then create user
         else:
             #try to add user and send email but if it doesnt work, that means email is incorrect.
-            try:
+
                 #hashes the password to store
                 hashed_password = hashpw(request.form['create_password'].encode('utf-8'),gensalt())
 
@@ -167,9 +167,6 @@ def create_user():
                 msg.body = "Hello, Thanks for creating a user @ Locomotive! click this URL to activate your account!   "+"localhost:5000"+'/adduser/'+url+'/'+request.form['create_username']
                 mail.send(msg)
                 return redirect(url_for('login'))
-
-            except:
-                error='Invalid email!'
 
     return render_template('create_user.html', error=error)
 

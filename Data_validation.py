@@ -1,6 +1,6 @@
 from pymongo import *
 import datetime
-
+from validate_email import validate_email
 client = MongoClient()
 db = client.events
 def validate_event_input(phone,y,m,d,name):
@@ -44,7 +44,7 @@ def validate_event_edit_input(phone,y,m,d):
     if error:
         return error
 
-def validate_create_user_input(password,username,password_again,phone):
+def validate_create_user_input(password,username,password_again,phone,email):
     error = None
     if password != password_again:
         error = "Passwords don't mach"
@@ -58,6 +58,9 @@ def validate_create_user_input(password,username,password_again,phone):
     elif phone.isdigit() != True or len(str(phone)) != 10 :
         error = 'Invalid phone number'
 
+    is_valid = validate_email(email)
+    if is_valid != True:
+        error = 'Incorrect Email!'
     else:
         error= ''
     if error:
