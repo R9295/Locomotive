@@ -125,7 +125,7 @@ $.ajax({
   success: function (data) {
     var reply = ""
     for (i = 0; i < data.results.length; i++){
-    reply = reply + data.results[i] + '<br>'
+    reply = reply +'<a href="/events/data.results[i]" >'+' <h3 style="font-family: Shadows Into Light, cursive;font-size: 50px">'+ data.results[i] + '</a><br>'+'</h3><br><br>'
     }
     $("#results").html(reply);
 

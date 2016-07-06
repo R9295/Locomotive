@@ -278,36 +278,6 @@ def edit_user(edit_user):
 
 
 
-
-
-#Event page that returns seach queries
-@app.route('/search/<queries>', methods=['GET','POST'])
-def search_events(queries):
-
-    error = None
-
-    #check if logged in
-    if g.user:
-
-        #Checks the user's events to display on the webpage
-        events = db.events.find({'who_made_me':g.user})
-        my_events = []
-        for i in events:
-            my_events.append(i['name'])
-
-        #Gets the name of the user logged in
-        user_in_use = g.user
-
-        #Search results of the query are built on the URL. This function if the search DB for results 'like' query
-        search_results= db.events.find({'name':{'$regex': queries}})
-
-        #Return data and load page
-        return render_template('search_results.html',events=search_results,error=error,my_events=my_events,user_in_use =user_in_use )
-
-    else:
-        return redirect(url_for('login'))
-
-
 #Views all events. The URL will be locomotive.com/events/view
 @app.route('/events/view',methods=['GET','POST'])
 def view_events():
