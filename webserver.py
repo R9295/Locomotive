@@ -328,11 +328,15 @@ def view_events():
         all_events = db.events.find()
 
         what_event = ""
-
+        results = []
         #If data is posted, redirect to the search page where the query will take place and will display data. This should be real time instead of the redirects
         if request.method == 'POST':
-            what_event = request.form['search_events'].encode('utf-8')
-            return redirect('/search'+'/'+what_event)
+            search_term = request.json['search']
+            search_results = db.events.find({'name': {'$regex': search_term}})
+            for i in search_results:
+                results.append(i['name'])
+            print results
+            return jsonify(results=results)
 
         return render_template('view_events.html',all_events=all_events,my_events=my_events,user_in_use =user_in_use )
     else:

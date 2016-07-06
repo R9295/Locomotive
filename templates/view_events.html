@@ -2,7 +2,7 @@
 <head>
 
     <title>View all Events</title>
-
+<script src="{{url_for('static', filename='jquery.min.js')}}"></script>
     <!--Google fonts API -->
     <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
 
@@ -107,11 +107,48 @@
 
 <form method='post'>
     <!--Search events -->
-    <input type="text" placeholder="Search events" name="search_events" class="form-control form_font"><br>
-    <input type="submit" class="btn btn-success" value="Search event">
-    <a href="/events/search/advanced"><button class="btn btn-default">Advanced search options</button></a>
-
+    <input type="text" placeholder="Search events" name="search_events" class="form-control form_font" id="search"><br>
 </form>
+
+<a href="/events/search/advanced"><button class="btn btn-default">Advanced search options</button></a>
+
+
+<script>
+    $('#search').keyup(function(){
+    var search_term = $(this).val();
+
+$.ajax({
+  type: "POST",
+  contentType: "application/json; charset=utf-8",
+  url: "/events/view",
+  data: JSON.stringify({'search': search_term}),
+  success: function (data) {
+
+    for (i = 0; i < data.results.length; i++){
+    document.getElementById("results").innerHTML = data.results[i]+ "<br>"
+    console.log(i);
+
+    }
+
+
+  },
+  dataType: "json"
+});
+
+
+
+
+    });
+
+</script>
+
+<div id="results">
+<script>
+</script>
+</div>
+
+
+
 <!--Displays all events with name date and venue. Need to add hover over for more details -->
     {% for eventz in all_events: %}
 <h3 style="font-family: 'Shadows Into Light', cursive;font-size: 50px"><a href="/events/{{eventz.name}}" > {{ eventz.name }}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3><br><br>
