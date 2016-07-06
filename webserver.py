@@ -236,7 +236,10 @@ def edit_user(edit_user):
     user_in_use = g.user
 
     #The events the user owns to pass on to the webpage
-    my_events = db.events.find({'who_made_me':g.user})
+    events = db.events.find({"who_made_me": g.user})
+    my_events = []
+    for i in events:
+        my_events.append(i['name'])
 
     error = ""
 
@@ -244,7 +247,7 @@ def edit_user(edit_user):
     if g.user:
 
         #Find the data of the user currently logged in to edit
-        k = db.users.find({'name': g.user})
+        k = db.users.find_one({'name': g.user})
 
         #Checks if the person logged in is trying to edit their profile and not somebody else's
         if k['name'] == edit_user:
@@ -271,7 +274,7 @@ def edit_user(edit_user):
                     return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button style="color:green;">logout</button></a></body></html>'
         else:
             return redirect('/')
-    return render_template('edit_users.html', var=edit_user,error=error,my_events=my_events,user_in_use =user_in_use )
+    return render_template('edit_users.html', var=k,error=error,my_events=my_events,user_in_use =user_in_use )
 
 
 
@@ -560,23 +563,27 @@ def view_particular_event(event_name):
     #If logged in
     if g.user:
 
+
+        #Check if past_event:
+
+        if db.events.find_one({'name':event_name}) != None:
+            event = db.events.find_one({'name': event_name})
+        elif db.past_events.find_one({'name':event_name}) != None:
+             event = db.past_events.find_one({'name':event_name})
+             past = True
+
+
+
+
+
         #querying the map from OSM API. It takes the Address of the location as OSM search and spits out a lat and lng
-        event=db.events.find_one({'name':event_name})
+
 
         var = event
-        try:
-            geocode = geocoder.osm(var['address'])
-            lat_of_event = geocode.json["lat"]
-            lng_of_event = geocode.json["lng"]
-        except AttributeError:
-            #If the event is not there in the events collection, it has to be past.
-            past = True
-            event = db.past_events.find_one({'name':event_name})
-            var = event
-            geocode = geocoder.osm(var['address'])
-            lat_of_event = geocode.json["lat"]
-            lng_of_event = geocode.json["lng"]
 
+        geocode = geocoder.osm(var['address'])
+        lat_of_event = geocode.json["lat"]
+        lng_of_event = geocode.json["lng"]
 
         #Real time search for users that are attending the event, will be implemented for events also
         results = []
