@@ -52,8 +52,8 @@
         <span class="caret"></span></a>
 
         <ul class="dropdown-menu">
-            {%for my_eventz in my_events: %}
-            <li><a href="/events/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
+            {%for x in my_events: %}
+            <li><a href="/events/{{x}}">{{x}}</a></li>
             {% endfor %}
         </ul>
       </li>
@@ -62,8 +62,8 @@
         <span class="caret"></span></a>
 
         <ul class="dropdown-menu">
-            {%for my_eventz in my_events: %}
-            <li><a href="/events/edit/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
+            {%for x in my_events: %}
+            <li><a href="/events/edit/{{x}}">{{x}}</a></li>
             {% endfor %}
         </ul>
       </li>
@@ -214,7 +214,7 @@ Who's coming:
     <br>
 {% for people in var.who_is_coming %}
     {{ people}}<a href="/email/{{people}}"><button class="btn btn-default">Email</button></a>
-    <a href="/request/phone_number/{{people.name}}"><button class="btn btn-default">Request phone number</button></a><br>
+    <a href="/request/phone_number/{{people}}"><button class="btn btn-default">Request phone number</button></a><br>
 {% endfor %}
 
 <br>

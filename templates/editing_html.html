@@ -53,8 +53,8 @@
         <span class="caret"></span></a>
 
         <ul class="dropdown-menu">
-            {%for my_eventz in my_events: %}
-            <li><a href="/events/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
+            {%for x in my_events: %}
+            <li><a href="/events/{{x}}">{{x}}</a></li>
             {% endfor %}
         </ul>
       </li>
@@ -63,8 +63,8 @@
         <span class="caret"></span></a>
 
         <ul class="dropdown-menu">
-            {%for my_eventz in my_events: %}
-            <li><a href="/events/edit/{{my_eventz.name}}">{{my_eventz.name}}</a></li>
+            {%for x in my_events: %}
+            <li><a href="/events/edit/{{x}}">{{x}}</a></li>
             {% endfor %}
         </ul>
       </li>

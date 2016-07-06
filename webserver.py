@@ -117,9 +117,12 @@ def homeof_user(user):
 
         #queries DB to find what events the user has made.
         what_events_i_own = db.events.find({"who_made_me":g.user})
+        my_events = []
+        for i in what_events_i_own:
+            my_events.append(i['name'])
 
         #After all the queries are done it returns the website home.html with the data queried as parameters to be used in the HTML file.
-        return render_template('home.html',user=user,what_events_i_own=what_events_i_own)
+        return render_template('home.html',user=user,events=my_events)
 
     else:
         return redirect(url_for('login'))
@@ -284,7 +287,10 @@ def search_events(queries):
     if g.user:
 
         #Checks the user's events to display on the webpage
-        my_events = db.events.find({'who_made_me':g.user})
+        events = db.events.find({'who_made_me':g.user})
+        my_events = []
+        for i in events:
+            my_events.append(i['name'])
 
         #Gets the name of the user logged in
         user_in_use = g.user
@@ -307,7 +313,10 @@ def view_events():
     user_in_use = g.user
 
     #Gets the user's events
-    my_events = db.events.find({'who_made_me':g.user})
+    events = db.events.find({'who_made_me':g.user})
+    my_events = []
+    for i in events:
+        my_events.append(i['name'])
 
     #check if logged in
     if g.user:
@@ -335,7 +344,10 @@ def create_event():
     user_in_use = g.user
 
     #Gets the user's events
-    my_events = db.events.find({'who_made_me':g.user})
+    events = db.events.find({'who_made_me':g.user})
+    my_events = []
+    for i in events:
+        my_events.append(i['name'])
 
     #If logged in
     if g.user:
@@ -409,7 +421,11 @@ def edit_particular_event(event_name):
     user_in_use = g.user
 
     #gets the user's events
-    my_events = db.events.find({'who_made_me':g.user})
+    events = db.events.find({'who_made_me':g.user})
+    my_events = []
+    for i in events:
+        my_events.append(i['name'])
+
 
     #Check if logged in
     if g.user:
@@ -535,7 +551,11 @@ def view_particular_event(event_name):
     user_in_use = g.user
 
     #Gets the user's events
-    my_events = db.events.find({'who_made_me':g.user})
+    events = db.events.find({'who_made_me':g.user})
+    my_events = []
+    for i in events:
+        my_events.append(i['name'])
+
 
     #If logged in
     if g.user:
@@ -601,8 +621,8 @@ def deleteion(name):
         db.events.remove({'name':name})
         return redirect('/login')
 
-#If you wanna get in touch with someone going to the events, you can email them. The URL here will be locomotive.com/email/usertoemail
 
+#If you wanna get in touch with someone going to the events, you can email them. The URL here will be locomotive.com/email/usertoemail
 @app.route('/email/<name>', methods=['GET','POST'])
 def email_request(name):
 
@@ -618,7 +638,10 @@ def email_request(name):
         who_am_i = db.users.find_one({'name':g.user})
 
         #The user's events
-        my_events = db.events.find({'who_made_me':g.user})
+        events = db.events.find({'who_made_me': g.user})
+        my_events = []
+        for i in events:
+            my_events.append(i['name'])
 
         #If data is sent, then email the person.
         if request.method == 'POST':
@@ -648,7 +671,12 @@ def phone_number_response(who):
         error = None
         user_to = db.users.find_one({'name':who})
         who_am_i = db.users.find_one({'name':g.user})
-        my_events = db.events.find({'who_made_me':g.user})
+
+        events = db.events.find({'who_made_me': g.user})
+        my_events = []
+        for i in events:
+            my_events.append(i['name'])
+
         if request.method == 'POST':
             msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(g.user), sender = email, recipients = [user_to['email']] )
             msg.body =request.form['message']
@@ -664,7 +692,12 @@ def view_past_events():
     if g.user:
         error = None
         past_events =db.past_events.find()
-        my_events = db.events.find({'who_made_me':g.user})
+
+        events = db.events.find({'who_made_me': g.user})
+        my_events = []
+        for i in events:
+            my_events.append(i['name'])
+
         if request.method == 'POST':
             what_event = request.form['search_events'].encode('utf-8')
             return redirect('/search'+'/past''/'+what_event)

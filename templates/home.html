@@ -95,21 +95,23 @@ div.desc {
         <span class="caret"></span></a>
 
         <ul class="dropdown-menu">
-            {%for my_events in what_events_i_own: %}
-            <li><a href="/events/{{my_events.name}}">{{my_events.name}}</a></li>
+            {%for x in events: %}
+            <li><a href="/events/x}}">{{x}}</a></li>
             {% endfor %}
         </ul>
       </li>
+
         <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown">Edit my events
+        <a class="dropdown-toggle" data-toggle="dropdown" >Edit my events
         <span class="caret"></span></a>
 
         <ul class="dropdown-menu">
-            {%for my_events in what_events_i_own: %}
-            <li><a href="/events/edit/{{my_events.name}}">{{my_events.name}}</a></li>
+            {%for x in events: %}
+            <li><a href="/events/edit/{{x}}">{{x}}</a></li>
             {% endfor %}
         </ul>
       </li>
+
 
 
 
@@ -128,13 +130,6 @@ div.desc {
         </ul>
       </li>
 
-        <li>
-            <form class="navbar-form navbar-right" method="post">
-
-                    <input type="text" class="form-control" placeholder="Search Events">
-                    <input type="submit" class="btn btn-success" value="search">
-          </form>
-        </li>
 
 
 
