@@ -96,6 +96,10 @@ With Flask, the folder Static should contain scripts and images and templates sh
 photos = UploadSet('photos', IMAGES)
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/img'
 
+#Setting up data collection for admin interface
+users_logged_in = []
+
+
 
 #Routing starts here. lets say it's locmotive.com. This here handles if user goes to locomotive.com
 @app.route('/')
@@ -200,8 +204,11 @@ def add_user(url,user_name):
 @app.route('/login', methods=['GET','POST'])
 def login():
 
-    #kills the already logged in session cookie
+    #kills the already logged in session cookie and removes from the list of users logged in
+    if g.user in users_logged_in:
+        users_logged_in.remove(g.user)
     session.pop('user',None)
+
 
     error = None
 
@@ -217,8 +224,10 @@ def login():
             #hash password and check the has with user's password
             if hashpw(passwd,look_for['password'].encode('utf-8')) == look_for['password']:
 
-                # adds  status 'I am logged in as USERNAME' to the cookies
+                # adds  status 'I am logged in as USERNAME' to the cookies and to the list.
                 session['user'] = request.form['username']
+                users_logged_in.append(request.form['username'])
+
                 return redirect(url_for('home'))
 
             else:
@@ -228,6 +237,19 @@ def login():
 
     return render_template('login.html', error=error,)
 
+#This feature is the same as search events but is for searching past events. Which also needs to be real time
+@app.route('/search/past/<queries>', methods=['GET','POST'])
+def search_past_events(queries):
+    error = None
+    #check if logged in
+    if g.user:
+        my_events = db.events.find({'who_made_me':g.user})
+        user_in_use = g.user
+        search_results= db.past_events.find({'name':{'$regex': queries}})
+
+        return render_template('search_results.html',events=search_results,error=error,my_events=my_events,user_in_use =user_in_use )
+    else:
+        return redirect(url_for('login'))
 
 #Edit user profile. The URL will be locomotive.com/username/edit
 @app.route('/<edit_user>/edit', methods=['GET','POST'])
@@ -699,21 +721,33 @@ def goto(name):
      db.users.update({'name': g.user}, {'$push': {'going_to': name}})
      return redirect('/')
 
+@app.route('/events/search/advanced/<event>',methods=['GET','POST'])
+def advanced_search(event):
+    pass
+
+@app.route('/user/admin', methods =['GET','POST'])
+def admin_interface():
+    #getting total amount of events
+    events = []
+    total_events = db.events.find()
+    for i in total_events:
+        events.append(i['name'])
+    total_events = len(events)
+
+    #getting total amount of users
+    users = []
+    total_users = db.users.find()
+    for i in total_users:
+        users.append(i['name'])
+    total_users = len(users)
+
+    #getting total amount of past_events
+    
 
 
-#This feature is the same as search events but is for searching past events. Which also needs to be real time
-@app.route('/search/past/<queries>', methods=['GET','POST'])
-def search_past_events(queries):
-    error = None
-    #check if logged in
-    if g.user:
-        my_events = db.events.find({'who_made_me':g.user})
-        user_in_use = g.user
-        search_results= db.past_events.find({'name':{'$regex': queries}})
 
-        return render_template('search_results.html',events=search_results,error=error,my_events=my_events,user_in_use =user_in_use )
-    else:
-        return redirect(url_for('login'))
+
+
 
 #A script I'm particularly proud of. This checks all events every 24 hours to see if they have been done or not, if they have, then it adds them to past_events
 def check_if_past():
