@@ -278,7 +278,8 @@ def edit_user(edit_user):
             if request.method == 'POST':
 
                 #Confirms user by asking for old password before changing it
-                if hashpw(request.form['old_password'].encode('utf-8'),k['password']) != edit_user.password:
+                passwd = request.form['old_password'].encode('utf-8')
+                if hashpw(passwd,k['password'].encode('utf-8')) != k['password']:
                     error="Passwords don't match"
 
                 #Checks if the new passwords match
@@ -287,7 +288,8 @@ def edit_user(edit_user):
 
                 #Updates user
                 else:
-                    k['password'] = hashpw(request.form['password'].encode('utf-8'),gensalt())
+                    passwd = request.form['password'].encode('utf-8')
+                    k['password'] = hashpw(passwd,gensalt())
                     k['email'] = request.form['email']
                     k['phone_number'] = request.form['phone_number']
                     k['community'] = request.form['community']
