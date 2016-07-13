@@ -85,13 +85,6 @@
         </ul>
       </li>
 
-        <li>
-            <form class="navbar-form navbar-right" method="post">
-
-                    <input type="text" class="form-control" placeholder="Search Events">
-                    <input type="submit" class="btn btn-success" value="search">
-          </form>
-        </li>
 
 
 
@@ -235,8 +228,14 @@ $.ajax({
   success: function (data) {
     var reply = ""
     for (i = 0; i < data.results.length; i++){
-    reply = reply + data.results[i]+'<a href="/email/{{people}}"><button class="btn btn-default">Email</button></a>'+
-    '<a href="/request/phone_number/{{people}}"><button class="btn btn-default">Request phone number</button></a><br>'
+
+    reply = reply
+    +data.results[i]
+    +'<a href="/email/'
+    +data.results[i]
+    +'"><button class="btn btn-default">Email</button></a>'
+    +'<a href="/request/phone_number/'
+    +data.results[i]+'"><button class="btn btn-default">Request phone number</button></a><br>'
 
     }
     $("#results").html(reply);

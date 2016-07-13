@@ -742,7 +742,16 @@ def admin_interface():
     total_users = len(users)
 
     #getting total amount of past_events
-    
+    past_events = []
+    total_past_events = db.past_events.find()
+    for i in total_past_events:
+        past_events.append(i['name'])
+    total_past_events = len(past_events)
+    if request.method == 'POST':
+        return jsonify(results={'total_past_events':total_past_events,'total_events':total_events,'total_users':total_users, 'users_logged_in':len(users_logged_in)})
+
+    return render_template('admin.html')
+
 
 
 

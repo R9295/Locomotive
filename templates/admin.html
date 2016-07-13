@@ -1,10 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+       <!--Google fonts API -->
+    <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+
+    <!-- Importing necessary JS and CSS files -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+    <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+    <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
+    <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+
+
+        <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+
     <meta charset="UTF-8">
     <title>Admin@locomotive!</title>
 </head>
 <body>
+<style>
+    .data{
+    font-family: 'Shadows Into Light', cursive;font-size:30px;
 
+
+
+    }
+
+</style>
+<script>
+
+$.ajax({
+  type: "POST",
+  contentType: "application/json; charset=utf-8",
+  url: "/user/admin",
+  data: JSON.stringify({'data': 'give'}),
+  success: function (data) {
+    var xd = JSON.stringify(data.results);
+
+    var parsed = JSON.parse(xd);
+    $("#results").html(
+    "<div class='data'>"+
+    "total_events:  "+parsed.total_events+"<br>"
+    +"total_past_events:   "+parsed.total_past_events+"<br>"
+    +"total_users:   "+parsed.total_users+"<br>"
+    +"users_logged_in:   "+parsed.users_logged_in+"<br>"
+    +"</div>"
+    );
+
+  },
+  dataType: "json"
+});
+
+
+</script>
+<div id="results">
+
+
+</div>
 </body>
 </html>
