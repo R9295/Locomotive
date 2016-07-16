@@ -733,25 +733,17 @@ def advanced_search(event):
 @app.route('/user/admin', methods =['GET','POST'])
 def admin_interface():
     #getting total amount of events
-    events = []
-    total_events = db.events.find()
-    for i in total_events:
-        events.append(i['name'])
-    total_events = len(events)
+    total_events = db.events.find().count()
 
     #getting total amount of users
-    users = []
-    total_users = db.users.find()
-    for i in total_users:
-        users.append(i['name'])
-    total_users = len(users)
+
+    total_users = db.users.find().count()
 
     #getting total amount of past_events
-    past_events = []
-    total_past_events = db.past_events.find()
-    for i in total_past_events:
-        past_events.append(i['name'])
-    total_past_events = len(past_events)
+
+    total_past_events = db.past_events.find().count()
+
+
     if request.method == 'POST':
         return jsonify(results={'total_past_events':total_past_events,'total_events':total_events,'total_users':total_users, 'users_logged_in':len(users_logged_in)})
 
