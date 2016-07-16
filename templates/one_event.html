@@ -135,7 +135,7 @@
 {% if var.image != None: %}
     <img src="/static/img/{{var.image}}" height="640" width="480">
 {% endif %}
-
+<br>
 Event created by:
 
 {{var.who_made_me}}
@@ -196,12 +196,11 @@ Event duration:
 
 {{var.duration}}
 <br><br>
-
+{% if past != True: %}
 <form action="/goto/{{var.name}}">
     <input type="submit" value="Go to!" class="btn btn-success" style="font-size:25px;">
 <br><br>
 </form>
-
 
 Who's coming:
     <br>
@@ -209,6 +208,10 @@ Who's coming:
     {{ people}}<a href="/email/{{people}}"><button class="btn btn-default">Email</button></a>
     <a href="/request/phone_number/{{people}}"><button class="btn btn-default">Request phone number</button></a><br>
 {% endfor %}
+
+{% endif %}
+
+
 
 <br>
 <br>

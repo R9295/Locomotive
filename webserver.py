@@ -141,10 +141,11 @@ def create_user():
     if request.method == 'POST':
         #Sends it to the Datavalidation script to validate input Data
         validates =validate_create_user_input(password=request.form['create_password'],username=request.form['create_username'],password_again=request.form['password_re_enter'],phone=request.form['phone_number'],email=request.form['email'])
-
+        print validates
         #if the validate script returns something then there is an error; it will return that error to be rectified.
         if validates != None:
             error = validates
+
 
         #If no errors, then create user
         else:
@@ -566,6 +567,8 @@ def view_particular_event(event_name):
 
         if db.events.find_one({'name':event_name}) != None:
             event = db.events.find_one({'name': event_name})
+
+
         elif db.past_events.find_one({'name':event_name}) != None:
              event = db.past_events.find_one({'name':event_name})
              past = True
