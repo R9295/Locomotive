@@ -743,9 +743,16 @@ def admin_interface():
 
     total_past_events = db.past_events.find().count()
 
+    recent_events = []
+    k = 0
+    for i in db.events.find():
+        recent_events.append(i['name'])
+        k = k+1
+        if k == 4:
+            break
 
     if request.method == 'POST':
-        return jsonify(results={'total_past_events':total_past_events,'total_events':total_events,'total_users':total_users, 'users_logged_in':len(users_logged_in)})
+        return jsonify(results={'total_past_events':total_past_events,'total_events':total_events,'total_users':total_users, 'users_logged_in':len(users_logged_in),'recent_events':recent_events})
 
     return render_template('admin.html')
 
