@@ -154,6 +154,8 @@ def create_user():
                 #hashes the password to store
                 hashed_password = hashpw(request.form['create_password'].encode('utf-8'),gensalt())
 
+                community_geocode = geocoder.osm(request.form['community']+' Auroville India')
+                print community_geocode
                 #The user data is stored in a dict as MongoDB's collections are stored in a JSON-like format. The request.forms are inputs on the website. It refers to the data posted from the form.
                 add_user = {
                     'name' : request.form['create_username'],
@@ -161,7 +163,12 @@ def create_user():
                     'phone_number' : request.form['phone_number'],
                     'email' : request.form['email'],
                     'community' : request.form['community'],
-                    'going_to' : []
+                    'going_to' : [],
+                    'events_attended': [],
+                    'community_lat': community_geocode.json['lat'],
+                    'community_lng': community_geocode.json['lng']
+
+
                             }
 
                 #adding the user
@@ -193,7 +200,10 @@ def add_user(url,user_name):
         'email': user['email'],
         'phone_number': user['phone_number'],
         'community': user['community'],
-        'going_to': []
+        'going_to': [],
+        'events_attended': [],
+        'community_lat': user['community_lat'],
+        'community_lng': user['community_lng']
     }
     print adding_user
     #add to users. Verified!
@@ -379,7 +389,7 @@ def create_event():
                 year = int(request.form['year'])
                 month = int(request.form['month'])
                 day = int(request.form['day'])
-
+                geocode = geocoder.osm(request.form['address'])
 
                 #If a photo is uploaded, save it
                 if request.files['photo'].filename != '':
@@ -399,8 +409,9 @@ def create_event():
                     'image' : filename,
                     'who_is_coming': [],
                     'who_made_me': g.user,
-                    'when_made' : datetime.datetime.today()
-
+                    'when_made' : '%s'%(datetime.date.today()),
+                    'lat':geocode.json['lat'],
+                    'lng':geocode.json['lng']
                 }
 
                 #Add event
@@ -493,6 +504,9 @@ def edit_particular_event(event_name):
 
                 if var['address'] != request.form['address']:
                     var['address'] = request.form['address']
+                    geocode = geocoder.osm(request.form['address'])
+                    var['lat'] = geocode.json['lat']
+                    var['lng'] = geocode.json['lng']
                     changes['address'] = request.form['address']
                     db.events.save(var)
 
@@ -517,7 +531,7 @@ def edit_particular_event(event_name):
                     changes['duration'] = request.form['duration']
                     db.events.save(var)
 
-                if var['date']  != datetime.date(year,month,day):
+                if var['date']  != '%s-%s-%s'%(year,month,day):
                     var['date'] ='%s-%s-%s'%(year,month,day)
                     changes['date'] = '%s-%s-%s'%(year,month,day)
                     changes['date'].encode('utf-8')
@@ -552,6 +566,9 @@ def view_particular_event(event_name):
     #Gets the name of the user logged in
     user_in_use = g.user
 
+    #getting data of the user_logged in
+    user_data = db.users.find_one({'name':g.user})
+
     #Gets the user's events
     events = db.events.find({'who_made_me':g.user})
     my_events = []
@@ -567,11 +584,19 @@ def view_particular_event(event_name):
 
         if db.events.find_one({'name':event_name}) != None:
             event = db.events.find_one({'name': event_name})
-
+            lat_of_event = event['lat']
+            lng_of_event = event['lng']
 
         elif db.past_events.find_one({'name':event_name}) != None:
              event = db.past_events.find_one({'name':event_name})
+             lat_of_event = event['lat']
+             lng_of_event = event['lng']
              past = True
+
+
+        user_community_lat = user_data['community_lat']
+        user_community_lng = user_data['community_lng']
+
 
 
 
@@ -581,11 +606,6 @@ def view_particular_event(event_name):
 
 
         var = event
-
-        geocode = geocoder.osm(var['address'])
-        lat_of_event = geocode.json["lat"]
-        lng_of_event = geocode.json["lng"]
-
         #Real time search for users that are attending the event, will be implemented for events also
         results = []
         search_results = None
@@ -607,7 +627,7 @@ def view_particular_event(event_name):
 
 
 
-        return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past,results=results)
+        return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past,results=results,user_lat=user_community_lat,user_lng=user_community_lng)
     else:
         return redirect(url_for('login'))
 

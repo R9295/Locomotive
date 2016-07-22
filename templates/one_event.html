@@ -8,7 +8,7 @@
  <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
-   <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+   <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">     ">
     <link
         rel="stylesheet"
         href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"
@@ -95,8 +95,9 @@
     <div id="map" style="height:500px;"></div>
 
     <script
-        src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js">
+        src="{{url_for('static',filename='leaflet.js')}}">
     </script>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='leaflet.css')}}">
     <script
 
         src="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.js">
@@ -109,8 +110,10 @@
 
 
         var map = L.map('map').setView([{{lat}},{{lng}}], 16);
+
         mapLink =
             '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+
         L.tileLayer(
             'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; ' + mapLink + ' Contributors',
@@ -118,7 +121,20 @@
             }).addTo(map);
 
         var marker = L.marker([{{lat}},{{lng}}]).addTo(map);
-        marker.bindPopup("<b>This is where {{var.name}} is happening!</b><br>Venue:{{var.venue}}").openPopup();
+        marker.bindPopup("This is where {{var.name}} is happening!<br>Venue:{{var.venue}}").openPopup();
+
+        var p = L.marker([{{user_lat}},{{user_lng}}]).addTo(map);
+        p.bindPopup("This is where you live!").openPopup();
+
+        L.Routing.control({
+             waypoints: [
+                    L.latLng({{lat}}, {{lng}}),
+                    L.latLng({{user_lat}}, {{user_lng}})
+                        ]
+         }).addTo(map);
+
+
+
 
 
         $("#map").width($(window).width());
