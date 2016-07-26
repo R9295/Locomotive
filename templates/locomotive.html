@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{url_for('static', filename='reveal.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{url_for('static', filename='white.css')}}" rel="stylesheet" type="text/css">
+
+    <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static',filename='reveal.js')}}"></script>
+
+
+    <meta charset="UTF-8">
+    <title>Locomotive | An Auroville web service</title>
+</head>
+<body>
+        <div class="reveal">
+            <div class="slides">
+                <section>Slide 1</section>
+                <section>Slide 2</section>
+            </div>
+        </div>
+
+        <script>
+            Reveal.initialize();
+        </script>
+    </body>
+</html>

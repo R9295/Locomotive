@@ -103,17 +103,13 @@ users_logged_in = []
 
 #Routing starts here. lets say it's locmotive.com. This here handles if user goes to locomotive.com
 @app.route('/')
-def home():
-    #check if logged in. If so, redirects to the user's homepage otherwise redirects to login.
-    if g.user:
-            return redirect('/'+g.user)
-    else:
-        return redirect(url_for('login'))
+def locomotive():
+        return render_template('locomotive.html')
 
 
 #Home page of any user. The URL here will be Locomotive.com/username
 @app.route('/<user>', methods=['GET','POST'])
-def homeof_user(user):
+def home_of_user(user):
     #check if logged in otherwise redirect to login
     if g.user:
         #queries the DB to findout user data
@@ -228,6 +224,7 @@ def login():
 
         # check if  user exists
         look_for = db.users.find_one({'name':request.form['username']})
+        print look_for
         if look_for :
 
             passwd = request.form['password'].encode('utf-8')
@@ -239,7 +236,7 @@ def login():
                 session['user'] = request.form['username']
                 users_logged_in.append(request.form['username'])
 
-                return redirect(url_for('home'))
+                return redirect('/%s'%(request.form['username']))
 
             else:
                    error = 'Incorrect Password'
@@ -315,7 +312,7 @@ def edit_user(edit_user):
 
 #Views all events. The URL will be locomotive.com/events/view
 @app.route('/events/view',methods=['GET','POST'])
-def view_events():
+def view_all_events():
 
     #Gets the name of the user logged in
     user_in_use = g.user
@@ -428,7 +425,7 @@ def create_event():
 
 #edit a particular event.The URL will be locomotive.com/events/edit/eventname
 @app.route('/events/edit/<event_name>',methods=['GET','POST'])
-def edit_particular_event(event_name):
+def edit_event(event_name):
 
     #Gets the name of the user logged in
     user_in_use = g.user
@@ -553,12 +550,12 @@ def edit_particular_event(event_name):
 
     else:
         return redirect(url_for('login'))
-    return render_template('editing_html.html',var=var,error=error,my_events=my_events,user_in_use =user_in_use )
+    return render_template('edit_event.html',var=var,error=error,my_events=my_events,user_in_use =user_in_use )
 
 
 #Each individual event's page auto generated. The URL will be locmotive.com/events/eventname
 @app.route('/events/<event_name>',methods=['GET','POST'])
-def view_particular_event(event_name):
+def view_event(event_name):
 
     #Sets the event value to not past
     past = False
@@ -602,7 +599,6 @@ def view_particular_event(event_name):
 
 
 
-        #querying the map from OSM API. It takes the Address of the location as OSM search and spits out a lat and lng
 
 
         var = event
@@ -627,7 +623,7 @@ def view_particular_event(event_name):
 
 
 
-        return render_template('one_event.html', var=var,my_events=my_events,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past,results=results,user_lat=user_community_lat,user_lng=user_community_lng)
+        return render_template('event.html', var=var,my_events=my_events,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past,results=results,user_lat=user_community_lat,user_lng=user_community_lng,key=mapbox_key)
     else:
         return redirect(url_for('login'))
 
@@ -694,7 +690,7 @@ def email_request(name):
     return render_template('email_request.html',user_to=user_to,user_in_use=who_am_i,my_events=my_events,error=error)
 
 @app.route('/request/phone_number/<who>',methods=['GET','POST'])
-def phone_number_response(who):
+def phone_number_request(who):
     if g.user:
         error = None
         user_to = db.users.find_one({'name':who})
@@ -714,7 +710,18 @@ def phone_number_response(who):
         return redirect(url_for('login'))
     return render_template('phone_request.html',user_to=user_to,user_in_use=who_am_i,my_events=my_events,error=error)
 
-#This here is not valid, this is supposed to be when you wanna contact them via text.Which is incomplete as I dont have a GSM server
+
+#This script add to the users attending event list
+@app.route('/goto/<name>')
+def go_to(name):
+
+    #Appending to the event's who_is_coming list
+     db.events.update({'name': name}, {'$push': {'who_is_coming': g.user}})
+
+     #Appending to the user's going_to list
+     db.users.update({'name': g.user}, {'$push': {'going_to': name}})
+     return redirect('/')
+
 @app.route('/events/all/past' ,methods =['GET','POST'])
 def view_past_events():
     if g.user:
@@ -734,18 +741,7 @@ def view_past_events():
         return redirect('/login')
     return render_template('view_past_events.html',user_in_use = g.user,my_events=my_events,error=error,past_events=past_events)
 
-
-#This script add to the users attending event list
-@app.route('/goto/<name>')
-def goto(name):
-
-    #Appending to the event's who_is_coming list
-     db.events.update({'name': name}, {'$push': {'who_is_coming': g.user}})
-
-     #Appending to the user's going_to list
-     db.users.update({'name': g.user}, {'$push': {'going_to': name}})
-     return redirect('/')
-
+#To do
 @app.route('/events/search/advanced/<event>',methods=['GET','POST'])
 def advanced_search(event):
     pass
@@ -774,7 +770,7 @@ def admin_interface():
     if request.method == 'POST':
         return jsonify(results={'total_past_events':total_past_events,'total_events':total_events,'total_users':total_users, 'users_logged_in':len(users_logged_in),'recent_events':recent_events})
 
-    return render_template('admin.html')
+    return render_template('admin_interface.html')
 
 
 
