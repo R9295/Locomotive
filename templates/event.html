@@ -102,6 +102,72 @@
 
                             
                                          </section>
+                                         <section>
+                                             
+          {% if past != True: %}
+<form action="/goto/{{var.name}}">
+    <input type="submit" value="Go to!" class="btn btn-success" style="font-size:25px;">
+<br><br>
+</form>
+{% endif %}
+
+<form method="post" id="xd">
+    <input type="text" name="search" id="search">
+
+</form>
+<br>
+<br>
+
+
+    <div align="right">
+    Who's coming:
+    <br>
+
+{% for people in var.who_is_coming %}
+    {{ people}}<a href="/email/{{people}}"><button class="btn btn-default">Email</button></a>
+    <a href="/request/phone_number/{{people}}"><button class="btn btn-default">Request phone number</button></a><br>
+{% endfor %}
+</div>
+
+
+<script>
+    $('#search').keyup(function(){
+    var search_term = $(this).val();
+
+$.ajax({
+  type: "POST",
+  contentType: "application/json; charset=utf-8",
+  url: "/events/{{var.name}}",
+  data: JSON.stringify({'search': search_term}),
+  success: function (data) {
+    var reply = ""
+    for (i = 0; i < data.results.length; i++){
+
+    reply = reply
+    +data.results[i]
+    +'<a href="/email/'
+    +data.results[i]
+    +'"><button class="btn btn-default">Email</button></a>'
+    +'<a href="/request/phone_number/'
+    +data.results[i]+'"><button class="btn btn-default">Request phone number</button></a><br>'
+
+    }
+    $("#results").html(reply);
+
+
+  },
+  dataType: "json"
+});
+
+
+
+
+    });
+
+</script><div id="results"></div>
+
+
+                                         </section>
 
 
             </div>

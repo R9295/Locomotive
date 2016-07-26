@@ -556,25 +556,27 @@ def edit_event(event_name):
 #Each individual event's page auto generated. The URL will be locmotive.com/events/eventname
 @app.route('/events/<event_name>',methods=['GET','POST'])
 def view_event(event_name):
+    if g.user:
 
-    #Sets the event value to not past
-    past = False
+        #Sets the event value to not past
+        past = False
 
-    #Gets the name of the user logged in
-    user_in_use = g.user
+        #Gets the name of the user logged in
+        user_in_use = g.user
 
-    #getting data of the user_logged in
-    user_data = db.users.find_one({'name':g.user})
+        #getting data of the user_logged in
+        user_data = db.users.find_one({'name':g.user})
 
-    #Gets the user's events
-    events = db.events.find({'who_made_me':g.user})
-    my_events = []
-    for i in events:
-        my_events.append(i['name'])
+        #Gets the user's events
+        events = db.events.find({'who_made_me':g.user})
+        my_events = []
+        for i in events:
+            my_events.append(i['name'])
+
+        event = []
 
 
     #If logged in
-    if g.user:
 
 
         #Check if past_event:
@@ -601,7 +603,6 @@ def view_event(event_name):
 
 
 
-        var = event
         #Real time search for users that are attending the event, will be implemented for events also
         results = []
         search_results = None
@@ -609,7 +610,7 @@ def view_event(event_name):
         if request.method == 'POST' :
 
             search_term = request.json['search']
-            search_results = db.users.find({'going_to':var['name'], 'name':{'$regex': search_term}})
+            search_results = db.users.find({'going_to':event['name'], 'name':{'$regex': search_term}})
             for i in search_results:
                 results.append(i['name'])
             print results
@@ -623,7 +624,7 @@ def view_event(event_name):
 
 
 
-        return render_template('event.html', var=var,my_events=my_events,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past,results=results,user_lat=user_community_lat,user_lng=user_community_lng,key=mapbox_key)
+        return render_template('event.html', var=event,my_events=my_events,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past,results=results,user_lat=user_community_lat,user_lng=user_community_lng,key=mapbox_key)
     else:
         return redirect(url_for('login'))
 
@@ -716,11 +717,16 @@ def phone_number_request(who):
 def go_to(name):
 
     #Appending to the event's who_is_coming list
-     db.events.update({'name': name}, {'$push': {'who_is_coming': g.user}})
-
+    event = db.events.find_one({'name':name})
+    if g.user in event['who_is_coming']:
+        pass
+    else:
+        db.events.update({'name': name}, {'$push': {'who_is_coming': g.user}})
+        db.users.update({'name': g.user}, {'$push': {'going_to': name}})
      #Appending to the user's going_to list
-     db.users.update({'name': g.user}, {'$push': {'going_to': name}})
-     return redirect('/')
+
+
+    return redirect('/')
 
 @app.route('/events/all/past' ,methods =['GET','POST'])
 def view_past_events():
