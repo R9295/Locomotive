@@ -13,6 +13,7 @@
         <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
         <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
         <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{url_for('static', filename='simple-sidebar.css')}}" rel="stylesheet" type="text/css">
 
 <!-- Style to set font -->
 <style>
@@ -25,69 +26,66 @@
 
     <body>
 <!--Navbar -->
- <nav class="navbar navbar-inverse ">
+     <!-- Navbar -->
+ <div id="wrapper">
 
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">
+                        Logged in as {{user_in_use}}
+                    </a>
+                </li>
+                <li>
+                    <a href="/{{user_in_use}}">Home</a>
+                </li>
+                <li>
+                    <a href="/events-of/{{user_in_use}}">My Events</a>
+                </li>
+                <li>
+                    <a href="/events/create">Create Event</a>
+                </li>
+                <li>
+                    <a href="/events/view">View Events</a>
+                </li>
+                <li>
+                    <a href="/events/all/past">View Past Events</a>
+                </li>
+                <li>
+                    <a href="/{{user_in_use}}/edit">Edit User</a>
+                </li>
+                <li>
+                    <a href="/">Logout</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
 
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand " style="font-family: 'Rock Salt', cursive;font-size:15px">Logged in as {{user_in_use.name}}</a>
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+
+                        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
     </div>
-    <ul class="nav navbar-nav">
 
-      <li><a href="/">Home</a></li>
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
 
-
-        <li><a href="/events/create">Create an Event</a></li>
-      <li><a href="/events/view">View Events</a></li>
-        <li class="navbar-left"><a href="/events/all/past"> View past events</a>
-
-        <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" >Events I Created
-        <span class="caret"></span></a>
-
-        <ul class="dropdown-menu">
-            {%for x in my_events: %}
-            <li><a href="/events/{{x}}">{{x}}</a></li>
-            {% endfor %}
-        </ul>
-      </li>
-        <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown">Edit my events
-        <span class="caret"></span></a>
-
-        <ul class="dropdown-menu">
-            {%for x in my_events: %}
-            <li><a href="/events/edit/{{x}}">{{x}}</a></li>
-            {% endfor %}
-        </ul>
-      </li>
-
-
-
-
-
-
-
-
-        <li class="navbar-left">
-        <a class="dropdown-toggle" data-toggle="dropdown" >User options
-        <span class="caret"></span></a>
-
-        <ul class="dropdown-menu">
-            <li><a href="/login">Logout</a></li>
-            <li><a href="/{{user_name}}/edit">Edit User</a> </li>
-        </ul>
-      </li>
-
-
-
-
-    </ul>
-
-  </div>
- </nav>
 <!-- Explaining how to write a request. Needs change after Text messaging API and needs to be auto generated-->
-<div class="form_font">
+<div class="form_font" align="center">
 Get the phone number of {{user_to.name}}! Locomotive will send the email from their automated email system with the message you send.<br>
 The reason being privacy, so that users' phone numbers aren't publicly visible and only are if they accept your request.<br>
 You however must provide yours, which also, wouldn't be made public, just for {{user_to.name}} to get back to you; and to <br>
@@ -105,7 +103,7 @@ Further communications will be handled by what the two parties decide on<br><br>
  Axl
 </div>
     <br><br><br><br>
-
+<div align="center">
 <form method="post" class="form_font">
     <textarea rows="7" class="form-control" placeholder="Your request message, your phone number and the event" name="message" ></textarea>
     <input type="submit" class="btn btn-success" value="Submit email" >
@@ -114,6 +112,6 @@ Further communications will be handled by what the two parties decide on<br><br>
       {% if error %}
         <p class="text-danger bg-danger"><strong>Error:</strong> {{ error }}</p>
       {% endif %}
-
+</div>
 </body>
 </html>

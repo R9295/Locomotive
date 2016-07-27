@@ -655,6 +655,7 @@ def email_request(name):
 
     #If logged in
     if g.user:
+        user_in_use = g.user
 
         #The user to whom you're trying to contact
         user_to = db.users.find_one({'name':name})
@@ -688,7 +689,7 @@ def email_request(name):
 
     else:
         return redirect(url_for('login'))
-    return render_template('email_request.html',user_to=user_to,user_in_use=who_am_i,my_events=my_events,error=error)
+    return render_template('email_request.html',user_to=user_to,user_in_use=user_in_use,my_events=my_events,error=error)
 
 @app.route('/request/phone_number/<who>',methods=['GET','POST'])
 def phone_number_request(who):
@@ -709,7 +710,7 @@ def phone_number_request(who):
             return redirect('/')
     else:
         return redirect(url_for('login'))
-    return render_template('phone_request.html',user_to=user_to,user_in_use=who_am_i,my_events=my_events,error=error)
+    return render_template('phone_request.html',user_to=user_to,user_in_use=g.user,my_events=my_events,error=error)
 
 
 #This script add to the users attending event list
@@ -778,6 +779,25 @@ def admin_interface():
 
     return render_template('admin_interface.html')
 
+#Views all events. The URL will be locomotive.com/events/view
+@app.route('/events-of/<name>',methods=['GET','POST'])
+def view_my_events(name):
+
+    #Gets the name of the user logged in
+    user_in_use = g.user
+
+    #Gets the user's events
+    events = db.events.find({'who_made_me':g.user})
+    my_events = []
+    for i in events:
+        my_events.append(i['name'])
+
+    #check if logged in
+    if g.user:
+
+        return render_template('events_of_user.html',my_events=my_events,user_in_use =user_in_use )
+    else:
+        return redirect(url_for('login'))
 
 
 

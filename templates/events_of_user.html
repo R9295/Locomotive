@@ -1,10 +1,9 @@
-<html>
-
-
-
-    <head>
-        <!--Google Fonts API -->
-        <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{user_in_use}} | Events</title>
+     <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
 
         <!--Importing necessary JS and CSS files -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,66 +12,8 @@
         <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
         <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
         <link href="{{url_for('static', filename='simple-sidebar.css')}}" rel="stylesheet" type="text/css">
-<!-- style and script to popup text when hovered over -->
-<style>
-    .a{
-    font-family: 'Shadows Into Light', cursive;
-    }
-    .a:hover{
-    text-transform: uppercase;
-    font-size:30px
-    }
-    img{
-    max-width:100%
-    height:auto;
-
-    }
-    div.img {
-    margin: 15px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 180px;
-}
-
-div.img:hover {
-    border: 1px solid #777;
-}
-
-
-div.desc {
-    padding: 15px;
-    text-align: center;
-}
-</style>
-<script>
-    $('table div')
-    .on('mouseenter', function(){
-        var div = $(this);
-        div.stop(true, true).animate({
-            margin: -10,
-            width: "+=20",
-            height: "+=20"
-        }, 'fast');
-    })
-    .on('mouseleave', function(){
-        var div = $(this);
-        div.stop(true, true).animate({
-            margin: 0,
-            width: "-=20",
-            height: "-=20"
-        }, 'fast');
-    })
-
-</script>
-
-
-
-
-    <title>{{user['name']}} Home</title>
 </head>
-    <!-- background image -->
-    <body style="background-image: url('static/img/fnr.png');background-size:cover;" >
-    <!-- Navbar -->
+<body>    <!-- Navbar -->
  <div id="wrapper">
 
         <!-- Sidebar -->
@@ -131,21 +72,15 @@ div.desc {
     </script>
 
 
-<!-- List of events the user is attending -->
- <div class="container a">
-<h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;color:white;">Events {{user['name']}} is attending:</h1>
-
-{% for t in user['going_to']: %}
-<h1><a href="/events/{{t}}" style="font-family: 'Shadows Into Light', cursive;font-size:35px">{{t}}</a></h1>
-{% endfor %}
-<br>
- <br><br><br>
-
-
+<div align="center">
+<h1 style="color:black;">{{user_in_use}}'s Events:</h1>
 </div>
-
-
-<!-- More data will be displayed on the home page-->
+<br><br><br>
+    {% for i in my_events: %}
+<div align="center"><h3 style="font-family: 'Shadows Into Light', cursive;font-size: 50px"><a href="/events/{{i}}" > {{i}}</a>  <a href="/events/edit/{{i}}" style="color:red;"> edit </a> </h3></div><br><br>
+<br>
+{% endfor %}
+</div>
 
 
 
