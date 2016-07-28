@@ -6,6 +6,7 @@
 
       <!--Googe Fonts API -->
       <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+          <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 
 <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
@@ -45,11 +46,11 @@ input[type=password]:focus {
   </head>
 
   <!-- Login Form -->
-  <body style="background: url('/static/img/background.jpg');background-size:cover;">
+  <body style="background: url('/static/back_5.jpg');background-size:cover;">
 
 
     <div class="container">
-      <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 100px;color:white;">Login to Locomotive!</h1>
+      <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 100px;color:black;">Login to Locomotive!</h1>
       <br>
 
       <form action="" method="post">
@@ -70,22 +71,7 @@ input[type=password]:focus {
       {% if error %}
         <p class="text-danger bg-danger"style="font-family: 'Shadows Into Light', cursive;font-size:25px" ><strong>Error:</strong> {{ error }}</p>
       {% endif %}
-      </div>
-      <div id="app">
-      {% raw %}
-      {{message}}
-      {% endraw %}
 
-      </div>
-     <script type="text/javascript">
-        new Vue({
-  el: '#app',
-  data: {
-    message: 'Hello Vue.js!'
-  }
-})
-
-      </script>
 
 </body>
 </html>

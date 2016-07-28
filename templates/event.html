@@ -102,8 +102,10 @@
           {% if past != True: %}
 <form action="/goto/{{var.name}}">
     <input type="submit" value="Go to!" class="btn btn-success" style="font-size:25px;">
+
 <br><br>
 </form>
+    <a href="/ungo/{{var['name']}}"><input type="submit" value="Un-go to" class="btn btn-danger" style="font-size:25px;"></a>
 {% endif %}
 
 <form method="post" id="xd">
@@ -119,8 +121,8 @@
     <br>
 
 {% for people in var.who_is_coming %}
-    {{ people}}<a href="/email/{{people}}"><button class="btn btn-default">Email</button></a>
-    <a href="/request/phone_number/{{people}}"><button class="btn btn-default">Request phone number</button></a><br>
+    <a href="/email/{{people}}">{{ people}}</a>
+        <br>
 {% endfor %}
 </div>
 
@@ -141,14 +143,10 @@ $.ajax({
     for (i = 0; i < data.results.length; i++){
 
     reply = reply
-    +data.results[i]
     +'<a href="/email/'
     +data.results[i]
-    +'"><button class="btn btn-default">Email</button></a>'
-    +'<a href="/request/phone_number/'
-    +data.results[i]+'"><button class="btn btn-default">Request phone number</button></a><br>'
-
-    }
+    +'">'+data.results[i]+'</a>'
+}
     $("#results").html(reply);
 
 

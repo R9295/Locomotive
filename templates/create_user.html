@@ -6,6 +6,8 @@
 
         <!-- Connecting to Google Fonts API -->
 <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.5.8/angular-messages.min.js"></script>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -44,19 +46,19 @@
         <form action="" method="post">
            
             <div id="example">
-            <input type="text" placeholder="Username" name="create_username" class="form-control form_create" v-model="create_username"><br><br>
+            <input type="text" placeholder="Username" name="create_username" class="form-control form_create" ng-model="create_username" required><br><br>
             
             
             
 
 
-            <input type="password" placeholder="Password" name="create_password" v-model="password" class="form-control form_create"><br><br>
-            <input type="password" placeholder=" Re-enter Password" name="password_re_enter" v-model="password_re_enter" class="form-control form_create"><br><br>
+            <input type="password" placeholder="Password" name="create_password" ng-model="password" class="form-control form_create" required><br><br>
+            <input type="password" placeholder=" Re-enter Password" name="password_re_enter" ng-model="password_re_enter" class="form-control form_create" required><br><br>
           
 
-            <input type="text" placeholder="Phone Number" name="phone_number"  class="form-control form_create"><br><br>
-            <input type="text" placeholder="Email" name="email" class="form-control form_create"><br><br>
-            <input type="text" placeholder="Community" name="community" class="form-control form_create"><br><br>
+            <input type="text" placeholder="Phone Number" name="phone_number"  class="form-control form_create" ng-model="phone_number" ng-minlength="10" required=""><br><br>
+            <input type="text" placeholder="Email" name="email" class="form-control form_create" ng-model="email" required><br><br>
+            <input type="text" placeholder="Community" name="community" class="form-control form_create" required><br><br>
             <input class="btn btn-success" type="submit" value="Create!"  class="form-control form_create"><br><br>
         </form>
         </div>
@@ -69,8 +71,6 @@
         <p class="text-danger bg-danger"style="font-family: 'Raleway', cursive;font-size: 22px"><strong>Error:</strong> {{ error }}</p>
       {% endif %}
     </div>
-
-
 
 
 

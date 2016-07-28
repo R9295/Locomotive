@@ -137,7 +137,6 @@ def create_user():
     if request.method == 'POST':
         #Sends it to the Datavalidation script to validate input Data
         validates =validate_create_user_input(password=request.form['create_password'],username=request.form['create_username'],password_again=request.form['password_re_enter'],phone=request.form['phone_number'],email=request.form['email'])
-        print validates
         #if the validate script returns something then there is an error; it will return that error to be rectified.
         if validates != None:
             error = validates
@@ -151,7 +150,6 @@ def create_user():
                 hashed_password = hashpw(request.form['create_password'].encode('utf-8'),gensalt())
 
                 community_geocode = geocoder.osm(request.form['community']+' Auroville India')
-                print community_geocode
                 #The user data is stored in a dict as MongoDB's collections are stored in a JSON-like format. The request.forms are inputs on the website. It refers to the data posted from the form.
                 add_user = {
                     'name' : request.form['create_username'],
@@ -201,10 +199,10 @@ def add_user(url,user_name):
         'community_lat': user['community_lat'],
         'community_lng': user['community_lng']
     }
-    print adding_user
+
     #add to users. Verified!
     add_to_db = db.users.insert_one(adding_user)
-    print 'k'
+
     return "User verified    "+user_name + "    login@"+"   localhost:5000/login"
 
 #Login page,need to add forgot password option. The URL will be locomotive.com/login
@@ -224,7 +222,6 @@ def login():
 
         # check if  user exists
         look_for = db.users.find_one({'name':request.form['username']})
-        print look_for
         if look_for :
 
             passwd = request.form['password'].encode('utf-8')
@@ -305,7 +302,7 @@ def edit_user(edit_user):
 
                     return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button style="color:green;">logout</button></a></body></html>'
         else:
-            return redirect('/')
+            return redirect('/'+g.user)
     return render_template('edit_users.html', var=k,error=error,my_events=my_events,user_in_use =user_in_use )
 
 
@@ -337,7 +334,6 @@ def view_all_events():
             search_results = db.events.find({'name': {'$regex': search_term}})
             for i in search_results:
                 results.append(i['name'])
-            print results
             return jsonify(results=results)
 
         return render_template('view_events.html',all_events=all_events,my_events=my_events,user_in_use =user_in_use )
@@ -447,7 +443,7 @@ def edit_event(event_name):
 
         #If the user doesn't own it, then GTFO
         if not var:
-            return redirect('/')
+            return redirect('/'+g.user)
 
 
         #verify and update event
@@ -613,7 +609,6 @@ def view_event(event_name):
             search_results = db.users.find({'going_to':event['name'], 'name':{'$regex': search_term}})
             for i in search_results:
                 results.append(i['name'])
-            print results
             return  jsonify(results=results)
 
 
@@ -636,14 +631,15 @@ def deleteion(name):
     delete_event = db.events.find_one({'name':name})
 
     #if the event is found, delete it
-    if delete_event:
+    if delete_event != None:
          db.events.remove({'name':delete_event['name']})
-         return redirect('/')
+         return redirect('/'+g.user)
 
     #if the event is not found, then it has to be a user. Find and delete user
     else:
+        print 'xd'
         user_to_delete = db.users.find_one({'name':name})
-        db.events.remove({'name':name})
+        db.users.remove({'name':name})
         return redirect('/login')
 
 
@@ -679,13 +675,13 @@ def email_request(name):
             log_data = {
                 'from': g.user,
                 'to': user_to['name'],
-                'when': time.asctime(time.localtime(time.time)),
+                'when': datetime.datetime.now(),
                 'message': request.form['message']
             }
             # add to log
             db.transaction_log.insert_one(log_data)
 
-            return redirect('/')
+            return redirect('/'+g.user)
 
     else:
         return redirect(url_for('login'))
@@ -707,7 +703,7 @@ def phone_number_request(who):
             msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(g.user), sender = email, recipients = [user_to['email']] )
             msg.body =request.form['message']
             mail.send(msg)
-            return redirect('/')
+            return redirect('/'+g.user)
     else:
         return redirect(url_for('login'))
     return render_template('phone_request.html',user_to=user_to,user_in_use=g.user,my_events=my_events,error=error)
@@ -727,7 +723,7 @@ def go_to(name):
      #Appending to the user's going_to list
 
 
-    return redirect('/')
+    return redirect('/'+g.user)
 
 @app.route('/events/all/past' ,methods =['GET','POST'])
 def view_past_events():
@@ -799,6 +795,19 @@ def view_my_events(name):
     else:
         return redirect(url_for('login'))
 
+
+@app.route('/ungo/<event>')
+def un_go_to(event):
+    un_go = db.events.find_one({'name':event})
+    user_un_go = db.users.find_one({'name':g.user})
+    if g.user in un_go['who_is_coming']:
+        un_go['who_is_coming'].remove(g.user)
+        db.events.save(un_go)
+
+    if un_go['name'] in user_un_go['going_to']:
+        user_un_go['going_to'].remove(un_go['name'])
+        db.users.save(user_un_go)
+    return redirect('/'+g.user)
 
 
 
