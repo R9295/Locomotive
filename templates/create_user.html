@@ -5,7 +5,7 @@
         <title>Create a User @ Locomotive</title>
 
         <!-- Connecting to Google Fonts API -->
-        <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -20,7 +20,7 @@
 
    <style>
      .form_create{
-      font-family: 'Shadows Into Light',cursive;
+      font-family: 'Raleway',cursive;
       font-size: 22px;}
 
 
@@ -32,12 +32,12 @@
 
 
   <!-- Form Begin -->
-  {% raw %}
+ 
   <body  style="background: url('/static/img/background.jpg');background-size:cover;">
 
 
     <div class="container">
-        <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 100px;color:white;">Create a User @ Locomotive</h1>
+        <h1 style="font-family: 'Raleway', cursive;font-size: 100px;color:white;">Create User</h1>
         <br>
         
         <!-- Need to clean up styles here -->
@@ -46,14 +46,13 @@
             <div id="example">
             <input type="text" placeholder="Username" name="create_username" class="form-control form_create" v-model="create_username"><br><br>
             
-            {{message}}
             
             
 
 
             <input type="password" placeholder="Password" name="create_password" v-model="password" class="form-control form_create"><br><br>
             <input type="password" placeholder=" Re-enter Password" name="password_re_enter" v-model="password_re_enter" class="form-control form_create"><br><br>
-            {{password_message}}
+          
 
             <input type="text" placeholder="Phone Number" name="phone_number"  class="form-control form_create"><br><br>
             <input type="text" placeholder="Email" name="email" class="form-control form_create"><br><br>
@@ -62,44 +61,12 @@
         </form>
         </div>
 
-     <script type="text/javascript">
-     new Vue({
-    el: '#example',
-    data: {
-        message: ''
-       
-    },
-    watch: {
-      'create_username': function(val, oldVal){
-        if (val < 50) {
-          this.message= 'value too low!';
-        }else{
-          this.message= 'value is ok';
-        }
-      }
-      }})
-   new Vue({
-    el: '#example',
-    data: {
-       password_message: 'xd'
-     },
-     watch: {
-        'password': function(val,)
 
-
-     }
-
-
-
-   })
-
-   </script>
-{% endraw %}
 
 
       <!--Incase of errors -->
       {% if error %}
-        <p class="text-danger bg-danger"style="font-family: 'Shadows Into Light', cursive;font-size: 22px"><strong>Error:</strong> {{ error }}</p>
+        <p class="text-danger bg-danger"style="font-family: 'Raleway', cursive;font-size: 22px"><strong>Error:</strong> {{ error }}</p>
       {% endif %}
     </div>
 

@@ -3,7 +3,7 @@
 <title>View all Events</title>
 
 <!-- Google Fonts API -->
-<link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
     <!-- Importing necessary JS and CSS files  -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,7 +20,7 @@
 <!-- Form Font -->
 <style>
     .form_font{
-    font-family: 'Shadows Into Light', cursive;font-size:30px;
+    font-family: 'Raleway', cursive;font-size:30px;
     {
 
 </style>
@@ -91,7 +91,7 @@
 <br><br><br>
 
 <div class="container" class="form_fonts"> <!--align="middle"-->
-   <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 75px">Past Events:</h1>
+   <h1 style="font-family: 'Raleway', cursive;font-size: 75px">Past Events:</h1>
     <br><br>
 <form method='post'>
     <!--Search past events -->
@@ -102,7 +102,7 @@
 </form>
 <!-- Displays all past events -->
     {% for eventz in past_events: %}
-<h3 style="font-family: 'Shadows Into Light', cursive;font-size: 50px"><a href="/events/{{eventz.name}}" > {{ eventz.name }}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3><br><br>
+<h3 style="font-family: 'Raleway', cursive;font-size: 50px"><a href="/events/{{eventz.name}}" > {{ eventz.name }}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3><br><br>
 <br>
 {% endfor %}
 </div>

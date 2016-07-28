@@ -4,7 +4,7 @@
 
     <head>
         <!--Google Fonts API -->
-        <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
         <!--Importing necessary JS and CSS files -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,7 +16,7 @@
 <!-- style and script to popup text when hovered over -->
 <style>
     .a{
-    font-family: 'Shadows Into Light', cursive;
+    font-family: 'Raleway', cursive;
     }
     .a:hover{
     text-transform: uppercase;
@@ -80,14 +80,14 @@ div.desc {
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
                     <a href="#">
-                        Logged in as {{user_in_use}}
+                        Logged in as {{user['name']}}
                     </a>
                 </li>
                 <li>
-                    <a href="/{{user_in_use}}">Home</a>
+                    <a href="/{{user['name']}}">Home</a>
                 </li>
                 <li>
-                    <a href="/events-of/{{user_in_use}}">My Events</a>
+                    <a href="/events-of/{{user['name']}}">My Events</a>
                 </li>
                 <li>
                     <a href="/events/create">Create Event</a>
@@ -99,7 +99,7 @@ div.desc {
                     <a href="/events/all/past">View Past Events</a>
                 </li>
                 <li>
-                    <a href="/{{user_in_use}}/edit">Edit User</a>
+                    <a href="/{{user['name']}}/edit">Edit User</a>
                 </li>
                 <li>
                     <a href="/">Logout</a>
@@ -133,10 +133,10 @@ div.desc {
 
 <!-- List of events the user is attending -->
  <div class="container a">
-<h1 style="font-family: 'Shadows Into Light', cursive;font-size:50px;color:white;">Events {{user['name']}} is attending:</h1>
+<h1 style="font-family: 'Raleway', cursive;font-size:50px;color:white;">Events {{user['name']}} is attending:</h1>
 
 {% for t in user['going_to']: %}
-<h1><a href="/events/{{t}}" style="font-family: 'Shadows Into Light', cursive;font-size:35px">{{t}}</a></h1>
+<h1><a href="/events/{{t}}" style="font-family: 'Raleway', cursive;font-size:35px">{{t}}</a></h1>
 {% endfor %}
 <br>
  <br><br><br>

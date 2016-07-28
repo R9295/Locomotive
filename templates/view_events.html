@@ -4,7 +4,7 @@
     <title>View all Events</title>
 <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
     <!--Google fonts API -->
-    <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light|Rock+Salt|Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
     <!-- Importing necessary JS and CSS files -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,7 +21,7 @@
 <!-- Form Fonts -->
 <style>
     .form_font{
-    font-family: 'Shadows Into Light', cursive;font-size:30px;
+    font-family: 'Raleway', cursive;font-size:30px;
     {
 
 </style>
@@ -93,7 +93,7 @@
 <br><br><br>
 
 <div class="container" class="form_fonts">
-   <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 75px">Events:</h1>
+   <h1 style="font-family: 'Raleway', cursive;font-size: 75px">Events:</h1>
     <br><br>
 
 <form method='post'>
@@ -116,7 +116,7 @@ $.ajax({
   success: function (data) {
     var reply = ""
     for (i = 0; i < data.results.length; i++){
-    reply = reply +'<a href="/events/data.results[i]" >'+' <h3 style="font-family: Shadows Into Light, cursive;font-size: 50px">'+ data.results[i] + '</a><br>'+'</h3><br><br>'
+    reply = reply +'<a href="/events/data.results[i]" >'+' <h3 style="font-family: Raleway, cursive;font-size: 50px">'+ data.results[i] + '</a><br>'+'</h3><br><br>'
     }
     $("#results").html(reply);
 
@@ -149,7 +149,7 @@ $.ajax({
 
 <!--Displays all events with name date and venue. Need to add hover over for more details -->
     {% for eventz in all_events: %}
-<h3 style="font-family: 'Shadows Into Light', cursive;font-size: 50px"><a href="/events/{{eventz.name}}" > {{ eventz.name }}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3><br><br>
+<h3 style="font-family: 'Raleway', cursive;font-size: 50px"><a href="/events/{{eventz.name}}" > {{ eventz.name }}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3><br><br>
 <br>
 {% endfor %}
 </div>
