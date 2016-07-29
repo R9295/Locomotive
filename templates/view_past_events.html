@@ -95,17 +95,48 @@
     <br><br>
 <form method='post'>
     <!--Search past events -->
-    <input type="text" placeholder="Search events" name="search_events" class="form-control form_font"><br>
-    <input type="submit" class="btn btn-success" value="Search event">
-    <a href="/events/search/advanced"><button class="btn btn-default">Advanced search options</button></a>
-
+    <input type="text" placeholder="Search events" id="search" class="form-control form_font"><br>
 </form>
+</div>
+<div id="results">
+</div>
+
+<script>
+    $('#search').keyup(function(){
+    var search_term = $(this).val();
+
+$.ajax({
+  type: "POST",
+  contentType: "application/json; charset=utf-8",
+  url: "/events/all/past",
+  data: JSON.stringify({'search': search_term}),
+  success: function (data) {
+    var reply = ""
+    for (i = 0; i < data.results.length; i++){
+    reply = reply +'<a href="/events/data.results[i]" >'+' <h3 style="font-family: Raleway, cursive;font-size: 50px">'+ data.results[i] + '</a><br>'+'</h3><br><br>'
+    }
+    $("#results").html(reply);
+
+  },
+  dataType: "json"
+});
+
+
+
+
+    });
+
+
+
+</script>
+<div align="center">
 <!-- Displays all past events -->
     {% for eventz in past_events: %}
 <h3 style="font-family: 'Raleway', cursive;font-size: 50px"><a href="/events/{{eventz.name}}" > {{ eventz.name }}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3><br><br>
 <br>
 {% endfor %}
 </div>
+
 
 
 </body>

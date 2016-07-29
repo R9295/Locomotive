@@ -736,9 +736,14 @@ def view_past_events():
         for i in events:
             my_events.append(i['name'])
 
+        #If data is posted, redirect to the search page where the query will take place and will display data. This should be real time instead of the redirects
         if request.method == 'POST':
-            what_event = request.form['search_events'].encode('utf-8')
-            return redirect('/search'+'/past''/'+what_event)
+            results = []
+            search_term = request.json['search']
+            search_results = db.past_events.find({'name': {'$regex': search_term}})
+            for i in search_results:
+                results.append(i['name'])
+            return jsonify(results=results)
 
     else:
         return redirect('/login')

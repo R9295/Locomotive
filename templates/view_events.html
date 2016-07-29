@@ -101,9 +101,6 @@
     <input type="text" placeholder="Search events" name="search_events" class="form-control form_font" id="search"><br>
 </form>
 
-<a href="/events/search/advanced"><button class="btn btn-default">Advanced search options</button></a>
-
-
 <script>
     $('#search').keyup(function(){
     var search_term = $(this).val();
@@ -136,8 +133,7 @@ $.ajax({
 </script>
 
 <div id="results">
-<script>
-</script>
+
 </div>
 
 
@@ -146,12 +142,13 @@ $.ajax({
 
 
     <br><br><br>
-
+<div align="center">
 <!--Displays all events with name date and venue. Need to add hover over for more details -->
     {% for eventz in all_events: %}
 <h3 style="font-family: 'Raleway', cursive;font-size: 50px"><a href="/events/{{eventz.name}}" > {{ eventz.name }}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3><br><br>
 <br>
 {% endfor %}
+</div>
 </div>
 
 
