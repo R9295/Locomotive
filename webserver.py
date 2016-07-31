@@ -242,19 +242,6 @@ def login():
 
     return render_template('login.html', error=error,)
 
-#This feature is the same as search events but is for searching past events. Which also needs to be real time
-@app.route('/search/past/<queries>', methods=['GET','POST'])
-def search_past_events(queries):
-    error = None
-    #check if logged in
-    if g.user:
-        my_events = db.events.find({'who_made_me':g.user})
-        user_in_use = g.user
-        search_results= db.past_events.find({'name':{'$regex': queries}})
-
-        return render_template('search_results.html',events=search_results,error=error,my_events=my_events,user_in_use =user_in_use )
-    else:
-        return redirect(url_for('login'))
 
 #Edit user profile. The URL will be locomotive.com/username/edit
 @app.route('/<edit_user>/edit', methods=['GET','POST'])
@@ -570,19 +557,17 @@ def view_event(event_name):
             my_events.append(i['name'])
 
         event = []
-
-
     #If logged in
 
 
         #Check if past_event:
 
-        if db.events.find_one({'name':event_name}) != None:
+        if db.events.find({'name':event_name}).count() != 0:
             event = db.events.find_one({'name': event_name})
             lat_of_event = event['lat']
             lng_of_event = event['lng']
 
-        elif db.past_events.find_one({'name':event_name}) != None:
+        if db.past_events.find({'name':event_name}).count() != 0:
              event = db.past_events.find_one({'name':event_name})
              lat_of_event = event['lat']
              lng_of_event = event['lng']
@@ -815,7 +800,30 @@ def un_go_to(event):
     return redirect('/'+g.user)
 
 
+@app.route('/forgot', methods=['GET','POST'])
+def forgot_password():
+    error = None
+    if request.method == 'POST':
+        user = db.users.find({'name': request.form['username']})
+        if user.count() == 0:
+            error = 'Incorrect Username'
+        if validate_email(request.form['email']) != True:
+            error = 'Invalid email'
 
+        user_data = db.users.find_one({'name':request.form['username']})
+        if user_data['email'] != request.form['email']:
+            error = 'Incorrect email'
+
+        else:
+            msg = Message('Reset Password', sender=email, recipients=[request.form['email']])
+            msg.body = "Hello!"+"<html>"+"<body>"+"XAXAXAXA"+"</body>"+"</html>"
+            mail.send(msg)
+
+
+
+        print error
+
+    return render_template('forgot_password.html', error=error)
 
 
 #A script I'm particularly proud of. This checks all events every 24 hours to see if they have been done or not, if they have, then it adds them to past_events
