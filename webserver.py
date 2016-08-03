@@ -815,15 +815,33 @@ def forgot_password():
             error = 'Incorrect email'
 
         else:
+            verify = {
+                'user': request.method['name'],
+                'key' : url_gen(),
+                'email': request.form['email']
+            }
+
+            db.reset_password_key.insert_one(verify)
             msg = Message('Reset Password', sender=email, recipients=[request.form['email']])
-            msg.body = "Hello!"+"<html>"+"<body>"+"XAXAXAXA"+"</body>"+"</html>"
+            msg.body = "Reset your password at:"+"localhost:5000/forgot/"+verify['key']+'/'+verify['user']
             mail.send(msg)
 
-
-
-        print error
-
     return render_template('forgot_password.html', error=error)
+
+@app.route('/forgot/<url>/<name>', methods=['GET','POST'])
+def reset_passowrd(url, name):
+    if db.reset_password_key.find({'user': name,'key' : url}).count() != 0:
+        error = None
+
+        if request.method == 'POST':
+            if request.form['password'] != request.form['password_again']:
+                error = "Passwords don't match"
+            else:
+                hashed_password = hashpw(request.form['create_password'].encode('utf-8'), gensalt())
+                db.users.update({'name' : name}, {'password' : hashed_password})
+
+
+        return render_template('reset_password.html', error = error)
 
 
 #A script I'm particularly proud of. This checks all events every 24 hours to see if they have been done or not, if they have, then it adds them to past_events
