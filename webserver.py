@@ -151,6 +151,7 @@ def create_user():
 
                 community_geocode = geocoder.osm(request.form['community']+' Auroville India')
                 #The user data is stored in a dict as MongoDB's collections are stored in a JSON-like format. The request.forms are inputs on the website. It refers to the data posted from the form.
+                url = url_gen()
                 add_user = {
                     'name' : request.form['create_username'],
                     'password' : hashed_password,
@@ -160,8 +161,8 @@ def create_user():
                     'going_to' : [],
                     'events_attended': [],
                     'community_lat': community_geocode.json['lat'],
-                    'community_lng': community_geocode.json['lng']
-
+                    'community_lng': community_geocode.json['lng'],
+                    'key' : url
 
                             }
 
@@ -169,7 +170,7 @@ def create_user():
                 added = db.user_auth.insert_one(add_user)
 
                 #Creating a random part of URL to use
-                url = url_gen()
+
 
                 #Sending a verification email to the user,the random numbers for the url are to prevent shortcuts
                 msg = Message('Thanks for creating a user @ Locomotive!', sender = email, recipients = [request.form['email']])
@@ -185,25 +186,33 @@ def create_user():
 def add_user(url,user_name):
 
     #finding the user from user_auth
-    user = db.user_auth.find_one({'name':user_name})
 
-    #makuing a dict of the data
-    adding_user = {
-        'name': user['name'],
-        'password': user['password'],
-        'email': user['email'],
-        'phone_number': user['phone_number'],
-        'community': user['community'],
-        'going_to': [],
-        'events_attended': [],
-        'community_lat': user['community_lat'],
-        'community_lng': user['community_lng']
-    }
+    user = db.user_auth.find_one({'name':user_name}).count()
+    if user != 0:
 
-    #add to users. Verified!
-    add_to_db = db.users.insert_one(adding_user)
 
-    return "User verified    "+user_name + "    login@"+"   localhost:5000/login"
+        if url == user['key']:
+
+            #makuing a dict of the data
+            adding_user = {
+                'name': user['name'],
+                'password': user['password'],
+                'email': user['email'],
+                'phone_number': user['phone_number'],
+                'community': user['community'],
+                'going_to': [],
+                'events_attended': [],
+                'community_lat': user['community_lat'],
+                'community_lng': user['community_lng']
+            }
+
+            #add to users. Verified!
+            add_to_db = db.users.insert_one(adding_user)
+            return "User verified    "+user_name + "    login@"+"   localhost:5000/login"
+        else:
+            return 'Incorrect URL xd'
+    else:
+        "User doesn't exist"
 
 #Login page,need to add forgot password option. The URL will be locomotive.com/login
 @app.route('/login', methods=['GET','POST'])
@@ -804,27 +813,31 @@ def un_go_to(event):
 def forgot_password():
     error = None
     if request.method == 'POST':
-        user = db.users.find({'name': request.form['username']})
-        if user.count() == 0:
+        user = db.users.find({'name': request.form['username']}).count()
+
+        if user == 0:
             error = 'Incorrect Username'
+
         if validate_email(request.form['email']) != True:
             error = 'Invalid email'
 
-        user_data = db.users.find_one({'name':request.form['username']})
-        if user_data['email'] != request.form['email']:
-            error = 'Incorrect email'
-
+        if user != 0:
+            user_data = db.users.find_one({'name' : request.form['username']})
+            if user_data['email'] != request.form['email']:
+                error = 'Incorrect email'
         else:
             verify = {
-                'user': request.method['name'],
+                'user': request.form['username'],
                 'key' : url_gen(),
                 'email': request.form['email']
             }
 
             db.reset_password_key.insert_one(verify)
+
             msg = Message('Reset Password', sender=email, recipients=[request.form['email']])
             msg.body = "Reset your password at:"+"localhost:5000/forgot/"+verify['key']+'/'+verify['user']
             mail.send(msg)
+            return redirect('/')
 
     return render_template('forgot_password.html', error=error)
 
@@ -838,8 +851,9 @@ def reset_passowrd(url, name):
                 error = "Passwords don't match"
             else:
                 hashed_password = hashpw(request.form['create_password'].encode('utf-8'), gensalt())
-                db.users.update({'name' : name}, {'password' : hashed_password})
-
+                print 'xd'
+                db.users.update({'name' : name}, {'$push': {'password' : hashed_password}})
+                print 'lul'
 
         return render_template('reset_password.html', error = error)
 
