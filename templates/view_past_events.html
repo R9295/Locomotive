@@ -105,12 +105,15 @@
     $('#search').keyup(function(){
     var search_term = $(this).val();
 
+     if(search_term != ''){
+
 $.ajax({
   type: "POST",
   contentType: "application/json; charset=utf-8",
   url: "/events/all/past",
   data: JSON.stringify({'search': search_term}),
   success: function (data) {
+  document.getElementById("results").innerHTML = "<h3>No results<h3>";
 
     var reply = ""
     for (i = 0; i < data.results.length; i++){
@@ -120,7 +123,10 @@ $.ajax({
   },
   dataType: "json"
 });
+else{
+document.getElementById("results").innerHTML = "<h3>No results<h3>";
 
+}
 
 
 

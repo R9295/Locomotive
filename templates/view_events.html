@@ -102,8 +102,11 @@
 </form>
 
 <script>
+
     $('#search').keyup(function(){
     var search_term = $(this).val();
+
+    if(search_term != ''){
 
 $.ajax({
   type: "POST",
@@ -112,6 +115,7 @@ $.ajax({
   data: JSON.stringify({'search': search_term}),
   success: function (data) {
     var reply = ""
+    document.getElementById("results").innerHTML = "<h3>No results<h3>";
 
     for (i = 0; i < data.results.length; i++){
     reply = reply +'<a href="'+ data.results[i]+'"><h3 style="font-family: Raleway, cursive;font-size: 50px">'+data.results[i]+'</h3>'+'</a><br><br>'
@@ -122,11 +126,13 @@ $.ajax({
   },
   dataType: "json"
 });
+}
+else{
+document.getElementById("results").innerHTML = "<h3>No results<h3>";
 
-
-
-
+}
     });
+
 
 </script>
 
