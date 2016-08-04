@@ -1,15 +1,10 @@
 '''
 Yowza!
-This is Locomotive's backend. The modules that are not explained are self explanatory
+This is Locomotive's backend.
 Queries? Email aarnavbos@gmail.com
-In order to understand this thoroughly learn:
+In order to understand this, thoroughly learn:
 Flask syntax
 Pymongo syntax
-
-and the rest is self explanatory.
-This code is very inefficient as I'm querying the DB for the same thing every time it loads the page.
-I need to be able to cache it so I can take it from the cookies, but I don't how to do it ATM
-
 '''
 
 #web framework
@@ -842,7 +837,7 @@ def forgot_password():
     return render_template('forgot_password.html', error=error)
 
 @app.route('/forgot/<url>/<name>', methods=['GET','POST'])
-def reset_passowrd(url, name):
+def reset_password(url, name):
     if db.reset_password_key.find({'user': name,'key' : url}).count() != 0:
         error = None
 
@@ -856,6 +851,11 @@ def reset_passowrd(url, name):
                 print 'lul'
 
         return render_template('reset_password.html', error = error)
+
+@app.route('/notify/<userto>/<userfrom>/')
+def notify(userto,userfrom):
+    pass
+
 
 
 #A script I'm particularly proud of. This checks all events every 24 hours to see if they have been done or not, if they have, then it adds them to past_events
