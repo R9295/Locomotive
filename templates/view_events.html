@@ -112,14 +112,12 @@ $.ajax({
   data: JSON.stringify({'search': search_term}),
   success: function (data) {
     var reply = ""
+
     for (i = 0; i < data.results.length; i++){
-    reply = reply +'<a href="/events/data.results[i]" >'+' <h3 style="font-family: Raleway, cursive;font-size: 50px">'+ data.results[i] + '</a><br>'+'</h3><br><br>'
-    }
+    reply = reply +'<a href="'+ data.results[i]+'"><h3 style="font-family: Raleway, cursive;font-size: 50px">'+data.results[i]+'</h3>'+'</a><br><br>'
+
     $("#results").html(reply);
-
-
-
-
+    }
 
   },
   dataType: "json"

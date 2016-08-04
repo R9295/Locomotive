@@ -114,12 +114,9 @@ $.ajax({
 
     var reply = ""
     for (i = 0; i < data.results.length; i++){
-    reply = reply +'<a href="/events/data.results[i]" >'+' <h3 style="font-family: Raleway, cursive;font-size: 50px">'+ data.results[i] + '</a><br>'+'</h3><br><br>'
+    reply = reply +'<a href="/events/"'+data.results[i]+'" >'+' <h3 style="font-family: Raleway, cursive;font-size: 50px">'+ data.results[i] + '</a><br>'+'</h3><br><br>'
     }
     $("#results").html(reply);
-    var element = document.getElementById("past_events");
-    element.parentNode.removeChild(element);
-
   },
   dataType: "json"
 });
