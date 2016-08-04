@@ -19,26 +19,13 @@
 
 <!--Script to Highlight input field -->
 <style>
-    img{
-    max-width:100%
-    height:auto;
-
-    }
-
-input[type=text], select {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-input[type=text]:focus {
-    border: 4px solid #555;
-}
-input[type=password]:focus {
-    border: 4px solid #555;
+           body {
+  background: url(/static/back_4.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  color: #fed136;
 }
 </style>
 
@@ -46,8 +33,11 @@ input[type=password]:focus {
   </head>
 
   <!-- Login Form -->
-  <body style="background: url('/static/back_5.jpg');background-size:cover;">
-
+  <body>
+<br>
+<br>
+<br>
+<br>
 
     <div class="container">
       <h1 style="font-family: 'Shadows Into Light', cursive;font-size: 100px;color:black;">Login to Locomotive!</h1>
@@ -66,7 +56,7 @@ input[type=password]:focus {
 
       </form>
 
-      <a href="/create" style="color:white;font-family: 'Shadows Into Light', cursive;font-size:25px">Create an account</a>
+      <a href="/create" style="color:black;font-family: 'Shadows Into Light', cursive;font-size:25px">Create an account</a>
    <!-- If error -->
       {% if error %}
         <p class="text-danger bg-danger"style="font-family: 'Shadows Into Light', cursive;font-size:25px" ><strong>Error:</strong> {{ error }}</p>
