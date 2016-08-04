@@ -10,6 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- Adding necessary CSS and JS files  -->
+            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
         <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
         <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
         <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
@@ -29,7 +30,7 @@
 
 
 
-    <body>
+    <body ng-app="app" ng-controller="create_event">
 
  <div id="wrapper" style="font-family: 'Raleway';">
 
@@ -98,53 +99,58 @@
       <form action="" method="post" enctype="multipart/form-data" class="form_font">
           Name of the Event
           <br>
-          <input type="text"  name="name" class="form-control" value="{{request.form['name']}}">
+          <input type="text"  name="name" class="form-control" required>
           <br>
 
           Email of host
           <br>
-          <input type="text" placeholder="goldroger@gmail.com" name="email" class="form-control" value="{{request.form['email']}}">
+          <input type="text" placeholder="goldroger@gmail.com" name="email" class="form-control" required>
           <br>
 
           Venue
           <br>
-          <input type="text" name="venue" class="form-control">
+          <input type="text" name="venue" class="form-control" required>
           <br>
 
           Address(Will auto search Maps for you)
           <br>
-          <input type="text"  name="address" class="form-control" value="{{request.form['address']}}">
+          <input type="text"  name="address" class="form-control"  required>
           <br>
 
           Description
           <br>
-        <textarea class="form-control" rows="7" name="description" >{{request.form['description']}}</textarea>
+        <textarea class="form-control" rows="7" name="description" required>{{request.form['description']}}</textarea>
           <br>
 
           Phone Number of host
           <br>
-          <input type="text" placeholder="944xxxxxxx" name="phone_number" class="form-control" value="{{request.form['phone_number']}}">
+          <input type="text" placeholder="944xxxxxxx" name="phone_number" class="form-control" ng-model="phone_number" ng-change="phone_verify()"  required>
           <br>
+          <div ng-bind="phone_error" class="text-danger bg-danger" style="font-family:Raleway;"></div>
 
           Time event starts
           <br>
-          <input type="text" placeholder="" name="time" class="form-control" value="{{request.form['time']}}">
+          <input type="text" placeholder="" name="time" class="form-control" required>
           <br>
 
           Duration of event
           <br>
-          <input type="text" placeholder="" name="duration" class="form-control" value="{{request.form['duration']}}">
+          <input type="text" placeholder="" name="duration" class="form-control"  required>
           <br>
 
           Year
-          <input type="text" placeholder=" Example: 2016" name="year" class="form-control">
+          <input type="text" placeholder=" Example: 2016" name="year" class="form-control" ng-model="year" ng-change="year_verify()" required>
+          <div ng-bind="year_error" class="text-danger bg-danger" style="font-family:Raleway;"></div>
 
           Month
-          <input type="text" placeholder="Example: 12" name="month" class="form-control">
+          <input type="text" placeholder="Example: 12" name="month" class="form-control" ng-model="month" ng-change="month_verify()" required>
+          <div ng-bind="month_error" class="text-danger bg-danger" style="font-family:Raleway;"></div>
 
           Day
-          <input type="text" placeholder="Example: 6" name="day" class="form-control">
+          <input type="text" placeholder="Example: 6" name="day" class="form-control" ng-model="day" ng-change="day_verify()" required>
+          <div ng-bind="day_error" class="text-danger bg-danger" style="font-family:Raleway;"></div>
           <br>
+
 
           Image(Optional)
           <br>
@@ -162,7 +168,55 @@
     <div class="container">
       <a href="/events/view"><button class="btn btn-default">View events</button></a>
   </div>
+<script>
+    // onchange verification by Angular
+var myapp = angular.module('app', []);
+myapp.controller('create_event', function($scope) {
 
+    $scope.phone_verify = function(){
+    if ($scope.phone_number.length != 10){
+    $scope.phone_error = 'Incorrect phone number';
+    }
+    else{
+    $scope.phone_error = '';
+    }
+    }
+
+
+    $scope.year_verify = function(){
+    if ($scope.year >3000 || $scope.year < 2016){
+    $scope.year_error = 'Incorrect year';
+    }
+    else{
+    $scope.year_error = '';
+    }
+    }
+
+
+    $scope.month_verify = function(){
+    if ($scope.month >12 || $scope.month < 1){
+    $scope.month_error = 'Incorrect month';
+    }
+    else{
+    $scope.month_error = '';
+    }
+    }
+
+
+    $scope.day_verify = function(){
+    if ($scope.day > 31 || $scope.day < 1){
+    $scope.day_error = 'Incorrect day';
+    }
+    else{
+    $scope.day_error = '';
+    }
+    }
+
+
+});
+
+
+</script>
 
 
     </body>
