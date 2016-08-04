@@ -621,13 +621,24 @@ def deleteion(name):
 
     #if the event is found, delete it
     if delete_event != None:
+         k = db.users.find()
+         for i in k:
+             if delete_event['name'] in i['going_to']:
+                 i['going_to'].remove(delete_event['name'])
+                 db.users.save(i)
+
          db.events.remove({'name':delete_event['name']})
          return redirect('/'+g.user)
 
     #if the event is not found, then it has to be a user. Find and delete user
     else:
-        print 'xd'
+        k = db.events.find()
         user_to_delete = db.users.find_one({'name':name})
+        for i in k:
+            if user_to_delete['name'] in i['who_is_coming']:
+                i['who_is_coming'].remove(user_to_delete['name'])
+                db.events.save(i)
+
         db.users.remove({'name':name})
         return redirect('/login')
 
