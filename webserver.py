@@ -177,7 +177,7 @@ def create_user():
 
 
 #If the user verifies, it moves data from user_auth to user.
-@app.route('/adduser/<url>/<user_name>',methods=['GET'])
+@app.route('/adduser/<url>/<user_name>')
 def add_user(url,user_name):
 
     #finding the user from user_auth
@@ -205,9 +205,9 @@ def add_user(url,user_name):
             add_to_db = db.users.insert_one(adding_user)
             return "User verified    "+user_name + "    login@"+"   locomotive.auroville.org.in/login"
         else:
-            return 'Incorrect URL xd'
+            return 'Incorrect URL'
     else:
-        "User doesn't exist"
+            return "User doesn't exist"
 
 #Login page,need to add forgot password option. The URL will be locomotive.com/login
 @app.route('/login', methods=['GET','POST'])
