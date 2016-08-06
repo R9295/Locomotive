@@ -213,33 +213,41 @@ def add_user(url,user_name):
 #Login page,need to add forgot password option. The URL will be locomotive.com/login
 @app.route('/login', methods=['GET','POST'])
 def login():
+    print 'xd'
 
     #kills the already logged in session cookie and removes from the list of users logged in
     if g.user in users_logged_in:
         users_logged_in.remove(g.user)
+        print 'xd1'
+
 
     if g.user in session:
         session.pop('user',None)
-
+        print 'xd2'
 
     error = None
-
+    print 'xd3'
     #If data is posted
     if request.method == 'POST':
-
+        print 'xd4'
         # check if  user exists
         look_for = db.users.find({'name':request.form['username']}).count()
-        if look_for != 0:
-            look_for = db.users.find_one({'name':request.form['username']})
-            passwd = request.form['password'].encode('utf-8')
+        print 'xd5'
 
+        if look_for != 0:
+            print 'xd6'
+            look_for = db.users.find_one({'name':request.form['username']})
+            print 'xd7'
+            passwd = request.form['password'].encode('utf-8')
+            print 'xd8'
             #hash password and check the has with user's password
             if hashpw(passwd,look_for['password'].encode('utf-8')) == look_for['password']:
-
+                print 'xd9'
                 # adds  status 'I am logged in as USERNAME' to the cookies and to the list.
                 session['user'] = request.form['username']
+                print 'xd10'
                 users_logged_in.append(request.form['username'])
-
+                print 'xd11'
                 return redirect('/%s'%(request.form['username']))
 
             else:
