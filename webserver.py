@@ -228,9 +228,9 @@ def login():
     if request.method == 'POST':
 
         # check if  user exists
-        look_for = db.users.find_one({'name':request.form['username']})
-        if look_for :
-
+        look_for = db.users.find({'name':request.form['username']}).count()
+        if look_for != 0:
+            look_for = db.users.find_one({'name':request.form['username']})
             passwd = request.form['password'].encode('utf-8')
 
             #hash password and check the has with user's password
