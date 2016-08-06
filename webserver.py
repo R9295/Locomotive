@@ -75,7 +75,7 @@ def url_gen(size=6, chars=string.ascii_uppercase + string.digits):
 
 
 
-guser = None
+
 
 '''
 Configuring where photos should be uploaded.
@@ -99,12 +99,12 @@ def locomotive():
 @app.route('/<user>', methods=['GET','POST'])
 def home_of_user(user):
     #check if logged in otherwise redirect to login
-    if guser:
+    if g.user:
         #queries the DB to findout user data
-        user = db.users.find_one({"name":guser})
+        user = db.users.find_one({"name":g.user})
 
         #queries DB to find what events the user has made.
-        what_events_i_own = db.events.find({"who_made_me":guser})
+        what_events_i_own = db.events.find({"who_made_me":g.user})
         my_events = []
         for i in what_events_i_own:
             my_events.append(i['name'])
@@ -220,11 +220,12 @@ def login():
             #hash password and check the has with user's password
             if hashpw(passwd,look_for['password'].encode('utf-8')) == look_for['password']:
                 # adds  status 'I am logged in as USERNAME' to the cookies and to the list.
-                user ={
+                db.active_users.insert_one({
                     'name': request.form['username']
-                }
-                db.active_users.insert_one(user)
-                guser = request.form['name']
+                })
+                g.user = request.form['name']
+                #users_logged_in.append(request.form['username'])
+                #print 'xd11'
                 return redirect('/%s'%(request.form['username']))
 
             else:
@@ -239,10 +240,10 @@ def login():
 @app.route('/<edit_user>/edit', methods=['GET','POST'])
 def edit_user(edit_user):
     #Gets name of user logged in to pass on to the webpage
-    user_in_use = guser
+    user_in_use = g.user
 
     #The events the user owns to pass on to the webpage
-    events = db.events.find({"who_made_me": guser})
+    events = db.events.find({"who_made_me": g.user})
     my_events = []
     for i in events:
         my_events.append(i['name'])
@@ -250,10 +251,10 @@ def edit_user(edit_user):
     error = ""
 
     #if logged in
-    if guser:
+    if g.user:
 
         #Find the data of the user currently logged in to edit
-        k = db.users.find_one({'name': guser})
+        k = db.users.find_one({'name': g.user})
 
         #Checks if the person logged in is trying to edit their profile and not somebody else's
         if k['name'] == edit_user:
@@ -281,7 +282,7 @@ def edit_user(edit_user):
 
                     return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button style="color:green;">logout</button></a></body></html>'
         else:
-            return redirect('/'+guser)
+            return redirect('/'+g.user)
     return render_template('edit_users.html', var=k,error=error,my_events=my_events,user_in_use =user_in_use )
 
 
@@ -291,16 +292,16 @@ def edit_user(edit_user):
 def view_all_events():
 
     #Gets the name of the user logged in
-    user_in_use = guser
+    user_in_use = g.user
 
     #Gets the user's events
-    events = db.events.find({'who_made_me':guser})
+    events = db.events.find({'who_made_me':g.user})
     my_events = []
     for i in events:
         my_events.append(i['name'])
 
     #check if logged in
-    if guser:
+    if g.user:
 
         #Grabs all the events
         all_events = db.events.find()
@@ -325,16 +326,16 @@ def view_all_events():
 def create_event():
 
     #Gets the name of the user logged in
-    user_in_use = guser
+    user_in_use = g.user
 
     #Gets the user's events
-    events = db.events.find({'who_made_me':guser})
+    events = db.events.find({'who_made_me':g.user})
     my_events = []
     for i in events:
         my_events.append(i['name'])
 
     #If logged in
-    if guser:
+    if g.user:
         error = None
 
         #If data is posted
@@ -380,7 +381,7 @@ def create_event():
                     'date' : '%s-%s-%s'%(year,month,day),
                     'image' : filename,
                     'who_is_coming': [],
-                    'who_made_me': guser,
+                    'who_made_me': g.user,
                     'when_made' : '%s'%(datetime.date.today()),
                     'lat':geocode.json['lat'],
                     'lng':geocode.json['lng']
@@ -390,7 +391,7 @@ def create_event():
                 insert = db.events.insert(event_data)
 
                 #Send an email stating that the event has been added
-                msg = Message('Hello %s, You just created an event!' %(guser), sender = email, recipients = [request.form['email']])
+                msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
                 msg.body ='Your event %s was successfully added! Check it out here:locahost:5000/events/%s' %(request.form['name'],request.form['name'])
                 mail.send(msg)
 
@@ -403,26 +404,26 @@ def create_event():
 def edit_event(event_name):
 
     #Gets the name of the user logged in
-    user_in_use = guser
+    user_in_use = g.user
 
     #gets the user's events
-    events = db.events.find({'who_made_me':guser})
+    events = db.events.find({'who_made_me':g.user})
     my_events = []
     for i in events:
         my_events.append(i['name'])
 
 
     #Check if logged in
-    if guser:
+    if g.user:
 
         error = None
 
         #Checks if the user who is trying to edit the event actually owns it
-        var = db.events.find_one({'who_made_me':guser,'name': event_name})
+        var = db.events.find_one({'who_made_me':g.user,'name': event_name})
 
         #If the user doesn't own it, then GTFO
         if not var:
-            return redirect('/'+guser)
+            return redirect('/'+g.user)
 
 
         #verify and update event
@@ -510,7 +511,7 @@ def edit_event(event_name):
                     db.events.save(var)
 
                 #Emails the stuff that has been edited to the user
-                    msg = Message('Hello %s, You just edited an event: %s!' % (guser,var['name']), sender=email,recipients=[request.form['email']])
+                    msg = Message('Hello %s, You just edited an event: %s!' % (g.user,var['name']), sender=email,recipients=[request.form['email']])
                     msg.body ='Your changes: '
                     for key,values in changes.iteritems():
                         if values != 'Not changed':
@@ -531,19 +532,19 @@ def edit_event(event_name):
 #Each individual event's page auto generated. The URL will be locmotive.com/events/eventname
 @app.route('/events/<event_name>',methods=['GET','POST'])
 def view_event(event_name):
-    if guser:
+    if g.user:
 
         #Sets the event value to not past
         past = False
 
         #Gets the name of the user logged in
-        user_in_use = guser
+        user_in_use = g.user
 
         #getting data of the user_logged in
-        user_data = db.users.find_one({'name':guser})
+        user_data = db.users.find_one({'name':g.user})
 
         #Gets the user's events
-        events = db.events.find({'who_made_me':guser})
+        events = db.events.find({'who_made_me':g.user})
         my_events = []
         for i in events:
             my_events.append(i['name'])
@@ -616,7 +617,7 @@ def deleteion(name):
                  db.users.save(i)
 
          db.events.remove({'name':delete_event['name']})
-         return redirect('/'+guser)
+         return redirect('/'+g.user)
 
     #if the event is not found, then it has to be a user. Find and delete user
     else:
@@ -638,30 +639,30 @@ def email_request(name):
     error = None
 
     #If logged in
-    if guser:
-        user_in_use = guser
+    if g.user:
+        user_in_use = g.user
 
         #The user to whom you're trying to contact
         user_to = db.users.find_one({'name':name})
 
         #The user logged in
-        who_am_i = db.users.find_one({'name':guser})
+        who_am_i = db.users.find_one({'name':g.user})
 
         #The user's events
-        events = db.events.find({'who_made_me': guser})
+        events = db.events.find({'who_made_me': g.user})
         my_events = []
         for i in events:
             my_events.append(i['name'])
 
         #If data is sent, then email the person.
         if request.method == 'POST':
-            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(guser), sender = email, recipients = [user_to['email']] )
+            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(g.user), sender = email, recipients = [user_to['email']] )
             msg.body =request.form['message']
             mail.send(msg)
 
             # Data to append to log
             log_data = {
-                'from': guser,
+                'from': g.user,
                 'to': user_to['name'],
                 'when': datetime.datetime.now(),
                 'message': request.form['message']
@@ -669,7 +670,7 @@ def email_request(name):
             # add to log
             db.transaction_log.insert_one(log_data)
 
-            return redirect('/'+guser)
+            return redirect('/'+g.user)
 
     else:
         return redirect(url_for('login'))
@@ -677,24 +678,24 @@ def email_request(name):
 
 @app.route('/request/phone_number/<who>',methods=['GET','POST'])
 def phone_number_request(who):
-    if guser:
+    if g.user:
         error = None
         user_to = db.users.find_one({'name':who})
-        who_am_i = db.users.find_one({'name':guser})
+        who_am_i = db.users.find_one({'name':g.user})
 
-        events = db.events.find({'who_made_me': guser})
+        events = db.events.find({'who_made_me': g.user})
         my_events = []
         for i in events:
             my_events.append(i['name'])
 
         if request.method == 'POST':
-            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(guser), sender = email, recipients = [user_to['email']] )
+            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(g.user), sender = email, recipients = [user_to['email']] )
             msg.body =request.form['message']
             mail.send(msg)
-            return redirect('/'+guser)
+            return redirect('/'+g.user)
     else:
         return redirect(url_for('login'))
-    return render_template('phone_request.html',user_to=user_to,user_in_use=guser,my_events=my_events,error=error)
+    return render_template('phone_request.html',user_to=user_to,user_in_use=g.user,my_events=my_events,error=error)
 
 
 #This script add to the users attending event list
@@ -703,23 +704,23 @@ def go_to(name):
 
     #Appending to the event's who_is_coming list
     event = db.events.find_one({'name':name})
-    if guser in event['who_is_coming']:
+    if g.user in event['who_is_coming']:
         pass
     else:
-        db.events.update({'name': name}, {'$push': {'who_is_coming': guser}})
-        db.users.update({'name': guser}, {'$push': {'going_to': name}})
+        db.events.update({'name': name}, {'$push': {'who_is_coming': g.user}})
+        db.users.update({'name': g.user}, {'$push': {'going_to': name}})
      #Appending to the user's going_to list
 
 
-    return redirect('/'+guser)
+    return redirect('/'+g.user)
 
 @app.route('/events/all/past' ,methods =['GET','POST'])
 def view_past_events():
-    if guser:
+    if g.user:
         error = None
         past_events =db.past_events.find()
 
-        events = db.events.find({'who_made_me': guser})
+        events = db.events.find({'who_made_me': g.user})
         my_events = []
         for i in events:
             my_events.append(i['name'])
@@ -735,7 +736,7 @@ def view_past_events():
 
     else:
         return redirect('/login')
-    return render_template('view_past_events.html',user_in_use = guser,my_events=my_events,error=error,past_events=past_events)
+    return render_template('view_past_events.html',user_in_use = g.user,my_events=my_events,error=error,past_events=past_events)
 
 #To do
 @app.route('/events/search/advanced/<event>',methods=['GET','POST'])
@@ -773,16 +774,16 @@ def admin_interface():
 def view_my_events(name):
 
     #Gets the name of the user logged in
-    user_in_use = guser
+    user_in_use = g.user
 
     #Gets the user's events
-    events = db.events.find({'who_made_me':guser})
+    events = db.events.find({'who_made_me':g.user})
     my_events = []
     for i in events:
         my_events.append(i['name'])
 
     #check if logged in
-    if guser:
+    if g.user:
 
         return render_template('events_of_user.html',my_events=my_events,user_in_use =user_in_use )
     else:
@@ -792,15 +793,15 @@ def view_my_events(name):
 @app.route('/ungo/<event>')
 def un_go_to(event):
     un_go = db.events.find_one({'name':event})
-    user_un_go = db.users.find_one({'name':guser})
-    if guser in un_go['who_is_coming']:
-        un_go['who_is_coming'].remove(guser)
+    user_un_go = db.users.find_one({'name':g.user})
+    if g.user in un_go['who_is_coming']:
+        un_go['who_is_coming'].remove(g.user)
         db.events.save(un_go)
 
     if un_go['name'] in user_un_go['going_to']:
         user_un_go['going_to'].remove(un_go['name'])
         db.users.save(user_un_go)
-    return redirect('/'+guser)
+    return redirect('/'+g.user)
 
 
 @app.route('/forgot', methods=['GET','POST'])
@@ -859,8 +860,7 @@ def notify(userto,userfrom):
 def logout(name):
     remove = db.active_users.remove({'name':name})
     db.active_users.save(remove)
-    guser = None
-    return redirect('/')
+    g.user = None
 
 
 
