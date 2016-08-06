@@ -169,7 +169,7 @@ def create_user():
 
                 #Sending a verification email to the user,the random numbers for the url are to prevent shortcuts
                 msg = Message('Thanks for creating a user @ Locomotive!', sender = email, recipients = [request.form['email']])
-                msg.body = "Hello, Thanks for creating a user @ Locomotive! click this URL to activate your account!   "+"localhost:5000"+'/adduser/'+url+'/'+request.form['create_username']
+                msg.body = "Hello, Thanks for creating a user @ Locomotive! click this URL to activate your account!   "+"locomotive.auroville.org.in"+'/adduser/'+url+'/'+request.form['create_username']
                 mail.send(msg)
                 return redirect(url_for('login'))
 
@@ -180,13 +180,15 @@ def create_user():
 @app.route('/adduser/<url>/<user_name>')
 def add_user(url,user_name):
 
+
     #finding the user from user_auth
 
     user = db.user_auth.find({'name':user_name}).count()
 
     if user != 0:
-
+        user  = db.user_auth.find_one({'name': user_name})
         if url == user['key']:
+
             #makuing a dict of the data
             adding_user = {
                 'name': user['name'],
