@@ -102,7 +102,7 @@ def locomotive():
 def home_of_user(user):
     #check if logged in otherwise redirect to login
     key = request.cookies.get('key')
-    if db.active_users.find({'key' : key}).count != 0:
+    if db.active.find({'key' : key}).count() != 0:
         #queries the DB to findout user data
         user = db.users.find_one({"name":user})
 
@@ -227,18 +227,17 @@ def login():
 
                 #generating key to hash and store in cookies to verify user.
                 key = key_gen()
+                hashed_key = hashpw(key,gensalt())
                 active_user = {
                     'name' : request.form['username'],
-                    'key'  : hashpw(key,gensalt())
+                    'key'  : hashed_key,
+                    '_id'  : hashed_key
                 }
-                db.active_users.insert_one(active_user)
+                db.active.insert_one(active_user)
 
                 resp = make_response(redirect('/%s'%(request.form['username'])))
                 resp.set_cookie('key', hashpw(key,gensalt()))
                 return resp
-
-
-
 
             else:
                    error = 'Incorrect Password'
@@ -251,22 +250,26 @@ def login():
 #Edit user profile. The URL will be locomotive.com/username/edit
 @app.route('/<edit_user>/edit', methods=['GET','POST'])
 def edit_user(edit_user):
-    #Gets name of user logged in to pass on to the webpage
-    user_in_use = g.user
+    key = request.cookies.get('key')
 
-    #The events the user owns to pass on to the webpage
-    events = db.events.find({"who_made_me": g.user})
-    my_events = []
-    for i in events:
-        my_events.append(i['name'])
+    #if key in cookies
+    if db.active_users.find({'key' : key}).count() != 0:
 
-    error = ""
+        active_user = db.active.find_one({'key' : key})
 
-    #if logged in
-    if g.user:
+        #Gets name of user logged in to pass on to the webpage
+        user_in_use = active_user['name']
+
+        #The events the user owns to pass on to the webpage
+        events = db.events.find({"who_made_me": user_in_use})
+        my_events = []
+        for i in events:
+            my_events.append(i['name'])
+
+        error = None
 
         #Find the data of the user currently logged in to edit
-        k = db.users.find_one({'name': g.user})
+        k = db.users.find_one({'name': user_in_use})
 
         #Checks if the person logged in is trying to edit their profile and not somebody else's
         if k['name'] == edit_user:
@@ -294,31 +297,38 @@ def edit_user(edit_user):
 
                     return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button style="color:green;">logout</button></a></body></html>'
         else:
-            return redirect('/'+g.user)
-    return render_template('edit_users.html', var=k,error=error,my_events=my_events,user_in_use =user_in_use )
+            return redirect('/'+user_in_use)
+        return render_template('edit_users.html', var=k,error=error,my_events=my_events,user_in_use =user_in_use )
 
-'''
+
 
 #Views all events. The URL will be locomotive.com/events/view
 @app.route('/events/view',methods=['GET','POST'])
 def view_all_events():
 
-    #Gets the name of the user logged in
-    user_in_use = g.user
+    key = request.cookies.get('key')
 
-    #Gets the user's events
-    events = db.events.find({'who_made_me':g.user})
-    my_events = []
-    for i in events:
-        my_events.append(i['name'])
 
-    #check if logged in
-    if g.user:
+
+
+    #if key in cookies
+    if db.active_users.find({'key' : key}).count() != 0:
+
+        active_user = db.active.find_one({'key' : key})
+        user_in_use = active_user['name']
+
+
+        #Gets the user's events
+        events = db.events.find({'who_made_me':user_in_use})
+        my_events = []
+        for i in events:
+            my_events.append(i['name'])
+
 
         #Grabs all the events
         all_events = db.events.find()
 
-        what_event = ""
+        what_event = None
         results = []
         #If data is posted, redirect to the search page where the query will take place and will display data. This should be real time instead of the redirects
         if request.method == 'POST':
@@ -336,19 +346,21 @@ def view_all_events():
 #Create an event. The URL will be locomotive.com/events/create
 @app.route('/events/create',methods=['GET','POST'])
 def create_event():
+    key = request.cookies.get('key')
 
-    #Gets the name of the user logged in
-    user_in_use = g.user
-
-    #Gets the user's events
-    events = db.events.find({'who_made_me':g.user})
-    my_events = []
-    for i in events:
-        my_events.append(i['name'])
 
     #If logged in
-    if g.user:
-        error = None
+    if db.active_users.find({'key' : key}).count() != 0:
+        error =  None
+
+        active_user = db.active.find_one({'key' : key})
+        user_in_use = active_user['name']
+
+        #Gets the user's events
+        events = db.events.find({'who_made_me':user_in_use})
+        my_events = []
+        for i in events:
+            my_events.append(i['name'])
 
         #If data is posted
         if request.method == 'POST':
@@ -393,7 +405,7 @@ def create_event():
                     'date' : '%s-%s-%s'%(year,month,day),
                     'image' : filename,
                     'who_is_coming': [],
-                    'who_made_me': g.user,
+                    'who_made_me': user_in_use,
                     'when_made' : '%s'%(datetime.date.today()),
                     'lat':geocode.json['lat'],
                     'lng':geocode.json['lng']
@@ -403,14 +415,14 @@ def create_event():
                 insert = db.events.insert(event_data)
 
                 #Send an email stating that the event has been added
-                msg = Message('Hello %s, You just created an event!' %(g.user), sender = email, recipients = [request.form['email']])
-                msg.body ='Your event %s was successfully added! Check it out here:locahost:5000/events/%s' %(request.form['name'],request.form['name'])
+                msg = Message('Hello %s, You just created an event!' %(user_in_use), sender = email, recipients = [request.form['email']])
+                msg.body ='Your event %s was successfully added! Check it out here:locomotive.auroville.org.in/events/%s' %(request.form['name'],request.form['name'])
                 mail.send(msg)
 
                 return redirect('/events/%s' %(request.form['name']))
         return render_template('create_event.html',user_in_use=user_in_use,error=error,my_events=my_events)
 
-
+'''
 #edit a particular event.The URL will be locomotive.com/events/edit/eventname
 @app.route('/events/edit/<event_name>',methods=['GET','POST'])
 def edit_event(event_name):
