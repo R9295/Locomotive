@@ -255,7 +255,7 @@ def login():
         else:
             error = "Username doesn't exist"
 
-    return render_template('login.html', error=error,)
+    return render_template('login.html', error=error)
 
 
 #Edit user profile. The URL will be locomotive.com/username/edit
