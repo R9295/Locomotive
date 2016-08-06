@@ -73,6 +73,9 @@ def url_gen(size=6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
 
 
+def key_gen(size=26, chars=string.ascii_uppercase + string.digits+string.punctuation):
+        return ''.join(random.choice(chars) for _ in range(size))
+
 
 
 
@@ -85,7 +88,6 @@ photos = UploadSet('photos', IMAGES)
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/img'
 
 #Setting up data collection for admin interface
-users_logged_in = []
 
 
 
@@ -99,12 +101,12 @@ def locomotive():
 @app.route('/<user>', methods=['GET','POST'])
 def home_of_user(user):
     #check if logged in otherwise redirect to login
-    if g.user:
+    if db.active_users.find({'name':user}).count() != 0:
         #queries the DB to findout user data
-        user = db.users.find_one({"name":g.user})
+        user = db.users.find_one({"name":user})
 
         #queries DB to find what events the user has made.
-        what_events_i_own = db.events.find({"who_made_me":g.user})
+        what_events_i_own = db.events.find({"who_made_me":user})
         my_events = []
         for i in what_events_i_own:
             my_events.append(i['name'])
@@ -206,27 +208,36 @@ def add_user(url,user_name):
 #Login page,need to add forgot password option. The URL will be locomotive.com/login
 @app.route('/login', methods=['GET','POST'])
 def login():
-
-
     error = None
     #If data is posted
     if request.method == 'POST':
+
         # check if  user exists
         look_for = db.users.find({'name':request.form['username']}).count()
 
         if look_for != 0:
+
             look_for = db.users.find_one({'name':request.form['username']})
+
             passwd = request.form['password'].encode('utf-8')
             #hash password and check the has with user's password
+
             if hashpw(passwd,look_for['password'].encode('utf-8')) == look_for['password']:
-                # adds  status 'I am logged in as USERNAME' to the cookies and to the list.
-                db.active_users.insert_one({
-                    'name': request.form['username']
-                })
-                g.user = request.form['name']
-                #users_logged_in.append(request.form['username'])
-                #print 'xd11'
-                return redirect('/%s'%(request.form['username']))
+
+                #generating key to hash and store in cookies to verify user.
+                key = key_gen()
+                active_user = {
+                    'name' : request.form['username'],
+                    'key'  : hashpw(key,gensalt())
+                }
+                db.active_users.insert_one(active_user)
+
+                resp = make_response(redirect('/%s'%(request.form['username'])))
+                resp.set_cookie('key', hashpw(key,gensalt()))
+                return resp
+
+
+
 
             else:
                    error = 'Incorrect Password'
@@ -285,7 +296,7 @@ def edit_user(edit_user):
             return redirect('/'+g.user)
     return render_template('edit_users.html', var=k,error=error,my_events=my_events,user_in_use =user_in_use )
 
-
+'''
 
 #Views all events. The URL will be locomotive.com/events/view
 @app.route('/events/view',methods=['GET','POST'])
@@ -855,7 +866,7 @@ def reset_password(url, name):
 @app.route('/notify/<userto>/<userfrom>/')
 def notify(userto,userfrom):
     pass
-
+'''
 @app.route('/logout/<name>')
 def logout(name):
     remove = db.active_users.remove({'name':name})
@@ -911,7 +922,7 @@ check_if_past()
 #RUN IT GUT
 if __name__ == '__main__':
     app.debug = True
-    app.secret_key='gnejrgbejberjekg'
+    app.secret_key=os.urandom(25)
     configure_uploads(app, photos)
 
 
