@@ -214,9 +214,9 @@ def add_user(url,user_name):
 def login():
 
     #kills the already logged in session cookie and removes from the list of users logged in
-    #if g.user in users_logged_in:
-     #   users_logged_in.remove(g.user)
-    #session.pop('user',None)
+    if g.user in users_logged_in:
+        users_logged_in.remove(g.user)
+    session.pop('user',None)
 
 
     error = None
