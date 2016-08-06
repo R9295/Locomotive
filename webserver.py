@@ -926,7 +926,7 @@ check_if_past()
 
 #RUN IT GUT
 if __name__ == '__main__':
-    app.debug = True
+    print 'Xd'
     app.secret_key='gnejrgbejberjekg'
     configure_uploads(app, photos)
 
