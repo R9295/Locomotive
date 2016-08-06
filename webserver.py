@@ -220,9 +220,10 @@ def login():
             #hash password and check the has with user's password
             if hashpw(passwd,look_for['password'].encode('utf-8')) == look_for['password']:
                 # adds  status 'I am logged in as USERNAME' to the cookies and to the list.
-                db.active_users.insert_one({
+                user ={
                     'name': request.form['username']
-                })
+                }
+                db.active_users.insert_one(user)
                 guser = request.form['name']
                 return redirect('/%s'%(request.form['username']))
 
