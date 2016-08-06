@@ -203,7 +203,7 @@ def add_user(url,user_name):
 
             #add to users. Verified!
             add_to_db = db.users.insert_one(adding_user)
-            return "User verified    "+user_name + "    login@"+"   localhost:5000/login"
+            return "User verified    "+user_name + "    login@"+"   locomotive.auroville.org.in/login"
         else:
             return 'Incorrect URL xd'
     else:
@@ -214,9 +214,9 @@ def add_user(url,user_name):
 def login():
 
     #kills the already logged in session cookie and removes from the list of users logged in
-    if g.user in users_logged_in:
-        users_logged_in.remove(g.user)
-    session.pop('user',None)
+    #if g.user in users_logged_in:
+     #   users_logged_in.remove(g.user)
+    #session.pop('user',None)
 
 
     error = None
@@ -841,7 +841,7 @@ def forgot_password():
             db.reset_password_key.insert_one(verify)
 
             msg = Message('Reset Password', sender=email, recipients=[request.form['email']])
-            msg.body = "Reset your password at:"+"localhost:5000/forgot/"+verify['key']+'/'+verify['user']
+            msg.body = "Reset your password at:"+"locomotive.auroville.org.in/forgot/"+verify['key']+'/'+verify['user']
             mail.send(msg)
             return redirect('/')
 
