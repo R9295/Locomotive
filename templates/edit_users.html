@@ -59,7 +59,7 @@
                     <a href="/{{user_in_use}}/edit">Edit User</a>
                 </li>
                 <li>
-                    <a href="/">Logout</a>
+                    <a href="/logout/{{user_in_use}}">Logout</a>
                 </li>
             </ul>
         </div>
@@ -167,7 +167,7 @@ function del() {
     <!-- commits the function after confirmed changes or deletion -->
     <button onclick="myFunction()" class="btn btn-success"  style="font-size:20px;">Confirm Changes</button><br>
     <button onclick="del()" class="btn btn-danger"  style="font-size:20px;">Delete {{var.name}}</button><br>
-    <a href ="/"><button  class="btn btn-default"  style="font-size:20px;">Cancel</button></a>
+    <a href ="/{{user_in_user}}"><button  class="btn btn-default"  style="font-size:20px;">Cancel</button></a>
 
 
 

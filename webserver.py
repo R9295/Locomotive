@@ -72,13 +72,6 @@ db = client.users
 def url_gen(size=6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
 
-#Check if user is logged in  before proceeding to any route
-@app.before_request
-def before_request():
-    g.user = None
-    #when you login it adds a hashed cookie to validate that you are logged in. This checks if 'user' exists in the cookie.
-    if 'user' in session:
-        g.user = session['user']
 
 
 
@@ -213,42 +206,27 @@ def add_user(url,user_name):
 #Login page,need to add forgot password option. The URL will be locomotive.com/login
 @app.route('/login', methods=['GET','POST'])
 def login():
-    print 'xd'
 
-    #kills the already logged in session cookie and removes from the list of users logged in
-    if g.user in users_logged_in:
-        users_logged_in.remove(g.user)
-        print 'xd1'
-
-
-    if g.user in session:
-        session.pop('user',None)
-        print 'xd2'
 
     error = None
-    print 'xd3'
     #If data is posted
     if request.method == 'POST':
-        print 'xd4'
         # check if  user exists
         look_for = db.users.find({'name':request.form['username']}).count()
-        print 'xd5'
 
         if look_for != 0:
-            print 'xd6'
             look_for = db.users.find_one({'name':request.form['username']})
-            print 'xd7'
             passwd = request.form['password'].encode('utf-8')
-            print 'xd8'
             #hash password and check the has with user's password
             if hashpw(passwd,look_for['password'].encode('utf-8')) == look_for['password']:
-                print 'xd9'
                 # adds  status 'I am logged in as USERNAME' to the cookies and to the list.
-                session['user'] = request.form['username']
-                print 'xd10'
+                db.active_users.insert_one({
+                    'name': request.form['username']
+                })
+                g.user = request.form['name']
                 #users_logged_in.append(request.form['username'])
                 #print 'xd11'
-                return 'Xd'
+                return redirect('/%s'%(request.form['username']))
 
             else:
                    error = 'Incorrect Password'
@@ -877,6 +855,13 @@ def reset_password(url, name):
 @app.route('/notify/<userto>/<userfrom>/')
 def notify(userto,userfrom):
     pass
+
+@app.route('/logout/<name>')
+def logout(name):
+    remove = db.active_users.remove({'name':name})
+    db.active_users.save(remove)
+    g.user = None
+    return redirect('/')
 
 
 
