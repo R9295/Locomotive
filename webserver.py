@@ -244,8 +244,8 @@ def login():
             if hashpw(passwd,look_for['password'].encode('utf-8')) == look_for['password']:
                 print 'xd9'
                 # adds  status 'I am logged in as USERNAME' to the cookies and to the list.
-                #session['user'] = request.form['username']
-                #print 'xd10'
+                session['user'] = request.form['username']
+                print 'xd10'
                 #users_logged_in.append(request.form['username'])
                 #print 'xd11'
                 return 'Xd'
