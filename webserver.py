@@ -101,7 +101,8 @@ def locomotive():
 @app.route('/<user>', methods=['GET','POST'])
 def home_of_user(user):
     #check if logged in otherwise redirect to login
-    if db.active_users.find({'name':user}).count() != 0:
+    key = request.cookies.get('key')
+    if db.active_users.find({'key' : key}).count != 0:
         #queries the DB to findout user data
         user = db.users.find_one({"name":user})
 
