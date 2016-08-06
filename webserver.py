@@ -181,13 +181,14 @@ def create_user():
 def add_user(url,user_name):
 
     #finding the user from user_auth
-
+    print 'xd'
     user = db.user_auth.find_one({'name':user_name}).count()
+    print 'xd1'
     if user != 0:
-
+        print 'xd2'
 
         if url == user['key']:
-
+            print 'xd3'
             #makuing a dict of the data
             adding_user = {
                 'name': user['name'],
@@ -203,11 +204,14 @@ def add_user(url,user_name):
 
             #add to users. Verified!
             add_to_db = db.users.insert_one(adding_user)
+            print 'xd4'
             return "User verified    "+user_name + "    login@"+"   locomotive.auroville.org.in/login"
         else:
+            print 'xd5'
             return 'Incorrect URL'
     else:
-            return "User doesn't exist"
+        print 'xd6'
+        return "User doesn't exist"
 
 #Login page,need to add forgot password option. The URL will be locomotive.com/login
 @app.route('/login', methods=['GET','POST'])
