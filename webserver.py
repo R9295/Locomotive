@@ -248,7 +248,7 @@ def login():
                 print 'xd10'
                 users_logged_in.append(request.form['username'])
                 print 'xd11'
-                return redirect('/%s'%(request.form['username']))
+                return 'Xd'
 
             else:
                    error = 'Incorrect Password'
