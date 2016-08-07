@@ -77,7 +77,7 @@
 </div>
 <br><br><br>
     {% for i in my_events: %}
-<div align="center"><h3 style="font-family: 'Raleway', cursive;font-size: 50px"><a href="/events/{{i}}" > {{i}}</a>  <a href="/events/edit/{{i}}" style="color:red;"> edit </a> </h3></div><br><br>
+<div align="center"><h3 style="font-family: 'Raleway', cursive;font-size: 50px"><a href="/events/{{i['id']}}" > {{i['name']}}</a>  <a href="/events/edit/{{i['id']}}" style="color:red;"> edit </a> </h3></div><br><br>
 <br>
 {% endfor %}
 </div>

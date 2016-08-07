@@ -45,6 +45,8 @@ from Data_validation import *
 import threading
 #to query OSM(Open Street Maps) to find Location of events.
 import geocoder
+#to query collections by their Id
+from bson.objectid import ObjectId
 
 
 #creating Flask app
@@ -416,8 +418,8 @@ def create_event():
 
 
 #edit a particular event.The URL will be locomotive.com/events/edit/eventname
-@app.route('/events/edit/<event_name>',methods=['GET','POST'])
-def edit_event(event_name):
+@app.route('/events/edit/<event_id>',methods=['GET','POST'])
+def edit_event(event_id):
 
     key = request.cookies.get('key')
     #Check if logged in
@@ -436,11 +438,13 @@ def edit_event(event_name):
         error = None
 
         #Checks if the user who is trying to edit the event actually owns it
-        var = db.events.find({'who_made_me':user_in_use,'name': event_name}).count()
+        var = db.events.find({'who_made_me':user_in_use, '_id': ObjectId(event_id)}).count()
 
         #If the user doesn't own it, then GTFO
         if var == 0:
-            return redirect('/'+g.user)
+            return redirect('/'+{{user_in_use}})
+
+        var = db.events.find_one({'who_made_me' : user_in_use, '_id'  : ObjectId(event_id)})
 
 
         #verify and update event
@@ -535,7 +539,7 @@ def edit_event(event_name):
                             msg.body += key +': '+values+'  '
 
                     mail.send(msg)
-                    return redirect('/events/%s' %(var['name']))
+                    return redirect('/events/%s' %(var['_id']))
             except:
                 error = 'Incorrect Email'
 
@@ -547,21 +551,17 @@ def edit_event(event_name):
 
 
 #Each individual event's page auto generated. The URL will be locmotive.com/events/eventname
-@app.route('/events/<event_name>',methods=['GET','POST'])
-def view_event(event_name):
+@app.route('/events/<event_id>',methods=['GET','POST'])
+def view_event(event_id):
     key = request.cookies.get('key')
     if db.active.find({'key'  :  key}).count() != 0:
         active_user = db.active.find_one({'key'  :  key})
-
         #Sets the event value to not past
         past = False
-
         #Gets the name of the user logged in
         user_in_use = active_user['name']
-
         #getting data of the user_logged in
         user_data = db.users.find_one({'name':user_in_use})
-
         #Gets the user's events
         events = db.events.find({'who_made_me':user_in_use})
         my_events = []
@@ -569,18 +569,16 @@ def view_event(event_name):
             my_events.append(i['name'])
 
         event = []
-    #If logged in
 
 
         #Check if past_event:
-
-        if db.events.find({'name':event_name}).count() != 0:
-            event = db.events.find_one({'name': event_name})
+        if db.events.find({'_id': ObjectId(event_id)}).count() != 0:
+            event = db.events.find_one({'_id': ObjectId(event_id)})
             lat_of_event = event['lat']
             lng_of_event = event['lng']
 
-        if db.past_events.find({'name':event_name}).count() != 0:
-             event = db.past_events.find_one({'name':event_name})
+        if db.past_events.find({'_id': ObjectId(event_id)}).count() != 0:
+             event = db.past_events.find_one({'_id':ObjectId(event_id)})
              lat_of_event = event['lat']
              lng_of_event = event['lng']
              past = True
@@ -589,17 +587,12 @@ def view_event(event_name):
         user_community_lat = user_data['community_lat']
         user_community_lng = user_data['community_lng']
 
-
-
-
-
-
-
-
         #Real time search for users that are attending the event, will be implemented for events also
         results = []
         search_results = None
         search_term = None
+
+
         if request.method == 'POST' :
 
             search_term = request.json['search']
@@ -792,7 +785,12 @@ def view_my_events(name):
         events = db.events.find({'who_made_me':user_in_use})
         my_events = []
         for i in events:
-            my_events.append(i['name'])
+            my_events.append({
+                'name'  : i['name'],
+                'id'   : i['_id']
+
+
+            })
 
 
         return render_template('events_of_user.html',my_events=my_events,user_in_use =user_in_use )

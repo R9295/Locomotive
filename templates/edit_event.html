@@ -149,15 +149,15 @@
           <br>
           <br>
 
-          Date(If you didn't want to change them, their values are {{var.date}} as Year-Month-Day):
+          Date(If you didn't want to change them, their values are {{var['date']}} as Year-Month-Day):
           Year
-          <input type="text" value="{{var.date[0:4]}}" name="year" class="form-control form_font">
+          <input type="text" value="{{var['date'][0:4]}}" name="year" class="form-control form_font">
 
           Month
-          <input type="text" value="{{var.date[5:7]}}" name="month" class="form-control form_font">
+          <input type="text" value="{{var['date'][5:7]}}" name="month" class="form-control form_font">
 
           Day
-          <input type="text" value="{{var.date[8:10]}}" name="day" class="form-control form_font">
+          <input type="text" value="{{var['date'][8:10]}}" name="day" class="form-control form_font">
           <br>
 
           Images!

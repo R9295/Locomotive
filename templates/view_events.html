@@ -149,7 +149,7 @@ document.getElementById("results").innerHTML = "<h3>No results<h3>";
 <div align="center">
 <!--Displays all events with name date and venue. Need to add hover over for more details -->
     {% for eventz in all_events: %}
-<h3 style="font-family: 'Raleway', cursive;font-size: 50px"><a href="/events/{{eventz.name}}" > {{ eventz.name }}</a>   Date:{{eventz.date}}   Venue:{{eventz.venue}} </h3><br><br>
+<h3 style="font-family: 'Raleway', cursive;font-size: 50px"><a href="/events/{{eventz['_id']}}" > {{ eventz['name'] }}</a>   Date:{{eventz['date']}}   Venue:{{eventz['venue']}} </h3><br><br>
 <br>
 {% endfor %}
 </div>
