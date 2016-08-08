@@ -161,7 +161,8 @@ def create_user():
                     'events_attended': [],
                     'community_lat': community_geocode.json['lat'],
                     'community_lng': community_geocode.json['lng'],
-                    'key' : url
+                    'key' : url,
+                    'notifications'  :  0
 
                             }
 
@@ -203,7 +204,8 @@ def add_user(url,user_name):
                 'going_to': [],
                 'events_attended': [],
                 'community_lat': user['community_lat'],
-                'community_lng': user['community_lng']
+                'community_lng': user['community_lng'],
+                'notifications'  :  0
             }
 
             #add to users. Verified!
@@ -609,6 +611,7 @@ def view_event(event_id):
                 results.append(i['name'])
             return  jsonify(results=results)
 
+        #if request.method == 'POST' and
 
 
 
@@ -693,6 +696,20 @@ def email_request(name):
             }
             # add to log
             db.transaction_log.insert_one(log_data)
+
+            #add to user notifications
+            user = db.users.find_one({'name'  : user_in_use})
+            user['notifications'] = user['notifications'] +1
+            db.users.save(user)
+
+
+            #add to notification database
+            notify_data = {
+                    'user_from'  :  user_to['name'],
+                    'user_to'  :  user_in_use
+            }
+            db.notifications.insert_one(notify_data)
+
 
             return redirect('/'+user_in_use)
 
@@ -824,6 +841,8 @@ def un_go_to(event):
             user_un_go['going_to'].remove(un_go['name'])
             db.users.save(user_un_go)
         return redirect('/'+user_in_use)
+    else:
+        return 'You are not logged in!'
 
 
 @app.route('/forgot', methods=['GET','POST'])
@@ -874,9 +893,27 @@ def reset_password(url, name):
 
         return render_template('reset_password.html', error = error)
 
-@app.route('/notify/<userto>/<userfrom>/')
+@app.route('/notify/<userto>/<userfrom>/<message>')
 def notify(userto,userfrom):
-    pass
+    key = request.cookies.get('key')
+
+    if db.active.find({'key'  :  key}).count() != 0:
+        active_user = db.active.find_one({'key'  :  key})
+        user_in_use = active_user['name']
+        user_from = db.users.find_one({'name'  :  userfrom})
+        user_to = db.users.find_one({'name'  :  userto})
+
+
+    # Data to append to log
+    log_data = {
+        'from': user_in_use,
+        'to': user_to['name'],
+        'when': datetime.datetime.now(),
+        'message': request.form['message']
+    }
+    # add to log
+    db.transaction_log.insert_one(log_data)
+
 
 @app.route('/logout/<name>')
 def logout(name):

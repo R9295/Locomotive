@@ -133,7 +133,7 @@ div.desc {
 
 <!-- List of events the user is attending -->
  <div class="container a">
-<h1 style="font-family: 'Raleway', cursive;font-size:50px;color:white;">Events {{user['name']}} is attending:</h1>
+<h1 style="font-family: 'Raleway', cursive;font-size:50px;color:white;">Events you are attending:</h1>
 
 {% for t in going_to: %}
 <h1><a href="/events/{{t['_id']}}" style="font-family: 'Raleway', cursive;font-size:35px">{{t['name']}}</a></h1>
