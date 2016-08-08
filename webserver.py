@@ -111,14 +111,20 @@ def home_of_user(user):
 
         #queries DB to find what events the user has made.
         what_events_i_own = db.events.find({"who_made_me":user})
-        my_events = []
-        for i in what_events_i_own:
-            my_events.append(i['name'])
+        events = db.events.find({'who_is_coming':user['name']})
+        going_to = []
+        for i in events:
+            going_to.append({
+                'name'  : i['name'],
+                'id'   : i['_id']
+
+
+            })
 
         #After all the queries are done it returns the website home.html with the data queried as parameters to be used in the HTML file.
     else:
         return redirect(url_for('login'))
-    return render_template('home.html',user=user,events=my_events)
+    return render_template('home.html',user=user,going_to=going_to)
 
 
 #Creating user here the URL will be locmotive.com/create
@@ -414,7 +420,8 @@ def create_event():
                 msg.body ='Your event %s was successfully added! Check it out here:locomotive.auroville.org.in/events/%s' %(request.form['name'],request.form['name'])
                 mail.send(msg)
 
-                return redirect('/events/%s' %(request.form['name']))
+                created_event = db.events.find_one({'name'  :  request.form['name']})
+                return redirect('/events/%s' %(created_event['_id']))
         return render_template('create_event.html',user_in_use=user_in_use,error=error,my_events=my_events)
 
 
@@ -701,12 +708,12 @@ def go_to(name):
         active_user = db.active.find_one({'key'  :  key})
         user_in_use = active_user['name']
         #Appending to the event's who_is_coming list
-        event = db.events.find_one({'name':name})
-        if user_in_use  in event['who_is_coming']:
+        event = db.events.find_one({'name'  :  name})
+        if user_in_use in event['who_is_coming']:
             pass
         else:
             db.events.update({'name': name}, {'$push': {'who_is_coming': user_in_use}})
-            db.users.update({'name': g.user}, {'$push': {'going_to': user_in_use}})
+            db.users.update({'name': user_in_use}, {'$push': {'going_to': user_in_use}})
          #Appending to the user's going_to list
 
 
