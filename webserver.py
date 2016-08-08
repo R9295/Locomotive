@@ -125,6 +125,7 @@ def home_of_user(user):
 @app.route('/create', methods =['GET','POST'])
 def create_user():
     error = None
+    add_user = False
     #if it receives a POST with data:
     if request.method == 'POST':
         #Sends it to the Datavalidation script to validate input Data
@@ -168,9 +169,9 @@ def create_user():
                 msg = Message('Thanks for creating a user @ Locomotive!', sender = email, recipients = [request.form['email']])
                 msg.body = "Hello, Thanks for creating a user @ Locomotive! click this URL to activate your account!   "+"locomotive.auroville.org.in"+'/adduser/'+url+'/'+request.form['create_username']
                 mail.send(msg)
-                return redirect(url_for('login', add_user = True))
+                add_user = True
 
-    return render_template('create_user.html', error=error)
+    return render_template('create_user.html', error=error,add_user=add_user)
 
 
 #If the user verifies, it moves data from user_auth to user.

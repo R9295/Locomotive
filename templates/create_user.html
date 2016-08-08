@@ -37,7 +37,7 @@
 
 
   <!-- Form Begin -->
- 
+
   <body ng-app="app" ng-controller="create_user">
 <br>
 <br>
@@ -48,15 +48,15 @@
     <div class="container">
         <h1 style="font-family: 'Raleway', cursive;font-size: 100px;color:black;">Create User</h1>
         <br>
-        
+
         <!-- Need to clean up styles here -->
         <form action="" method="post">
-           
+
             <div id="example">
             <input type="text" placeholder="Username" name="create_username" class="form-control form_create" ng-model="username" required><br><br>
-            
-            
-            
+
+
+
 
 
             <input type="password" placeholder="Password" name="create_password" ng-model="password" ng-change="password_verify()" class="form-control form_create" required><br><br>
@@ -82,6 +82,33 @@
 
   </body>
 
+{% if add_user == True %}
+<script>
+$(document).ready(function(){
+$('#myModal').modal('show')
+});
+</script>
+{% endif %}
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Thanks for creating a user!</h4>
+      </div>
+      <div class="modal-body">
+        <p>In order to use the account, you must activate it. The activation email has been sent to you. Please check your email and activate the account by clicking on the link we provided</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <script>
 // onchange verification by Angular
