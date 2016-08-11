@@ -4,6 +4,7 @@
 <title>{{var.name}}</title>
 <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
  <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
@@ -46,14 +47,14 @@
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
                     <a href="#">
-                        Logged in as {{user_in_use}}
+                        Logged in as {{user['name']}}
                     </a>
                 </li>
                 <li>
-                    <a href="/{{user_in_use}}">Home</a>
+                    <a href="/{{user['name']}}">Home</a>
                 </li>
                 <li>
-                    <a href="/events-of/{{user_in_use}}">My Events</a>
+                    <a href="/events-of/{{user['name']}}">My Events</a>
                 </li>
                 <li>
                     <a href="/events/create">Create Event</a>
@@ -65,10 +66,10 @@
                     <a href="/events/all/past">View Past Events</a>
                 </li>
                 <li>
-                    <a href="/{{user_in_use}}/edit">Edit User</a>
+                    <a href="/{{user['name']}}/edit">Edit User</a>
                 </li>
                 <li>
-                    <a href="/logout/{{user_in_use}}">Logout</a>
+                    <a href="/logout/{{user['name']}}">Logout</a>
                 </li>
             </ul>
         </div>
@@ -95,6 +96,51 @@
         $("#wrapper").toggleClass("toggled");
     });
     </script>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title" id="exampleModalLabel"></h4>
+</div>
+<div class="modal-body" style="font-family: Raleway;">
+  Write a message to the user to see if they can travel with you.<br><br>
+   In the message, you must include the following:<br>
+  <ul>
+    <li>
+      Your name
+    </li>
+    <li>
+      Your email address or phone number
+    </li>
+    <li>
+      The name of the event
+    </li>
+  </ul>
+  <br>
+  Without these, the user may not know what you mean exactly.<br>
+  <br>
+  Please look at this link if you are not sure how the message should look like:<br>
+  <a href="locomotive.auroville.org.in/docs#example_req_message">Example Message</a>
+  <br><br>
+  <form>
+    <br>
+    <br>
+    <div class="form-group">
+      <label for="message-text" class="control-label">Message:</label>
+      <textarea class="form-control" id="message-text" name="message" placeholder="Write a request message to ask the user if they can come with you."></textarea>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+  <button type="submit" class="btn btn-primary">Send message</button>
+</div>
+</div>
+</div>
+</div>
+
 <div class="reveal">
     <div class="slides">
 
@@ -176,14 +222,53 @@
     <br>
 
 {% for people in var.who_is_coming %}
-    <a href="/email/{{people}}">{{people}}</a>
+    <a data-toggle="modal" data-target="#exampleModal" data-whatever="{{people}}">{{people}}</a>
         <br>
 {% endfor %}
+<div id="modal">
 </div>
 
-
 <script>
-//real time search
+//modal name append
+$('#exampleModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var recipient = button.data('whatever') // Extract info from data-* attributes
+  var modal = $(this)
+  modal.find('.modal-title').text(' Request to travel with ' + recipient)
+});
+
+</script><div id="results"></div>
+
+</div>
+                                         </section>
+
+
+            </div>
+        </div>
+
+
+
+ <script>
+// If slide  == 2 load the map as there were a lot of bugs when reveal tried to load the maps at the start of the presentation.
+
+
+            Reveal.addEventListener( 'slidechanged', function( event ) {
+            if (event.indexh == 2){
+              var map = L.map('map').setView([{{lat}},{{lng}}], 16);
+            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
+            {
+            maxZoom:18,
+            id: 'aarnav.pnnpakbn',
+            accessToken: '{{key}}'
+            }).addTo(map);
+
+            var marker = L.marker([ {{lat}},{{lng}} ]).addTo(map);
+            marker.bindPopup("This is where {{var['name']}} is happening!"+"<br>"+"Venue:{{var['venue']}}").openPopup();
+
+            var p = L.marker([ {{user_lat}},{{user_lng}} ]).addTo(map);
+            p.bindPopup("This is where you live!").openPopup();
+}
+});
 
     $('#search').keyup(function(){
     var search_term = $(this).val();
@@ -191,16 +276,14 @@
 $.ajax({
   type: "POST",
   contentType: "application/json; charset=utf-8",
-  url: "/events/{{var.name}}",
-  data: JSON.stringify({'search': search_term}),
+  url: "/search/user",
+  data: JSON.stringify({'search': search_term, 'event'  :  '{{var['name']}}' }),
   success: function (data) {
+    console.log(data.results)
     var reply = ""
     for (i = 0; i < data.results.length; i++){
-
-    reply = reply
-    +'<a href="/email/'
-    +data.results[i]
-    +'">'+data.results[i]+'</a>'
+     reply = reply
+    +'<h1>'+data.results[i]+'</h1>'
 }
     $("#results").html(reply);
 
@@ -214,43 +297,27 @@ $.ajax({
 
     });
 
-</script><div id="results"></div>
 
 
-                                         </section>
+  //$scope.search_now(){
+  //$http.post('/search/user',{'search':$scope.search_term,'event':{{var['name']}}).then(function successCallback(response){
+  //  var reply = ""
+  //  for (i = 0; i < response.results.length; i++){
+  //  reply = reply
+  //  +data.results[i]+'<br>'}
+  //    $("#results").html(reply);
+  //  },
+  //function errorCallback(response){
+   //$("#results").html('Xd we are having errors LUL');
+  //})
+//}})
 
 
-            </div>
-        </div>
-<script>
 
 
 
-</script>
- <script>
-// If slide  == 2 load the map as there were a lot of bugs when reveal tried to load the maps at the start of the presentation.
 
-
-            Reveal.addEventListener( 'slidechanged', function( event ) {
-            if (event.indexh == 2){
-              var map = L.map('map').setView([{{lat}},{{lng}}], 16)
-              ;
-            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
-            {
-            maxZoom:18,
-            id: 'aarnav.pnnpakbn',
-            accessToken: '{{key}}'
-            }).addTo(map);
-
-            var marker = L.marker([ {{lat}},{{lng}} ]).addTo(map);
-            marker.bindPopup("This is where {{var['name']}} is happening!"+"<br>"+"Venue:{{var['venue']}}")
-
-            var p = L.marker([ {{user_lat}},{{user_lng}} ]).addTo(map);
-            p.bindPopup("This is where you live!").openPopup();
-}
-});
-
-                  Reveal.initialize();
+Reveal.initialize();
         </script>
 
 </body>

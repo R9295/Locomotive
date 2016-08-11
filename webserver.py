@@ -222,6 +222,8 @@ def add_user(url,user_name):
 
             #add to users. Verified!
             add_to_db = db.users.insert_one(adding_user)
+            db.user_auth.remove(user)
+            db.user_auth.save()
             return "User verified    "+user_name + "    login@"+"   locomotive.auroville.org.in/login"
         else:
             return 'Incorrect URL'
@@ -587,17 +589,15 @@ def view_event(event_id):
         active_user = db.active.find_one({'key'  :  key})
         #Sets the event value to not past
         past = False
+
         #Gets the name of the user logged in
         user_in_use = active_user['name']
+
         #getting data of the user_logged in
         user_data = db.users.find_one({'name':user_in_use})
+
         #Gets the user's events
         events = db.events.find({'who_made_me':user_in_use})
-        my_events = []
-        for i in events:
-            my_events.append(i['name'])
-
-        event = []
 
 
         #Check if past_event:
@@ -622,26 +622,34 @@ def view_event(event_id):
         search_term = None
 
 
-        if request.method == 'POST' :
-
+        if request.method == 'POST':
             search_term = request.json['search']
             search_results = db.users.find({'going_to':event['name'], 'name':{'$regex': search_term}})
             for i in search_results:
                 results.append(i['name'])
             return  jsonify(results=results)
 
-        #if request.method == 'POST' and
 
 
 
 
 
 
-
-
-        return render_template('event.html', var=event,my_events=my_events,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past,results=results,user_lat=user_community_lat,user_lng=user_community_lng,key=mapbox_key)
+        return render_template('event.html', var=event,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past,results=results,user_lat=user_community_lat,user_lng=user_community_lng,user=user_data,key=mapbox_key)
     else:
         return redirect(url_for('login'))
+
+@app.route('/search/user', methods=['GET','POST'])
+def realtime_user_search():
+    if request.method == 'POST':
+        results = []
+        search_term = request.json['search']
+        event = request.json['event']
+        search_results = db.users.find({'going_to'  :  event , 'name'  :  {'$regex'  :  search_term}})
+        for i in search_results:
+            results.append(i['name'])
+        return jsonify(results=results)
+
 
 #Deletion of an event/user
 #Deletion of an event/user
@@ -751,7 +759,7 @@ def go_to(name):
             pass
         else:
             db.events.update({'name': name}, {'$push': {'who_is_coming': user_in_use}})
-            db.users.update({'name': user_in_use}, {'$push': {'going_to': user_in_use}})
+            db.users.update({'name': user_in_use}, {'$push': {'going_to': event['name']}})
          #Appending to the user's going_to list
 
 
