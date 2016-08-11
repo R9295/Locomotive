@@ -434,11 +434,11 @@ def create_event():
 
                 #Add event
                 insert = db.events.insert(event_data)
-                db.events.find_one({'name'  : request.form['name']})
+                id = db.events.find_one({'name'  : request.form['name']})
 
                 #Send an email stating that the event has been added
                 msg = Message('Hello %s, You just created an event!' %(user_in_use), sender = email, recipients = [request.form['email']])
-                msg.body ='Your event %s was successfully added! Check it out here:locomotive.auroville.org.in/events/%s' %(request.form['name'],)
+                msg.body ='Your event %s was successfully added! Check it out here:locomotive.auroville.org.in/events/%s' %(request.form['name'],id['_id'])
                 mail.send(msg)
 
                 created_event = db.events.find_one({'name'  :  request.form['name']})

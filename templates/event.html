@@ -232,25 +232,25 @@ $.ajax({
 
 
             Reveal.addEventListener( 'slidechanged', function( event ) {
-            if (event.indexh == 2){ //
-                var map = L.map('map').setView([{{lat}},{{lng}}], 16)
-                ;
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
-{
-    maxZoom:18,
-    id: 'aarnav.pnnpakbn',
-    accessToken: '{{key}}'
-}).addTo(map);
+            if (event.indexh == 2){
+              var map = L.map('map').setView([{{lat}},{{lng}}], 16)
+              ;
+            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
+            {
+            maxZoom:18,
+            id: 'aarnav.pnnpakbn',
+            accessToken: '{{key}}'
+            }).addTo(map);
 
-var marker = L.marker([{{lat}},{{lng}}]).addTo(map);
-        marker.bindPopup("This is where {{var.name}} is happening!<br>Venue:{{var.venue}}").openPopup();
+            var marker = L.marker([ {{lat}},{{lng}} ]).addTo(map);
+            marker.bindPopup("This is where {{var['name']}} is happening!"+"<br>"+"Venue:{{var['venue']}}")
 
-        var p = L.marker([{{user_lat}},{{user_lng}}]).addTo(map);
-        p.bindPopup("This is where you live!").openPopup();
-             }
-} );
+            var p = L.marker([ {{user_lat}},{{user_lng}} ]).addTo(map);
+            p.bindPopup("This is where you live!").openPopup();
+}
+});
 
-    Reveal.initialize();
+                  Reveal.initialize();
         </script>
 
 </body>
