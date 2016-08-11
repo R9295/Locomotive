@@ -21,7 +21,7 @@
             .form_font{
                 font-family: 'Raleway', cursive;font-size:20px;
               }
-                       
+
             .make_input_bigger{
                 font-family: 'Raleway', cursive;font-size:20px";
                         }
@@ -34,7 +34,7 @@
     <body style="background-color:whitesmoke;">
 
 
- <div id="wrapper">
+ <div id="wrapper" class="toggled">
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
@@ -159,6 +159,12 @@
           Day
           <input type="text" value="{{var['date'][8:10]}}" name="day" class="form-control form_font">
           <br>
+
+          Private event(This means the event cannot be found by other people unless you give them the link. Allowing only people you want to come)<br>
+          <input type="checkbox" name="private">
+          <br>
+          <br>
+
 
           Images!
           <br>

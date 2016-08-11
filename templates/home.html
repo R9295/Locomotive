@@ -11,7 +11,7 @@
         <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
         <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
         <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
-        <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{url_for('static', filename='buttons.css')}}" rel="stylesheet" type="text/css">
         <link href="{{url_for('static', filename='simple-sidebar.css')}}" rel="stylesheet" type="text/css">
 <!-- style and script to popup text when hovered over -->
 <style>
@@ -73,7 +73,7 @@ div.desc {
     <!-- background image -->
     <body style="background-image: url('static/img/fnr.png');background-size:cover;" >
     <!-- Navbar -->
- <div id="wrapper">
+ <div id="wrapper" class="toggled">
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
@@ -113,8 +113,7 @@ div.desc {
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-
-                        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                      <a href="#menu-toggle" class="button button-circle" style="background : url('/static/img/fnr.png')" id="menu-toggle">Menu Toggle</a>
                     </div>
                 </div>
             </div>

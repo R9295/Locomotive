@@ -14,7 +14,7 @@
     <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
     <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
-   <link href="{{url_for('static', filename='font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+   <link href="{{url_for('static', filename='buttons.css')}}" rel="stylesheet" type="text/css">
 
 <!--Script to Highlight input field -->
 <style>
@@ -25,6 +25,16 @@
   -o-background-size: cover;
   background-size: cover;
   color: #fed136;
+
+    .btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  font-size: 24px;
+  line-height: 1.33;
+  border-radius: 35px;
+}
+
 }
 </style>
 
@@ -54,7 +64,7 @@
 
         <br>
 
-          <input class="btn btn-success" type="submit" value="Login" style="font-family: 'Raleway', cursive;font-size:20px">
+          <input class="btn btn-success " type="submit" value="Login" style="font-family: 'Raleway', cursive;font-size:20px" >
 
       </form>
 
