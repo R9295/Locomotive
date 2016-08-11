@@ -98,6 +98,14 @@ app.config['UPLOADED_PHOTOS_DEST'] = 'static/img'
 def locomotive():
         return render_template('locomotive.html')
 
+@app.route('/locomotive/contact-us')
+def contact_us():
+    return render_template('contact_us.html')
+
+@app.route('/locomotive/docs')
+def tf_are_we():
+    return render_template('docs.html')
+
 
 #Home page of any user. The URL here will be Locomotive.com/username
 @app.route('/<user>', methods=['GET','POST'])
@@ -117,9 +125,13 @@ def home_of_user(user):
             going_to.append({
                 'name'  : i['name'],
                 'id'   : i['_id']
-
-
             })
+
+
+        if user['notifications'] != 0:
+            notifications  = db.notifications.find({'user_to'  :  user['name']})
+
+
 
         #After all the queries are done it returns the website home.html with the data queried as parameters to be used in the HTML file.
     else:
@@ -331,7 +343,7 @@ def view_all_events():
 
 
         #Grabs all the events
-        all_events = db.events.find()
+        all_events = db.events.find({'private'  :  False})
 
         what_event = None
         results = []
@@ -395,6 +407,11 @@ def create_event():
                 if request.files['photo'].filename != '':
                     filename = photos.save(request.files['photo'])
 
+
+                if request.form.get('private'):
+                    private = True
+                else:
+                    private = False
                 #Event data. request.form fields are fields on the webpage
                 event_data =  {
                     'name': request.form['name'],
@@ -411,15 +428,17 @@ def create_event():
                     'who_made_me': user_in_use,
                     'when_made' : '%s'%(datetime.date.today()),
                     'lat':geocode.json['lat'],
-                    'lng':geocode.json['lng']
+                    'lng':geocode.json['lng'],
+                    'private' : private
                 }
 
                 #Add event
                 insert = db.events.insert(event_data)
+                db.events.find_one({'name'  : request.form['name']})
 
                 #Send an email stating that the event has been added
                 msg = Message('Hello %s, You just created an event!' %(user_in_use), sender = email, recipients = [request.form['email']])
-                msg.body ='Your event %s was successfully added! Check it out here:locomotive.auroville.org.in/events/%s' %(request.form['name'],request.form['name'])
+                msg.body ='Your event %s was successfully added! Check it out here:locomotive.auroville.org.in/events/%s' %(request.form['name'],)
                 mail.send(msg)
 
                 created_event = db.events.find_one({'name'  :  request.form['name']})
@@ -481,7 +500,7 @@ def edit_event(event_id):
                         db.events.save(var)
 
                 #The dict that stores changes, and then emails them
-                changes = {'name':'Not changed', 'email':'Not changed', 'venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'phone_number': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed' }
+                changes = {'name':'Not changed', 'email':'Not changed', 'venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'phone_number': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed','private':'Not changed' }
 
                 #Gets the year month and day from event and converts it to int for it to be stored as a date
                 year = int(request.form['year'])
@@ -539,6 +558,15 @@ def edit_event(event_id):
                     var['date'] ='%s-%s-%s'%(year,month,day)
                     changes['date'] = '%s-%s-%s'%(year,month,day)
                     changes['date'].encode('utf-8')
+                    db.events.save(var)
+
+                if request.form.get('private'):
+                    var['private'] = True
+                    changes['private'] = 'Yes'
+                    db.events.save(var)
+                else:
+                    var['private'] = False
+                    changes['private'] =  'No'
                     db.events.save(var)
 
                 #Emails the stuff that has been edited to the user
@@ -706,7 +734,8 @@ def email_request(name):
             #add to notification database
             notify_data = {
                     'user_from'  :  user_to['name'],
-                    'user_to'  :  user_in_use
+                    'user_to'  :  user_in_use,
+                    'when'  :  datetime.datetime.now()
             }
             db.notifications.insert_one(notify_data)
 
@@ -743,7 +772,7 @@ def view_past_events():
         active_user = db.active.find_one({'key'  :  key})
         user_in_use = active_user['name']
         error = None
-        past_events =db.past_events.find()
+        past_events =db.past_events.find({'private'  : False})
 
         events = db.events.find({'who_made_me': user_in_use})
         my_events = []
