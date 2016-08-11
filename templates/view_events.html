@@ -38,14 +38,14 @@
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
                     <a href="#">
-                        Logged in as {{user_in_use}}
+                        Logged in as {{user['name']}}
                     </a>
                 </li>
                 <li>
-                    <a href="/{{user_in_use}}">Home</a>
+                    <a href="/{{user['name']}}">Home</a>
                 </li>
                 <li>
-                    <a href="/events-of/{{user_in_use}}">My Events</a>
+                    <a href="/events-of/{{user['name']}}">My Events</a>
                 </li>
                 <li>
                     <a href="/events/create">Create Event</a>
@@ -57,10 +57,14 @@
                     <a href="/events/all/past">View Past Events</a>
                 </li>
                 <li>
-                    <a href="/{{user_in_use}}/edit">Edit User</a>
+                    <a href="/{{user['name']}}/edit">Edit User</a>
                 </li>
                 <li>
-                    <a href="/logout/{{user_in_use}}">Logout</a>
+                  <a href="/notifications/{{user['name']}}">Notifications! {% if user['notifications'] != 0 %} <h3 style="color:green;">{{user['notifications']}}</h3>{% endif %}</a>
+                </li>
+
+                <li>
+                    <a href="/logout/{{user['name']}}">Logout</a>
                 </li>
             </ul>
         </div>

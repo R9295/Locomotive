@@ -18,60 +18,14 @@
     .a{
     font-family: 'Raleway', cursive;
     }
-    .a:hover{
-    text-transform: uppercase;
-    font-size:30px
-    }
-    img{
-    max-width:100%
-    height:auto;
-
-    }
-    div.img {
-    margin: 15px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 180px;
-}
-
-div.img:hover {
-    border: 1px solid #777;
-}
-
-
-div.desc {
-    padding: 15px;
-    text-align: center;
-}
 </style>
-<script>
-    $('table div')
-    .on('mouseenter', function(){
-        var div = $(this);
-        div.stop(true, true).animate({
-            margin: -10,
-            width: "+=20",
-            height: "+=20"
-        }, 'fast');
-    })
-    .on('mouseleave', function(){
-        var div = $(this);
-        div.stop(true, true).animate({
-            margin: 0,
-            width: "-=20",
-            height: "-=20"
-        }, 'fast');
-    })
-
-</script>
-
 
 
 
     <title>{{user['name']}}  |   Home</title>
 </head>
     <!-- background image -->
-    <body style="background-image: url('static/img/fnr.png');background-size:cover;" >
+    <body style="background-image: url('static/back_4.jpg');background-size:cover;" >
     <!-- Navbar -->
  <div id="wrapper" class="toggled">
 
@@ -100,6 +54,10 @@ div.desc {
                 </li>
                 <li>
                     <a href="/{{user['name']}}/edit">Edit User</a>
+                </li>
+                <li>
+                  <a href="/notifications/{{user['name']}}">Notifications! {% if user['notifications'] != 0 %} <h3 style="color:green;">{{user['notifications']}}</h3>{% endif %}      </a>
+
                 </li>
                 <li>
                     <a href="/logout/{{user['name']}}">Logout</a>
@@ -132,7 +90,7 @@ div.desc {
 
 <!-- List of events the user is attending -->
  <div class="container a">
-<h1 style="font-family: 'Raleway', cursive;font-size:50px;color:white;">Events you are attending:</h1>
+<h1 style="font-family: 'Raleway', cursive;font-size:50px;color:black;">Events you are attending:</h1>
 
 {% for t in going_to: %}
 <h1><a href="/events/{{t['id']}}" style="font-family: 'Raleway', cursive;font-size:35px">{{t['name']}}</a></h1>

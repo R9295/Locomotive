@@ -279,12 +279,9 @@ def edit_user(edit_user):
 
         #Gets name of user logged in to pass on to the webpage
         user_in_use = active_user['name']
-
+        user = db.users.find_one({'name'  :  user_in_use})
         #The events the user owns to pass on to the webpage
         events = db.events.find({"who_made_me": user_in_use})
-        my_events = []
-        for i in events:
-            my_events.append(i['name'])
 
         error = None
 
@@ -319,7 +316,7 @@ def edit_user(edit_user):
         else:
             return redirect('/'+user_in_use)
 
-        return render_template('edit_users.html', var=k,error=error,my_events=my_events,user_in_use =user_in_use )
+        return render_template('edit_users.html', var=k,error=error,user=user)
 
 
 
@@ -333,13 +330,11 @@ def view_all_events():
 
         active_user = db.active.find_one({'key' : key})
         user_in_use = active_user['name']
+        user = db.users.find_one({'name'  :  user_in_use})
 
 
         #Gets the user's events
         events = db.events.find({'who_made_me':user_in_use})
-        my_events = []
-        for i in events:
-            my_events.append(i['name'])
 
 
         #Grabs all the events
@@ -355,7 +350,7 @@ def view_all_events():
                 results.append(i['name'])
             return jsonify(results=results)
 
-        return render_template('view_events.html',all_events=all_events,my_events=my_events,user_in_use =user_in_use )
+        return render_template('view_events.html',all_events=all_events,user=user)
     else:
         return redirect(url_for('login'))
 
@@ -370,12 +365,10 @@ def create_event():
 
         active_user = db.active.find_one({'key' : key})
         user_in_use = active_user['name']
+        user = db.users.find_one({'name'  :  user_in_use})
 
         #Gets the user's events
         events = db.events.find({'who_made_me':user_in_use})
-        my_events = []
-        for i in events:
-            my_events.append(i['name'])
 
         #If data is posted
         if request.method == 'POST':
@@ -443,7 +436,7 @@ def create_event():
 
                 created_event = db.events.find_one({'name'  :  request.form['name']})
                 return redirect('/events/%s' %(created_event['_id']))
-        return render_template('create_event.html',user_in_use=user_in_use,error=error,my_events=my_events)
+        return render_template('create_event.html',error=error,user = user)
 
 
 #edit a particular event.The URL will be locomotive.com/events/edit/eventname
@@ -457,12 +450,10 @@ def edit_event(event_id):
         active_user = db.active.find_one({'key'  :  key})
         #Gets the name of the user logged in
         user_in_use = active_user['name']
+        user = db.users.find_one({'name'  : user_in_use})
 
         #gets the user's events
         events = db.events.find({'who_made_me':user_in_use})
-        my_events = []
-        for i in events:
-            my_events.append(i['name'])
 
         error = None
 
@@ -585,7 +576,7 @@ def edit_event(event_id):
 
     else:
         return redirect(url_for('login'))
-    return render_template('edit_event.html',var=var,error=error,my_events=my_events,user_in_use =user_in_use )
+    return render_template('edit_event.html',var=var,error=error,user=user)
 
 
 #Each individual event's page auto generated. The URL will be locmotive.com/events/eventname
@@ -652,6 +643,7 @@ def view_event(event_id):
     else:
         return redirect(url_for('login'))
 
+#Deletion of an event/user
 #Deletion of an event/user
 @app.route('/delete/<name>',methods=['GET','POST'])
 def deleteion(name):
@@ -774,10 +766,7 @@ def view_past_events():
         error = None
         past_events =db.past_events.find({'private'  : False})
 
-        events = db.events.find({'who_made_me': user_in_use})
-        my_events = []
-        for i in events:
-            my_events.append(i['name'])
+        user = db.users.find_one({'name'  :  user_in_use})
 
         #If data is posted, redirect to the search page where the query will take place and will display data. This should be real time instead of the redirects
         if request.method == 'POST':
@@ -790,7 +779,7 @@ def view_past_events():
 
     else:
         return redirect('/login')
-    return render_template('view_past_events.html',user_in_use = user_in_use,my_events=my_events,error=error,past_events=past_events)
+    return render_template('view_past_events.html',error=error,past_events=past_events,user=user)
 
 #To do
 @app.route('/events/search/advanced/<event>',methods=['GET','POST'])
@@ -849,7 +838,7 @@ def view_my_events(name):
 
         #Gets the name of the user logged in
         user_in_use = active_user['name']
-
+        user = db.users.find_one({'name'  :  user_in_use})
         #Gets the user's events
         events = db.events.find({'who_made_me':user_in_use})
         my_events = []
@@ -862,7 +851,7 @@ def view_my_events(name):
             })
 
 
-        return render_template('events_of_user.html',my_events=my_events,user_in_use =user_in_use )
+        return render_template('events_of_user.html',my_events=my_events,user=user)
     else:
         return redirect(url_for('login'))
 
@@ -937,26 +926,23 @@ def reset_password(url, name):
 
         return render_template('reset_password.html', error = error)
 
-@app.route('/notify/<userto>/<userfrom>/<message>')
-def notify(userto,userfrom):
+@app.route('/notifications/<user>')
+def notifications(user):
     key = request.cookies.get('key')
-
     if db.active.find({'key'  :  key}).count() != 0:
         active_user = db.active.find_one({'key'  :  key})
         user_in_use = active_user['name']
-        user_from = db.users.find_one({'name'  :  userfrom})
-        user_to = db.users.find_one({'name'  :  userto})
+
+        notifications_of_user = db.notifications.find({'user_to'  :  user_in_use})
+
+        rm_notifications =db.users.find_one({'name'  :  user_in_use})
+
+        rm_notifications['notifications'] = 0
+        db.users.save(rm_notifications)
+
+    return render_template('notifications.html', notifications=notifications_of_user,user=rm_notifications)
 
 
-    # Data to append to log
-    log_data = {
-        'from': user_in_use,
-        'to': user_to['name'],
-        'when': datetime.datetime.now(),
-        'message': request.form['message']
-    }
-    # add to log
-    db.transaction_log.insert_one(log_data)
 
 
 @app.route('/logout/<name>')
