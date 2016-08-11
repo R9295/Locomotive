@@ -799,29 +799,44 @@ def advanced_search(event):
 
 @app.route('/user/admin', methods =['GET','POST'])
 def admin_interface():
-    #getting total amount of events
-    total_events = db.events.find().count()
+    key = request.cookies.get('key')
+    if key == None:
+            return  'Xd nice try'
+    else:
+        if db.active.find({'key'  :  key}).count() != 0:
+            active_user = db.active.find_one({'key'  :  key})
+            if active_user['name'] != 'Aarnav':
+                return  "Xd you ain't admin"
+            else:
 
-    #getting total amount of users
 
-    total_users = db.users.find().count()
+                #admin user
+                db.events.find_one({'name' : 'Aarnav'})
 
-    #getting total amount of past_events
+                #getting total amount of events
+                total_events = db.events.find().count()
+                users_logged_in = db.active.count()
 
-    total_past_events = db.past_events.find().count()
+                #getting total amount of users
 
-    recent_events = []
-    k = 0
-    for i in db.events.find():
-        recent_events.append(i['name'])
-        k = k+1
-        if k == 4:
-            break
+                total_users = db.users.find().count()
 
-    if request.method == 'POST':
-        return jsonify(results={'total_past_events':total_past_events,'total_events':total_events,'total_users':total_users, 'users_logged_in':len(users_logged_in),'recent_events':recent_events})
+                #getting total amount of past_events
 
-    return render_template('admin_interface.html')
+                total_past_events = db.past_events.find().count()
+
+                recent_events = []
+                k = 0
+                for i in db.events.find():
+                    recent_events.append(i['name'])
+                    k = k+1
+                    if k == 4:
+                        break
+
+                if request.method == 'POST':
+                    return jsonify(results={'total_past_events':total_past_events,'total_events':total_events,'total_users':total_users, 'users_logged_in':users_logged_in,'recent_events':recent_events})
+
+        return render_template('admin_interface.html')
 
 #Views all events. The URL will be locomotive.com/events/view
 @app.route('/events-of/<name>',methods=['GET','POST'])
