@@ -279,11 +279,11 @@ $.ajax({
   url: "/search/user",
   data: JSON.stringify({'search': search_term, 'event'  :  '{{var['name']}}' }),
   success: function (data) {
-    console.log(data.results)
     var reply = ""
+    //    <a data-toggle="modal" data-target="#exampleModal" data-whatever="{{people}}">{{people}}</a>
     for (i = 0; i < data.results.length; i++){
      reply = reply
-    +'<h1>'+data.results[i]+'</h1>'
+    +'<a data-toggle="modal" data-target="#exampleModal" data-whatever="'+data.results[i]+'">'+data.results[i]+'</a>'
 }
     $("#results").html(reply);
 
