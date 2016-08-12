@@ -1,331 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<title>{{var.name}}</title>
-<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+  <title>{{var.name}}</title>
+  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
- <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
-    <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
-<link href="{{url_for('static', filename='buttons.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{url_for('static', filename='reveal.css')}}" rel="stylesheet" type="text/css">
-     <script src="{{url_for('static',filename='reveal.js')}}"></script>
-    <link href="{{url_for('static', filename='simple-sidebar.css')}}" rel="stylesheet" type="text/css">
-
- <link rel="stylesheet" href="{{url_for('static',filename='leaflet.css')}}">
-  <script type="text/javascript" src="{{url_for('static',filename='leaflet.js')}}"></script>
-
-
-<style>
-    .form_font{
-    font-family: 'Raleway', cursive;font-size:30px;
-    }
-</style>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" type="text/css">
+      <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+      <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
+  <link href="{{url_for('static', filename='buttons.css')}}" rel="stylesheet" type="text/css">
+      <link href="{{url_for('static', filename='simple-sidebar.css')}}" rel="stylesheet" type="text/css">
+   <link rel="stylesheet" href="{{url_for('static',filename='leaflet.css')}}">
+   <script src="{{url_for('static', filename='leaflet.js')}}"></script>
   <style>
-
-
-
-    body { margin:0; padding:0; }
-    .map { position:absolute; top:0; bottom:0; width:100%; }
-
-
-
+      .form_font{
+      font-family: 'Raleway', cursive;font-size:30px;
+      }
   </style>
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
 
-
+    <!-- Custom CSS -->
+    <link href="/static/one-page-wonder.css" rel="stylesheet">
 </head>
 
+<body style="background-image: url('/static/img/background.jpg ');" >
+    <!-- Full Width Image Header -->
+    {% if var['image'] != None: %}
+    <header class="header-image" style="background-image: url('/static/img/{{var['image']}}');">
+      {% else %}
+    <header class="header-image" style="background-color:black;color:white;">  
+    {% endif %}
 
-<body>
-
- <div id="wrapper" class="toggled">
-
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper"  style="font-family:Raleway;">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a href="#">
-                        Logged in as {{user['name']}}
-                    </a>
-                </li>
-                <li>
-                    <a href="/{{user['name']}}">Home</a>
-                </li>
-                <li>
-                    <a href="/events-of/{{user['name']}}">My Events</a>
-                </li>
-                <li>
-                    <a href="/events/create">Create Event</a>
-                </li>
-                <li>
-                    <a href="/events/view">View Events</a>
-                </li>
-                <li>
-                    <a href="/events/all/past">View Past Events</a>
-                </li>
-                <li>
-                    <a href="/{{user['name']}}/edit">Edit User</a>
-                </li>
-                <li>
-                  <a href="/notifications/{{user['name']}}">Notifications! {% if user['notifications'] != 0 %} <h3 style="color:green;">{{user['notifications']}}</h3>{% endif %}      </a>
-                </li>
-                <li>
-                    <a href="/logout/{{user['name']}}">Logout</a>
-                </li>
-            </ul>
-        </div>
-        <!-- /#sidebar-wrapper -->
-
-        <!-- Page Content -->
-        <div id="page-content-wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-
-                      <a href="#menu-toggle" class="button button-circle" style="background : url('/static/img/logo.jpg')" id="menu-toggle"></a>
-                    </div>
-                </div>
+        <div class="headline">
+            <div class="container">
+                <h1>{{var['name']}}</h1>
             </div>
         </div>
-        <!-- /#page-content-wrapper -->
+    </header>
 
+    <!-- Page Content -->
+    <div class="container">
+
+        <hr class="featurette-divider">
+
+        <!-- First Featurette -->
+        <div class="featurette" id="about" style="color:white;">
+            <h2 class="featurette-heading">Event data,
+                <span class="text-muted">all about {{var['name']}}</span>
+            </h2>
+
+            <h1 align="center" style="color:white;">{{var['name']}}</h1>
+              <div class="container" align="center" style="font-family: Raleway;color:white;">
+                <h3>
+                                 Event created by:
+                                  {{var.who_made_me}}
+                                  <br><br>
+
+                                  Event Name:
+                                  {{var.name}}
+                                  <br><br>
+
+                                  When added:
+                                  {{var['when_made']}}
+                                  <br>
+
+                                  Host's Email:
+                                  {{var.email}}
+                                  <br><br>
+
+                                  Host's phone number:
+                                  {{var.phone_number}}
+                                  <br>
+
+                                  Event Location:
+                                  {{var.venue}}
+                                  <br>
+
+                                  Event Address:
+                                  {{var.address}}
+                                  <br>
+
+                                  Event's Description:
+                                  {{var.description}}
+                                  <br>
+
+                                  When the event is happening:
+                                  {{var.date}}
+                                  <br>
+
+                                  Event Begins at:
+                                  {{var.time}}
+                                  <br>
+
+                                  Event duration:
+                                  {{var.duration}}
+                                  <br>
+                              </h3>        </div>
+
+        <hr class="featurette-divider">
+
+
+        <!-- Second Featurette -->
+        <div class="featurette" id="services" style="color:white;">
+            <h2 class="featurette-heading">Map,
+                <span class="text-muted">location of the event</span><br>
+                <div id="map" style="width: 200%; height: 500px;"></div>
+            </h2>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <!-- Third Featurette -->
+        <div class="featurette" id="contact" style="color:white;" >
+            <h2 class="featurette-heading">Attend Event,
+                <span class="text-muted">go to {{var['name']}}</span>
+                <br>
+
+                {% if past != True: %}
+
+          <a href="/goto/{{var['name']}}"><input type="submit" value="Go to!" class="btn btn-success"></a>
+          <a href="/ungo/{{var['name']}}"><input type="submit" value="Un-go to" class="btn btn-danger"></a>
+      {% endif %}
+
+      <form method="post" id="xd">
+        <div class="col-xs-4" align="left">
+          <input class="form-control" name="search" id="search" type="text">
+        </div>
+      </form>
+    <div align="right">
+          Who's coming:
+          <br>
+      {% for people in var.who_is_coming %}
+          <a data-toggle="modal" data-target="#exampleModal" data-whatever="{{people}}">{{people}}</a>
+      {% endfor %}
+      <div id="results" align="left"></div>
+
+      </div>
+
+</div>
+
+<div id="modal"></div>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="exampleModalLabel"></h4>
+        </div>
+        <div class="modal-body" style="font-family: Raleway;" style="color:black;">
+          Write a message to the user to see if they can travel with you.<br><br>
+          In the message, you must include the following:<br>
+          <ul>
+            <li>
+              Your name
+            </li>
+            <li>
+              Your email address or phone number
+            </li>
+            <li>
+              The name of the event
+            </li>
+          </ul>
+          <br>
+          Without these, the user may not know what you mean exactly.<br>
+          <br>
+          Please look at this link if you are not sure how the message should look like:<br>
+          <a href="locomotive.auroville.org.in/docs/#example_req_message">Example Message</a>
+          <br><br>
+          <form method="post">
+            <br>
+            <br>
+            <div class="form-group">
+              User to:<br>
+              <input type="text" class="form-control" name="user_to" id="user_to"  readonly="readonly"><br>
+              <label for="message-text" class="control-label">Message:</label>
+              <textarea class="form-control" id="message-text" name="message" placeholder="Write a request message to ask the user if they can come with you."></textarea>
+              <br>
+              <button type="submit" class="btn btn-primary">Send message</button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
     </div>
+  </div>
+        <hr class="featurette-divider">
+
+    <!-- /.container -->
 
     <script>
+    //Initialising Map
+    var map = L.map('map').setView([{{lat}},{{lng}}], 16);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
+    {
+    maxZoom:25,
+    id: 'aarnav.pnnpakbn',
+    accessToken: '{{key}}'
+    }).addTo(map);
+
+    //setting markers
+    var marker = L.marker([ {{lat}},{{lng}} ]).addTo(map);
+    marker.bindPopup("<h4 style='color:black;'>This is where {{var['name']}} is happening!"+"<br>"+"Venue:{{var['venue']}}</h4>").openPopup();
+
+    var p = L.marker([ {{user_lat}},{{user_lng}} ]).addTo(map);
+    p.bindPopup("<h4 style='color:black;'>This is where you live!</h4>").openPopup();
+
+    //real time search
+    $('#search').keyup(function(){
+    var search_term = $(this).val();
+
+    $.ajax({
+      type: "POST",
+      contentType: "application/json; charset=utf-8",
+      url: "/search/user",
+      data: JSON.stringify({'search': search_term, 'event'  :  '{{var['name']}}' }),
+      success: function (data) {
+        var reply = "Search results:"
+        //    <a data-toggle="modal" data-target="#exampleModal" data-whatever="{{people}}">{{people}}</a>
+        for (i = 0; i < data.results.length; i++){
+         reply = reply+'<br>'
+        +'<a data-toggle="modal" data-target="#exampleModal" data-whatever="'+data.results[i]+'">'+data.results[i]+'</a>'
+    }
+        $("#results").html(reply);
+      },
+      dataType: "json"
+    });
+    });
+
+    //sidebar toggle
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
-    </script>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-<div class="modal-dialog" role="document">
-<div class="modal-content">
-<div class="modal-header">
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-  <h4 class="modal-title" id="exampleModalLabel"></h4>
-</div>
-<div class="modal-body" style="font-family: Raleway;">
-  Write a message to the user to see if they can travel with you.<br><br>
-   In the message, you must include the following:<br>
-  <ul>
-    <li>
-      Your name
-    </li>
-    <li>
-      Your email address or phone number
-    </li>
-    <li>
-      The name of the event
-    </li>
-  </ul>
-  <br>
-  Without these, the user may not know what you mean exactly.<br>
-  <br>
-  Please look at this link if you are not sure how the message should look like:<br>
-  <a href="locomotive.auroville.org.in/docs/#example_req_message">Example Message</a>
-  <br><br>
-  <form method="post">
-    <br>
-    <br>
-    <div class="form-group">
-      User to:<br>
-      <input type="text" class="form-control" name="user_to" id="user_to"  readonly="readonly"><br>
-      <label for="message-text" class="control-label">Message:</label>
-      <textarea class="form-control" id="message-text" name="message" placeholder="Write a request message to ask the user if they can come with you."></textarea>
-      <br>
-      <button type="submit" class="btn btn-primary">Send message</button>
-    </div>
-  </form>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-</div>
-</div>
-</div>
-</div>
-
-<div class="reveal">
-    <div class="slides">
-
-                <section style="font-size:40px;" data-background-image="var['image']">{{var['name']}}</section>
-
-                <section style="font-size:20px;"><h1>Event Data!</h1><br>
-                                       Event created by:
-                                        {{var.who_made_me}}
-                                        <br><br>
-
-                                        Event Name:
-                                        {{var.name}}
-                                        <br><br>
-
-                                        When added:
-                                        {{var['when_made']}}
-                                        <br>
-
-                                        Host's Email:
-                                        {{var.email}}
-                                        <br><br>
-
-                                        Host's phone number:
-                                        {{var.phone_number}}
-                                        <br>
-
-                                        Event Location:
-                                        {{var.venue}}
-                                        <br>
-
-                                        Event Address:
-                                        {{var.address}}
-                                        <br>
-
-                                        Event's Description:
-                                        {{var.description}}
-                                        <br>
-
-                                        When the event is happening:
-                                        {{var.date}}
-                                        <br>
-
-                                        Event Begins at:
-                                        {{var.time}}
-                                        <br>
-
-                                        Event duration:
-                                        {{var.duration}}
-                                        <br>
-
-
-                                        </section>
-
-
-                                        <section>
-                                        <div id="map" align="center" style="height:600px;width:1000px;"></div>
-                                         </section>
-                                         <section>
-
-          {% if past != True: %}
-<form action="/goto/{{var.name}}">
-    <input type="submit" value="Go to!" class="btn btn-success" style="font-size:25px;">
-
-<br><br>
-</form>
-    <a href="/ungo/{{var['name']}}"><input type="submit" value="Un-go to" class="btn btn-danger" style="font-size:25px;"></a>
-{% endif %}
-
-<form method="post" id="xd">
-    <input type="text" name="search" id="search">
-
-</form>
-<br>
-<br>
-
-
-    <div align="right">
-    Who's coming:
-    <br>
-
-{% for people in var.who_is_coming %}
-    <a data-toggle="modal" data-target="#exampleModal" data-whatever="{{people}}">{{people}}</a>
-        <br>
-{% endfor %}
-<div id="modal">
-</div>
-
-<script>
-//modal name append
-$('#exampleModal').on('show.bs.modal', function (event) {
-  var button = $(event.relatedTarget) // Button that triggered the modal
-  var recipient = button.data('whatever') // Extract info from data-* attributes
-  var modal = $(this)
-  modal.find('.modal-title').text(' Request to travel with ' + recipient)
-  document.getElementById("user_to").value = recipient;
-});
-
-</script><div id="results"></div>
-
-</div>
-                                         </section>
-
-
-            </div>
-        </div>
-
-
-
- <script>
-// If slide  == 2 load the map as there were a lot of bugs when reveal tried to load the maps at the start of the presentation.
-
-
-            Reveal.addEventListener( 'slidechanged', function( event ) {
-            if (event.indexh == 2){
-              var map = L.map('map').setView([{{lat}},{{lng}}], 16);
-            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
-            {
-            maxZoom:18,
-            id: 'aarnav.pnnpakbn',
-            accessToken: '{{key}}'
-            }).addTo(map);
-
-            var marker = L.marker([ {{lat}},{{lng}} ]).addTo(map);
-            marker.bindPopup("This is where {{var['name']}} is happening!"+"<br>"+"Venue:{{var['venue']}}").openPopup();
-
-            var p = L.marker([ {{user_lat}},{{user_lng}} ]).addTo(map);
-            p.bindPopup("This is where you live!").openPopup();
-}
-});
-
-    $('#search').keyup(function(){
-    var search_term = $(this).val();
-
-$.ajax({
-  type: "POST",
-  contentType: "application/json; charset=utf-8",
-  url: "/search/user",
-  data: JSON.stringify({'search': search_term, 'event'  :  '{{var['name']}}' }),
-  success: function (data) {
-    var reply = ""
-    //    <a data-toggle="modal" data-target="#exampleModal" data-whatever="{{people}}">{{people}}</a>
-    for (i = 0; i < data.results.length; i++){
-     reply = reply
-    +'<a data-toggle="modal" data-target="#exampleModal" data-whatever="'+data.results[i]+'">'+data.results[i]+'</a>'
-}
-    $("#results").html(reply);
-
-
-  },
-  dataType: "json"
-});
-
-
-
-
+    //modal name append
+    $('#exampleModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget) // Button that triggered the modal
+      var recipient = button.data('whatever') // Extract info from data-* attributes
+      var modal = $(this)
+      modal.find('.modal-title').text(' Request to travel with ' + recipient)
+      document.getElementById("user_to").value = recipient;
     });
 
 
 
-  //$scope.search_now(){
-  //$http.post('/search/user',{'search':$scope.search_term,'event':{{var['name']}}).then(function successCallback(response){
-  //  var reply = ""
-  //  for (i = 0; i < response.results.length; i++){
-  //  reply = reply
-  //  +data.results[i]+'<br>'}
-  //    $("#results").html(reply);
-  //  },
-  //function errorCallback(response){
-   //$("#results").html('Xd we are having errors LUL');
-  //})
-//}})
+    </script>
 
-
-
-
-
-
-Reveal.initialize();
-        </script>
 
 </body>
 
