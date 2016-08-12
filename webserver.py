@@ -222,8 +222,9 @@ def add_user(url,user_name):
 
             #add to users. Verified!
             add_to_db = db.users.insert_one(adding_user)
-            db.user_auth.remove(user)
-            db.user_auth.save()
+            rm = db.user_auth.find_one({'name'  :  user['name']})
+            db.user_auth.remove(rm)
+            db.user_auth.save(rm)
             return "User verified    "+user_name + "    login@"+"   locomotive.auroville.org.in/login"
         else:
             return 'Incorrect URL'
@@ -340,7 +341,7 @@ def view_all_events():
 
 
         #Grabs all the events
-        all_events = db.events.find({'private'  :  False})
+        all_events = db.events.find({'private'  :  False,'when_made'  :  {'$regex'  : '%s'%(datetime.date.today())}}).sort([("when" , -1)])
 
         what_event = None
         results = []
@@ -893,7 +894,7 @@ def notifications(user):
         active_user = db.active.find_one({'key'  :  key})
         user_in_use = active_user['name']
 
-        notifications_of_user = db.notifications.find({'user_to'  :  user_in_use})
+        notifications_of_user = db.notifications.find({'user_to'  :  user_in_use ,'when'  :  {'$regex'  : '%s'%(datetime.date.today())}}).sort([("when" , -1)])
 
         rm_notifications =db.users.find_one({'name'  :  user_in_use})
 
