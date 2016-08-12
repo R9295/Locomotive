@@ -154,6 +154,11 @@ def create_user():
             error = validates
 
 
+        community_geocode = geocoder.osm(request.form['community']+' Auroville India')
+        if community_geocode.json['status'] != False:
+            error = "Locomotive cannot serve this community due to technical reasons, please choose another one that is closeby "
+
+
         #If no errors, then create user
         else:
             #try to add user and send email but if it doesnt work, that means email is incorrect.
@@ -161,7 +166,8 @@ def create_user():
                 #hashes the password to store
                 hashed_password = hashpw(request.form['create_password'].encode('utf-8'),gensalt())
 
-                community_geocode = geocoder.osm(request.form['community']+' Auroville India')
+
+
                 #The user data is stored in a dict as MongoDB's collections are stored in a JSON-like format. The request.forms are inputs on the website. It refers to the data posted from the form.
                 url = url_gen()
                 add_user = {
@@ -303,9 +309,16 @@ def edit_user(edit_user):
                 if hashpw(passwd,k['password'].encode('utf-8')) != k['password']:
                     error="Passwords don't match"
 
+
+                community_geocode = geocoder.osm(request.form['community']+' Auroville India')
+                if community_geocode.json['status'] != False:
+                    error = "Locomotive cannot serve this community due to technical reasons, please choose another one that is closeby "
+
                 #Checks if the new passwords match
                 elif request.form['password'] != request.form['new_password']:
                     error = "New passwords don't match"
+
+
 
                 #Updates user
                 else:
@@ -384,6 +397,12 @@ def create_event():
             if validates != None:
                 error = validates
 
+            geocode = geocoder.osm(request.form['address'])
+            if geocode.json['status'] != False:
+                error = "Locomotive cannot serve this community due to technical reasons, please choose another one that is closeby "
+
+
+
             #If photo is uploaded, check if the name exists if not, upload
             elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
                 error = "Filename already exists please rename file"
@@ -398,7 +417,6 @@ def create_event():
                 year = int(request.form['year'])
                 month = int(request.form['month'])
                 day = int(request.form['day'])
-                geocode = geocoder.osm(request.form['address'])
 
                 #If a photo is uploaded, save it
                 if request.files['photo'].filename != '':
@@ -481,9 +499,14 @@ def edit_event(event_id):
                 if validates != None:
                         error = validates
 
+                geocode = geocoder.osm(request.form['address'])
+                if geocode.json['status'] != False:
+                    error = "Locomotive cannot serve this community due to technical reasons, please choose another one that is closeby "
+
                 #Checks if image that needs to be uploaded is not already there
                 elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
                     error = "Filename already exists please rename file"
+
 
                 #Update if all satisfied
                 else:
