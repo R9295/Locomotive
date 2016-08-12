@@ -69,6 +69,9 @@
                     <a href="/{{user['name']}}/edit">Edit User</a>
                 </li>
                 <li>
+                  <a href="/notifications/{{user['name']}}">Notifications! {% if user['notifications'] != 0 %} <h3 style="color:green;">{{user['notifications']}}</h3>{% endif %}      </a>
+                </li>
+                <li>
                     <a href="/logout/{{user['name']}}">Logout</a>
                 </li>
             </ul>
@@ -124,18 +127,21 @@
   Please look at this link if you are not sure how the message should look like:<br>
   <a href="locomotive.auroville.org.in/docs#example_req_message">Example Message</a>
   <br><br>
-  <form>
+  <form method="post">
     <br>
     <br>
     <div class="form-group">
+      User to:<br>
+      <input type="text" class="form-control" name="user_to" id="user_to"  readonly="readonly"><br>
       <label for="message-text" class="control-label">Message:</label>
       <textarea class="form-control" id="message-text" name="message" placeholder="Write a request message to ask the user if they can come with you."></textarea>
+      <br>
+      <button type="submit" class="btn btn-primary">Send message</button>
     </div>
   </form>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-  <button type="submit" class="btn btn-primary">Send message</button>
 </div>
 </div>
 </div>
@@ -235,6 +241,7 @@ $('#exampleModal').on('show.bs.modal', function (event) {
   var recipient = button.data('whatever') // Extract info from data-* attributes
   var modal = $(this)
   modal.find('.modal-title').text(' Request to travel with ' + recipient)
+  document.getElementById("user_to").value = recipient;
 });
 
 </script><div id="results"></div>

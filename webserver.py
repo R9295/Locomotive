@@ -596,8 +596,6 @@ def view_event(event_id):
         #getting data of the user_logged in
         user_data = db.users.find_one({'name':user_in_use})
 
-        #Gets the user's events
-        events = db.events.find({'who_made_me':user_in_use})
 
 
         #Check if past_event:
@@ -616,26 +614,40 @@ def view_event(event_id):
         user_community_lat = user_data['community_lat']
         user_community_lng = user_data['community_lng']
 
-        #Real time search for users that are attending the event, will be implemented for events also
-        results = []
-        search_results = None
-        search_term = None
-
 
         if request.method == 'POST':
-            search_term = request.json['search']
-            search_results = db.users.find({'going_to':event['name'], 'name':{'$regex': search_term}})
-            for i in search_results:
-                results.append(i['name'])
-            return  jsonify(results=results)
+            user_to = db.users.find_one({'name'  :  request.form['user_to']})
+            user_from = user_in_use
+            message = request.form['message']
+
+            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(user_in_use), sender = email, recipients = [user_to['email']] )
+            msg.body =message
+            mail.send(msg)
+            # Data to append to log
+            log_data = {
+                'from': user_in_use,
+                'to': user_to['name'],
+                'when': datetime.datetime.now(),
+                'message': message
+            }
+            # add to log
+            db.transaction_log.insert_one(log_data)
+
+            #add to user notifications
+            user_to['notifications'] = user_to['notifications'] +1
+            db.users.save(user_to)
 
 
+            #add to notification database
+            notify_data = {
+                    'user_from'  :  user_from,
+                    'user_to'  :  user_to['name'],
+                    'when'  :  '%s' %(datetime.datetime.now()),
+                    'what_event'  :  event['name']
+            }
+            db.notifications.insert_one(notify_data)
 
-
-
-
-
-        return render_template('event.html', var=event,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,search_results=search_results,past=past,results=results,user_lat=user_community_lat,user_lng=user_community_lng,user=user_data,key=mapbox_key)
+        return render_template('event.html', var=event,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,past=past,user_lat=user_community_lat,user_lng=user_community_lng,user=user_data,key=mapbox_key)
     else:
         return redirect(url_for('login'))
 
@@ -685,66 +697,6 @@ def deleteion(name):
         db.users.remove({'name':name})
         return redirect('/login')
 
-
-#If you wanna get in touch with someone going to the events, you can email them. The URL here will be locomotive.com/email/usertoemail
-@app.route('/email/<name>', methods=['GET','POST'])
-def email_request(name):
-    key = request.cookies.get('key')
-    if db.active.find({'key'  :  key}).count() != 0:
-
-        active_user = db.active.find_one({'key'  :  key})
-        user_in_use = active_user['name']
-
-        error = None
-
-        #The user to whom you're trying to contact
-        user_to = db.users.find_one({'name':name})
-
-        #The user logged in
-        who_am_i = db.users.find_one({'name':user_in_use})
-
-        #The user's events
-        events = db.events.find({'who_made_me': user_in_use})
-        my_events = []
-        for i in events:
-            my_events.append(i['name'])
-
-        #If data is sent, then email the person.
-        if request.method == 'POST':
-            msg = Message('Hello,%s has emailed you regarding an event,please contact them back' %(user_in_use), sender = email, recipients = [user_to['email']] )
-            msg.body =request.form['message']
-            mail.send(msg)
-
-            # Data to append to log
-            log_data = {
-                'from': user_in_use,
-                'to': user_to['name'],
-                'when': datetime.datetime.now(),
-                'message': request.form['message']
-            }
-            # add to log
-            db.transaction_log.insert_one(log_data)
-
-            #add to user notifications
-            user = db.users.find_one({'name'  : user_in_use})
-            user['notifications'] = user['notifications'] +1
-            db.users.save(user)
-
-
-            #add to notification database
-            notify_data = {
-                    'user_from'  :  user_to['name'],
-                    'user_to'  :  user_in_use,
-                    'when'  :  datetime.datetime.now()
-            }
-            db.notifications.insert_one(notify_data)
-
-
-            return redirect('/'+user_in_use)
-
-    else:
-        return redirect(url_for('login'))
-    return render_template('email_request.html',user_to=user_to,user_in_use=user_in_use,my_events=my_events,error=error)
 
 #This script add to the users attending event list
 @app.route('/goto/<name>')
