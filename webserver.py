@@ -94,13 +94,14 @@ app.config['UPLOADED_PHOTOS_DEST'] = 'static/img'
 
 
 #Routing starts here. lets say it's locmotive.com. This here handles if user goes to locomotive.com
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def locomotive():
-        return render_template('locomotive.html')
 
-@app.route('/locomotive/contact-us')
-def contact_us():
-    return render_template('contact_us.html')
+    if request.method == 'POST':
+        msg = Message('%s contacted you regarding Locomotive'%(request.form['name']), sender = email, recipients = ['aarnavbos@gmail.com'])
+        msg.body = request.form['message']
+        mail.send(msg)
+    return render_template('locomotive.html')
 
 @app.route('/locomotive/docs')
 def tf_are_we():

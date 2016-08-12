@@ -66,7 +66,7 @@
                         <a href="/locomotive/docs">What is Locomotive?</a>
                     </li>
                     <li>
-                        <a  href="/locomotive/contact-us">Contact Us</a>
+                        <a  data-toggle="modal" data-target="#exampleModal" data-whatever="Contact Us">Contact Us</a>
                     </li>
                 </ul>
             </div>
@@ -89,7 +89,49 @@
         </div>
     </header>
 
- 
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title" id="exampleModalLabel"></h4>
+    </div>
+    <div class="modal-body" style="font-family: Raleway;">
+      Write to Locomotive!
+      <br><br>
+      Do you have suggestions? Errors? Improvements? Questions? Contact us! Let us know how we can help you.
+      <form method="post">
+        <br>
+        <br>
+        <div class="form-group">
+          Your name:<br>
+          <input type="text" class="form-control" name="name"><br>
+          <label for="message-text" class="control-label">Message:</label>
+          <textarea class="form-control" id="message-text" name="message" placeholder="Write a request message"></textarea>
+          <br>
+          <button type="submit" class="btn btn-primary">Send message</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+    </div>
+    </div>
+    </div>
+    <script>
+    //modal name append
+    $('#exampleModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget) // Button that triggered the modal
+      var recipient = button.data('whatever') // Extract info from data-* attributes
+      var modal = $(this)
+      modal.find('.modal-title').text(' Write to Locomotive')
+    });
+
+    </script>
 
 
 </body>
