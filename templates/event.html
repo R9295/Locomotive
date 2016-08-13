@@ -31,7 +31,7 @@
     {% if var['image'] != None: %}
     <header class="header-image" style="background-image: url('/static/img/{{var['image']}}');">
       {% else %}
-    <header class="header-image" style="background-color:black;color:white;">  
+    <header class="header-image" style="background-color:black;color:white;">
     {% endif %}
 
         <div class="headline">
@@ -134,7 +134,7 @@
           Who's coming:
           <br>
       {% for people in var.who_is_coming %}
-          <a data-toggle="modal" data-target="#exampleModal" data-whatever="{{people}}">{{people}}</a>
+          <h4><a data-toggle="modal" data-target="#exampleModal" data-whatever="{{people}}">{{people}}</a></h4>
       {% endfor %}
       <div id="results" align="left"></div>
 
@@ -224,20 +224,13 @@
         //    <a data-toggle="modal" data-target="#exampleModal" data-whatever="{{people}}">{{people}}</a>
         for (i = 0; i < data.results.length; i++){
          reply = reply+'<br>'
-        +'<a data-toggle="modal" data-target="#exampleModal" data-whatever="'+data.results[i]+'">'+data.results[i]+'</a>'
+        +'<h4><a data-toggle="modal" data-target="#exampleModal" data-whatever="'+data.results[i]+'">'+data.results[i]+'</a></h4>'
     }
         $("#results").html(reply);
       },
       dataType: "json"
     });
     });
-
-    //sidebar toggle
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-
     //modal name append
     $('#exampleModal').on('show.bs.modal', function (event) {
       var button = $(event.relatedTarget) // Button that triggered the modal
@@ -246,9 +239,6 @@
       modal.find('.modal-title').text(' Request to travel with ' + recipient)
       document.getElementById("user_to").value = recipient;
     });
-
-
-
     </script>
 
 

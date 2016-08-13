@@ -25,10 +25,10 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/{{user['name']}}">Home</a>
+                    <a href="/{{user['_id']}}">Home</a>
                 </li>
                 <li>
-                    <a href="/events-of/{{user['name']}}">My Events</a>
+                    <a href="/events-of/{{user['_id']}}">My Events</a>
                 </li>
                 <li>
                     <a href="/events/create">Create Event</a>
@@ -40,14 +40,14 @@
                     <a href="/events/all/past">View Past Events</a>
                 </li>
                 <li>
-                    <a href="/{{user['name']}}/edit">Edit User</a>
+                    <a href="/{{user['_id']}}/edit">Edit User</a>
                 </li>
                 <li>
-                  <a href="/notifications/{{user['name']}}">Notifications! {% if user['notifications'] != 0 %} <h3 style="color:green;">{{user['notifications']}}</h3>{% endif %}</a>
+                  <a href="/notifications/{{user['_id']}}">Notifications! {% if user['notifications'] != 0 %} <h3 style="color:green;">{{user['notifications']}}</h3>{% endif %}</a>
                 </li>
 
                 <li>
-                    <a href="/logout/{{user['name']}}">Logout</a>
+                    <a href="/logout/{{user['_id']}}">Logout</a>
                 </li>
             </ul>
         </div>

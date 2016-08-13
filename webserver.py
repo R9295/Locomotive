@@ -109,14 +109,14 @@ def tf_are_we():
 
 
 #Home page of any user. The URL here will be Locomotive.com/username
-@app.route('/<user>', methods=['GET','POST'])
-def home_of_user(user):
+@app.route('/<id>', methods=['GET','POST'])
+def home_of_user(id):
     key = request.cookies.get('key')
     #check if logged in otherwise redirect to login
     if db.active.find({'key' : key}).count() != 0:
 
         #queries the DB to findout user data
-        user = db.users.find_one({"name":user})
+        user = db.users.find_one({'_id'  : ObjectId(id)  })
 
         #queries DB to find what events the user has made.
         what_events_i_own = db.events.find({"who_made_me":user})
@@ -187,13 +187,14 @@ def create_user():
 
                 #adding the user
                 added = db.user_auth.insert_one(add_user)
+                user = db.users.find_one({'name'  :  add_user['name']})
 
                 #Creating a random part of URL to use
 
 
                 #Sending a verification email to the user,the random numbers for the url are to prevent shortcuts
                 msg = Message('Thanks for creating a user @ Locomotive!', sender = email, recipients = [request.form['email']])
-                msg.body = "Hello, Thanks for creating a user @ Locomotive! click this URL to activate your account!   "+"locomotive.auroville.org.in"+'/adduser/'+url+'/'+request.form['create_username']
+                msg.body = "Hello, Thanks for creating a user @ Locomotive! click this URL to activate your account!   "+"locomotive.auroville.org.in"+'/adduser/'+url+'/'+user['_id']
                 mail.send(msg)
                 add_user = True
 
@@ -201,16 +202,16 @@ def create_user():
 
 
 #If the user verifies, it moves data from user_auth to user.
-@app.route('/adduser/<url>/<user_name>')
-def add_user(url,user_name):
+@app.route('/adduser/<url>/<id>')
+def add_user(url,id):
 
 
     #finding the user from user_auth
 
-    user = db.user_auth.find({'name':user_name}).count()
+    user = db.user_auth.find({'_id':ObjectId(id)}).count()
 
     if user != 0:
-        user  = db.user_auth.find_one({'name': user_name})
+        user  = db.user_auth.find_one({'_id': ObjectId(id)})
         if url == user['key']:
 
             #makuing a dict of the data
@@ -232,7 +233,7 @@ def add_user(url,user_name):
             rm = db.user_auth.find_one({'name'  :  user['name']})
             db.user_auth.remove(rm)
             db.user_auth.save(rm)
-            return "User verified    "+user_name + "    login@"+"   locomotive.auroville.org.in/login"
+            return "User verified    "+adding_user['name']+ "    login@"+"   locomotive.auroville.org.in/login"
         else:
             return 'Incorrect URL'
     else:
@@ -265,7 +266,8 @@ def login():
                     'key'  : hashed_key,
                 }
                 db.active.insert_one(active_user)
-                resp = make_response(redirect('/%s'%(request.form['username'])))
+                user = db.users.find_one({'name'  : request.form['username']})
+                resp = make_response(redirect('/%s'%(user['_id'])))
                 resp.set_cookie('key', hashed_key)
                 return resp
 
@@ -278,7 +280,7 @@ def login():
 
 
 #Edit user profile. The URL will be locomotive.com/username/edit
-@app.route('/<edit_user>/edit', methods=['GET','POST'])
+@app.route('/<id>/edit', methods=['GET','POST'])
 def edit_user(edit_user):
     key = request.cookies.get('key')
 
@@ -289,14 +291,14 @@ def edit_user(edit_user):
 
         #Gets name of user logged in to pass on to the webpage
         user_in_use = active_user['name']
-        user = db.users.find_one({'name'  :  user_in_use})
+        user = db.users.find_one({'_id'  :  ObjectId(id)})
         #The events the user owns to pass on to the webpage
         events = db.events.find({"who_made_me": user_in_use})
 
         error = None
 
         #Find the data of the user currently logged in to edit
-        k = db.users.find_one({'name': user_in_use})
+        k = db.users.find_one({'_id': ObjectId(id)})
 
         #Checks if the person logged in is trying to edit their profile and not somebody else's
         if k['name'] == edit_user:
@@ -333,7 +335,7 @@ def edit_user(edit_user):
 
                     return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button style="color:green;">logout</button></a></body></html>'
         else:
-            return redirect('/'+user_in_use)
+            return redirect('/'+user['_id'])
 
         return render_template('edit_users.html', var=k,error=error,user=user)
 
@@ -486,7 +488,7 @@ def edit_event(event_id):
 
         #If the user doesn't own it, then GTFO
         if var == 0:
-            return redirect('/'+{{user_in_use}})
+            return redirect('/'+user['_id'])
 
         var = db.events.find_one({'who_made_me' : user_in_use, '_id'  : ObjectId(event_id)})
 
@@ -732,6 +734,7 @@ def go_to(name):
     if db.active.find({'key'  :  key}).count() != 0:
         active_user = db.active.find_one({'key'  :  key})
         user_in_use = active_user['name']
+        user = db.users.find_one({'name'  :  user_in_use})
         #Appending to the event's who_is_coming list
         event = db.events.find_one({'name'  :  name})
         if user_in_use in event['who_is_coming']:
@@ -742,7 +745,7 @@ def go_to(name):
          #Appending to the user's going_to list
 
 
-    return redirect('/'+user_in_use)
+    return redirect('/'+user['_id'])
 
 @app.route('/events/all/past' ,methods =['GET','POST'])
 def view_past_events():
@@ -815,13 +818,16 @@ def admin_interface():
         return render_template('admin_interface.html')
 
 #Views all events. The URL will be locomotive.com/events/view
-@app.route('/events-of/<name>',methods=['GET','POST'])
-def view_my_events(name):
+@app.route('/events-of/<id>',methods=['GET','POST'])
+def view_my_events(id):
 
     #check if logged in
     key = request.cookies.get('key')
     if db.active.find({'key'  :  key}).count() != 0:
         active_user = db.active.find_one({'key'  :  key})
+        user = db.users.find_one({'_id'  : ObjectId(id)})
+        if user['name'] != active_user['name']:
+            return "You don't own these events."
 
         #Gets the name of the user logged in
         user_in_use = active_user['name']
@@ -850,6 +856,7 @@ def un_go_to(event):
     if db.active.find({'key'  :  key}).count() != 0:
         active_user = db.active.find_one({'key'  :  key})
         user_in_use = active_user['name']
+        user = db.users.find_one({'name'  : active_user})
 
         un_go = db.events.find_one({'name':event})
         user_un_go = db.users.find_one({'name':user_in_use})
@@ -860,7 +867,7 @@ def un_go_to(event):
         if un_go['name'] in user_un_go['going_to']:
             user_un_go['going_to'].remove(un_go['name'])
             db.users.save(user_un_go)
-        return redirect('/'+user_in_use)
+        return redirect('/'+user['_id'])
     else:
         return 'You are not logged in!'
 
@@ -932,9 +939,10 @@ def notifications(user):
 
 
 
-@app.route('/logout/<name>')
-def logout(name):
-    remove = db.active.remove({'name':name})
+@app.route('/logout/<id>')
+def logout(id):
+    user = db.users.find_one({'_id'  : ObjectId(id)})
+    remove = db.active.remove({'name':user['name']})
     db.active_users.save(remove)
     resp = make_response(redirect('/'))
     resp.set_cookie('key','',expires=0)
