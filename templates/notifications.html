@@ -15,9 +15,9 @@
             <link href="{{url_for('static', filename='simple-sidebar.css')}}" rel="stylesheet" type="text/css">
             <link href="{{url_for('static', filename='buttons.css')}}" rel="stylesheet" type="text/css">
   </head>
-  <body>
+  <body style="background-image: url('/static/img/background.jpg');background-size:cover;">
 
-     <div id="wrapper" style="font-family: 'Raleway';" class="toggled">
+     <div id="wrapper" style="font-family: 'Raleway';"class="toggled" >
 
             <!-- Sidebar -->
             <div id="sidebar-wrapper">
@@ -78,10 +78,10 @@
         });
         </script>
     <!-- Navbar end -->
-    <h1 style="font-family: 'Raleway', cursive;font-size:50px;" align="center">Notifications</h1>
+    <h1 style="font-family: 'Raleway', cursive;font-size:50px;color:white;" align="center">Notifications</h1>
 
     {% for j in notifications %}
-    <h3 align="center">{{j['user_from']}} Emailed you regarding {{j['what_event']}} at {{j['when'][0:16]}}<h3>
+    <h3 align="center" style="color:white;">{{j['user_from']}} Emailed you regarding {{j['what_event']}} at {{j['when'][0:16]}}<h3>
     {% endfor %}
 
   </body>
