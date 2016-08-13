@@ -147,56 +147,63 @@ def create_user():
     add_user = False
     #if it receives a POST with data:
     if request.method == 'POST':
-        #Sends it to the Datavalidation script to validate input Data
-        validates =validate_create_user_input(password=request.form['create_password'],username=request.form['create_username'],password_again=request.form['password_re_enter'],phone=request.form['phone_number'],email=request.form['email'])
-        #if the validate script returns something then there is an error; it will return that error to be rectified.
-        if validates != None:
-            error = validates
 
+        if request.form['create_password'] != request.form['password_re_enter']:
+            error = "Passwords don't mach"
+
+        if db.users.find({'name':request.form['create_username']}).count() > 0:
+            error = 'User already exists. Please rename'
+
+        if  db.user_auth.find({'name':request.form['create_username']}).count() > 0:
+            error = 'User exists,Please rename'
+
+        if request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
+            error = 'Invalid phone number'
+
+        if validate_email(request.form['email']) != True:
+            error = 'Incorrect Email!'
 
         community_geocode = geocoder.osm(request.form['community']+' Auroville India')
         if community_geocode.json['status'] != 'OK':
             error = "Locomotive cannot serve this community due to technical reasons, please choose another one that is closeby "
 
-
         #If no errors, then create user
-        else:
+        if error == None:
             #try to add user and send email but if it doesnt work, that means email is incorrect.
 
                 #hashes the password to store
-                hashed_password = hashpw(request.form['create_password'].encode('utf-8'),gensalt())
+            hashed_password = hashpw(request.form['create_password'].encode('utf-8'),gensalt())
 
 
 
-                #The user data is stored in a dict as MongoDB's collections are stored in a JSON-like format. The request.forms are inputs on the website. It refers to the data posted from the form.
-                url = url_gen()
-                add_user = {
-                    'name' : request.form['create_username'],
-                    'password' : hashed_password,
-                    'phone_number' : request.form['phone_number'],
-                    'email' : request.form['email'],
-                    'community' : request.form['community'],
-                    'going_to' : [],
-                    'events_attended': [],
-                    'community_lat': community_geocode.json['lat'],
-                    'community_lng': community_geocode.json['lng'],
-                    'key' : url,
-                    'notifications'  :  0
-
+            #The user data is stored in a dict as MongoDB's collections are stored in a JSON-like format. The request.forms are inputs on the website. It refers to the data posted from the form.
+            #Creating a random part of URL to use
+            url = url_gen()
+            add_user = {
+                'name' : request.form['create_username'],
+                'password' : hashed_password,
+                'phone_number' : request.form['phone_number'],
+                'email' : request.form['email'],
+                'community' : request.form['community'],
+                'going_to' : [],
+                'events_attended': [],
+                'community_lat': community_geocode.json['lat'],
+                'community_lng': community_geocode.json['lng'],
+                'key' : url,
+                'notifications'  :  0
                             }
 
-                #adding the user
-                added = db.user_auth.insert_one(add_user)
-                user = db.users.find_one({'name'  :  add_user['name']})
-
-                #Creating a random part of URL to use
+            #adding the user
+            added = db.user_auth.insert_one(add_user)
+            user = db.user_auth.find_one({'name'  :  add_user['name']})
 
 
-                #Sending a verification email to the user,the random numbers for the url are to prevent shortcuts
-                msg = Message('Thanks for creating a user @ Locomotive!', sender = email, recipients = [request.form['email']])
-                msg.body = "Hello, Thanks for creating a user @ Locomotive! click this URL to activate your account!   "+"locomotive.auroville.org.in"+'/adduser/'+url+'/'+user['_id']
-                mail.send(msg)
-                add_user = True
+
+            #Sending a verification email to the user,the random numbers for the url are to prevent shortcuts
+            msg = Message('Thanks for creating a user @ Locomotive!', sender = email, recipients = [request.form['email']])
+            msg.body = "Hello, Thanks for creating a user @ Locomotive! click this URL to activate your account!   "+"locomotive.auroville.org.in"+'/adduser/'+url+'/'+'%s'%(user['_id'])
+            mail.send(msg)
+            add_user = True
 
     return render_template('create_user.html', error=error,add_user=add_user)
 
@@ -209,7 +216,6 @@ def add_user(url,id):
     #finding the user from user_auth
 
     user = db.user_auth.find({'_id':ObjectId(id)}).count()
-
     if user != 0:
         user  = db.user_auth.find_one({'_id': ObjectId(id)})
         if url == user['key']:
