@@ -155,7 +155,7 @@ def create_user():
 
 
         community_geocode = geocoder.osm(request.form['community']+' Auroville India')
-        if community_geocode.json['status'] != False:
+        if community_geocode.json['status'] != 'OK':
             error = "Locomotive cannot serve this community due to technical reasons, please choose another one that is closeby "
 
 
@@ -311,7 +311,7 @@ def edit_user(edit_user):
 
 
                 community_geocode = geocoder.osm(request.form['community']+' Auroville India')
-                if community_geocode.json['status'] != False:
+                if community_geocode.json['status'] != 'OK':
                     error = "Locomotive cannot serve this community due to technical reasons, please choose another one that is closeby "
 
                 #Checks if the new passwords match
@@ -327,6 +327,8 @@ def edit_user(edit_user):
                     k['email'] = request.form['email']
                     k['phone_number'] = request.form['phone_number']
                     k['community'] = request.form['community']
+                    k['community_lat'] = community_geocode.json['lat']
+                    k['community_lng'] = community_geocode.json['lng']
                     db.users.save(k)
 
                     return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button style="color:green;">logout</button></a></body></html>'
@@ -398,7 +400,7 @@ def create_event():
                 error = validates
 
             geocode = geocoder.osm(request.form['address'])
-            if geocode.json['status'] != False:
+            if geocode.json['status'] != 'OK':
                 error = "Locomotive cannot serve this community due to technical reasons, please choose another one that is closeby "
 
 
@@ -500,7 +502,7 @@ def edit_event(event_id):
                         error = validates
 
                 geocode = geocoder.osm(request.form['address'])
-                if geocode.json['status'] != False:
+                if geocode.json['status'] != 'OK':
                     error = "Locomotive cannot serve this community due to technical reasons, please choose another one that is closeby "
 
                 #Checks if image that needs to be uploaded is not already there
