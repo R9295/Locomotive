@@ -682,7 +682,7 @@ def view_event(event_id):
             }
             db.notifications.insert_one(notify_data)
 
-        return render_template('event.html', var=event,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,past=past,user_lat=user_community_lat,user_lng=user_community_lng,user=user_data,key=mapbox_key)
+        return render_template('event.html',var=event,user_in_use =user_in_use,lat=lat_of_event,lng=lng_of_event,past=past,user_lat=user_community_lat,user_lng=user_community_lng,user=user_data,key=mapbox_key)
     else:
         return redirect(url_for('login'))
 
@@ -751,7 +751,7 @@ def go_to(name):
          #Appending to the user's going_to list
 
 
-    return redirect('/'+user['_id'])
+    return redirect('/'+'%s'%(user['_id']))
 
 @app.route('/events/all/past' ,methods =['GET','POST'])
 def view_past_events():

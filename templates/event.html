@@ -18,6 +18,14 @@
       .form_font{
       font-family: 'Raleway', cursive;font-size:30px;
       }
+          body { 
+  background: url('/static/img/background.jpg') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
   </style>
     <!-- Bootstrap Core CSS -->
     <link href="/static/bootstrap.min.css" rel="stylesheet">
@@ -26,7 +34,7 @@
     <link href="/static/one-page-wonder.css" rel="stylesheet">
 </head>
 
-<body style="background-image: url('/static/img/background.jpg ');" >
+<body>
     <!-- Full Width Image Header -->
     {% if var['image'] != None: %}
     <header class="header-image" style="background-image: url('/static/img/{{var['image']}}');">
@@ -148,9 +156,9 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="exampleModalLabel"></h4>
+          <h4 class="modal-title" id="exampleModalLabel" style="color:black;"></h4>
         </div>
-        <div class="modal-body" style="font-family: Raleway;" style="color:black;">
+        <div class="modal-body" style="font-family: Raleway;color:black;">
           Write a message to the user to see if they can travel with you.<br><br>
           In the message, you must include the following:<br>
           <ul>
