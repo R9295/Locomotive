@@ -12,8 +12,19 @@
         <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
         <link href="{{url_for('static', filename='buttons.css')}}" rel="stylesheet" type="text/css">
         <link href="{{url_for('static', filename='simple-sidebar.css')}}" rel="stylesheet" type="text/css">
+
+        <style type="text/css">
+                body {
+  background: url(/static/img/trial_3.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+       }
+        </style>
 </head>
-<body style="background : url('/static/img/background.jpg')">    <!-- Navbar -->
+<body>    <!-- Navbar -->
  <div id="wrapper" class="toggled">
 
         <!-- Sidebar -->
@@ -77,11 +88,11 @@
 
 
 <div align="center">
-<h1 style="color:white;">{{user['name']}}'s Events:</h1>
+<h1 style="color:black;">{{user['name']}}'s Events:</h1>
 </div>
 <br><br><br>
     {% for i in my_events: %}
-<div align="center"><h3 style="font-family: 'Raleway', cursive;font-size: 50px"><a href="/events/{{i['id']}}" > {{i['name']}}</a>  <a href="/events/edit/{{i['id']}}" style="color:red;"> edit </a> </h3></div><br><br>
+<div align="center"><h3 style="font-family: 'Raleway', cursive;font-size: 50px"><a href="/events/{{i['id']}}" style="color:black; " > {{i['name']}}</a>  <a href="/events/edit/{{i['id']}}" style="color:red;"> edit </a> </h3></div><br><br>
 <br>
 {% endfor %}
 </div>

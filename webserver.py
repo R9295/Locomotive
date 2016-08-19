@@ -287,7 +287,7 @@ def login():
 
 #Edit user profile. The URL will be locomotive.com/username/edit
 @app.route('/<id>/edit', methods=['GET','POST'])
-def edit_user(edit_user):
+def edit_user(id):
     key = request.cookies.get('key')
 
     #if key in cookies
@@ -307,7 +307,7 @@ def edit_user(edit_user):
         k = db.users.find_one({'_id': ObjectId(id)})
 
         #Checks if the person logged in is trying to edit their profile and not somebody else's
-        if k['name'] == edit_user:
+        if k['name'] == user_in_use:
 
             #If data is posted
             if request.method == 'POST':
@@ -341,7 +341,7 @@ def edit_user(edit_user):
 
                     return 'Please login again, to commit changes    '+'<html><body><a href="/login"><button style="color:green;">logout</button></a></body></html>'
         else:
-            return redirect('/'+user['_id'])
+            return redirect('/'+'%s'%(user['_id']))
 
         return render_template('edit_users.html', var=k,error=error,user=user)
 

@@ -19,7 +19,7 @@
       font-family: 'Raleway', cursive;font-size:30px;
       }
           body { 
-  background: url('/static/img/background.jpg') no-repeat center center fixed; 
+  background: url('/static/back_5.jpg') no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -39,7 +39,7 @@
     {% if var['image'] != None: %}
     <header class="header-image" style="background-image: url('/static/img/{{var['image']}}');">
       {% else %}
-    <header class="header-image" style="background-color:black;color:white;">
+    <header class="header-image" style="background-color:white;color:black;">
     {% endif %}
 
         <div class="headline">
@@ -55,13 +55,13 @@
         <hr class="featurette-divider">
 
         <!-- First Featurette -->
-        <div class="featurette" id="about" style="color:white;">
+        <div class="featurette" id="about" style="color:black;">
             <h2 class="featurette-heading">Event data,
                 <span class="text-muted">all about {{var['name']}}</span>
             </h2>
 
-            <h1 align="center" style="color:white;">{{var['name']}}</h1>
-              <div class="container" align="center" style="font-family: Raleway;color:white;">
+            <h1 align="center" style="color:black;">{{var['name']}}</h1>
+              <div class="container" align="center" style="font-family: Raleway;color:black;">
                 <h3>
                                  Event created by:
                                   {{var.who_made_me}}
@@ -112,7 +112,7 @@
 
 
         <!-- Second Featurette -->
-        <div class="featurette" id="services" style="color:white;">
+        <div class="featurette" id="services" style="color:black;">
             <h2 class="featurette-heading">Map,
                 <span class="text-muted">location of the event</span><br>
                 <div id="map" style="width: 200%; height: 500px;"></div>
@@ -122,7 +122,7 @@
         <hr class="featurette-divider">
 
         <!-- Third Featurette -->
-        <div class="featurette" id="contact" style="color:white;" >
+        <div class="featurette" id="contact" style="color:black;" >
             <h2 class="featurette-heading">Attend Event,
                 <span class="text-muted">go to {{var['name']}}</span>
                 <br>
