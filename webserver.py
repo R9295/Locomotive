@@ -737,10 +737,10 @@ def deleteion(name):
         active_user = db.active.find_one({'key'  :  key})
 
     #Find the event
-    delete_event = db.events.find_one({'name':name})
+    delete_event = db.events.find({'name':name}).count()
 
     #if the event is found, delete it
-    if delete_event != None:
+    if delete_event != 0:
          k = db.users.find()
          for i in k:
              if delete_event['name'] in i['going_to']:
