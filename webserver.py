@@ -239,7 +239,7 @@ def add_user(url,id):
             rm = db.user_auth.find_one({'name'  :  user['name']})
             db.user_auth.remove(rm)
             db.user_auth.save(rm)
-            return "User verified    "+adding_user['name']+ "    login@"+"   locomotive.auroville.org.in/login"
+            return "User verified    "+adding_user['name']+ "<html><body><a href='locomotive.com/login'>Login!</a></body></html>"   
         else:
             return 'Incorrect URL'
     else:
@@ -289,6 +289,7 @@ def login():
 @app.route('/<id>/edit', methods=['GET','POST'])
 def edit_user(id):
     key = request.cookies.get('key')
+    error = None
 
     #if key in cookies
     if db.active.find({'key' : key}).count() != 0:
@@ -301,7 +302,6 @@ def edit_user(id):
         #The events the user owns to pass on to the webpage
         events = db.events.find({"who_made_me": user_in_use})
 
-        error = None
 
         #Find the data of the user currently logged in to edit
         k = db.users.find_one({'_id': ObjectId(id)})
@@ -313,9 +313,10 @@ def edit_user(id):
             if request.method == 'POST':
 
                 #Confirms user by asking for old password before changing it
-                passwd = request.form['old_password'].encode('utf-8')
-                if hashpw(passwd,k['password'].encode('utf-8')) != k['password']:
-                    error="Passwords don't match"
+                if request.form['password'] and request.form['new_password'] != None:
+                    passwd = request.form['old_password'].encode('utf-8')
+                    if hashpw(passwd,k['password'].encode('utf-8')) != k['password']:
+                        error="Passwords don't match"
 
 
                 community_geocode = geocoder.osm(request.form['community']+' Auroville India')
@@ -329,9 +330,10 @@ def edit_user(id):
 
 
                 #Updates user
-                else:
-                    passwd = request.form['password'].encode('utf-8')
-                    k['password'] = hashpw(passwd,gensalt())
+                if error == None:
+                    if request.form['password'] != None:
+                        passwd = request.form['password'].encode('utf-8')
+                        k['password'] = hashpw(passwd,gensalt())
                     k['email'] = request.form['email']
                     k['phone_number'] = request.form['phone_number']
                     k['community'] = request.form['community']
@@ -400,26 +402,39 @@ def create_event():
         #If data is posted
         if request.method == 'POST':
 
-            #Check if data given is valid. The function is in data_validation.py
-            validates =  validate_event_input(phone=request.form['phone_number'],y=request.form['year'],m=request.form['month'],d=request.form['day'],name=request.form['name'])
+            year  = int(request.form['year'])
+            month = int(request.form['month'])
+            day = int(request.form['day'])
+            
+            try:
+                datetime.date(year,month,day)
+            except ValueError or NameError:
+                error = 'Wrong dates'
+            try:
+                if datetime.date(year, month, day) < datetime.date.today():
+                    error = "Can't create events in the past"
+            except ValueError or NameError:
+                error = "Incorrect dates"
 
-            #If the function returns something, then return error
-            if validates != None:
-                error = validates
+            if request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
+                error = 'Invalid phone number'
 
+            if  db.events.find({'name':request.form['name']}).count() > 0:
+                error = 'Event name already exists'
+         
             geocode = geocoder.osm(request.form['address'])
             if geocode.json['status'] != 'OK':
                 error = "Locomotive cannot serve this community due to technical reasons, please choose another one that is closeby "
 
-
-
             #If photo is uploaded, check if the name exists if not, upload
-            elif os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
+            if os.path.isfile("static/img/%s" %(request.files['photo'].filename)):
                 error = "Filename already exists please rename file"
 
-            #if all the conditions are satisfied add event
-            else:
+            
 
+            #if all the conditions are satisfied add event
+            if error == None:
+                
                 #Image filename
                 filename = None
 
@@ -502,12 +517,27 @@ def edit_event(event_id):
         #verify and update event
         if request.method == 'POST':
             try:
-                #Verifies the data using function in data_validation.py
-                validates =validate_event_edit_input(phone=request.form['phone_number'],y=request.form['year'],m=request.form['month'],d=request.form['day'])
 
-                #If the function returns something, return the error
-                if validates != None:
-                        error = validates
+                year  = int(request.form['year'])
+                month = int(request.form['month'])
+                day = int(request.form['day'])
+            
+                try:
+                    datetime.date(year,month,day)
+                except ValueError or NameError:
+                    error = 'Wrong dates'
+                try:
+                    if datetime.date(year, month, day) < datetime.date.today():
+                        error = "Can't create events in the past"
+                except ValueError or NameError:
+                    error = "Incorrect dates"
+
+
+                if request.form['phone_number'].isdigit() != True or len(str(request.form['phone_number'])) != 10 :
+                    error = 'Invalid phone number'
+
+                if  db.events.find({'name':name}).count() > 0:
+                    error = 'Event name already exists'
 
                 geocode = geocoder.osm(request.form['address'])
                 if geocode.json['status'] != 'OK':
