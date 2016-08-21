@@ -239,7 +239,7 @@ def add_user(url,id):
             rm = db.user_auth.find_one({'name'  :  user['name']})
             db.user_auth.remove(rm)
             db.user_auth.save(rm)
-            return "User verified    "+adding_user['name']+ "<html><body><a href='locomotive.com/login'>Login!</a></body></html>"   
+            return "User verified    "+adding_user['name']+ "<html><body><a href='/login'>Login!</a></body></html>"   
         else:
             return 'Incorrect URL'
     else:
