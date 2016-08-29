@@ -70,7 +70,7 @@
 
              <input type="email" placeholder="Email" name="email" class="form-control form_create" required><br><br>
                 <input type="text" placeholder="Community" name="community" class="form-control form_create" required><br><br>
-            <input class="btn btn-success" type="submit" value="Create!"  class="form-control form_create"><br><br>
+            <input class="btn btn-success" type="submit" value="Create!" id="submit"  class="form-control form_create"><br><br>
         </div>
         </form>
         </div>
@@ -118,9 +118,12 @@ myapp.controller('create_user', function($scope) {
     $scope.password_verify = function() {
     if ($scope.password !== $scope.password_re_enter){
     $scope.password_error = "Passwords don't match";
+    document.getElementById("submit").disabled = true;
+
 
     }else{
     $scope.password_error = '';
+    document.getElementById("submit").disabled = false;
     }
     }
 
@@ -128,8 +131,10 @@ myapp.controller('create_user', function($scope) {
     $scope.phone_verify = function(){
     if ($scope.phone_number.length != 10){
     $scope.phone_error = 'Incorrect phone number';
+    document.getElementById("submit").disabled = true;
     }
     else{
+    document.getElementById("submit").disabled = false;
     $scope.phone_error = '';
     }
 

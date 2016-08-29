@@ -176,7 +176,7 @@
           <input type="file" value="Browse" style="btn btn-defualt" name="photo">
            <br>
 
-          <input  type="submit" value="Create!" class="btn btn-success" style="font-size:30px">
+          <input  type="submit" id="submit" value="Create!" class="btn btn-success" style="font-size:30px">
       </form>
         <!--In case of an error -->
         {% if error != None: %}
@@ -195,8 +195,10 @@ myapp.controller('create_event', function($scope) {
     $scope.phone_verify = function(){
     if ($scope.phone_number.length != 10){
     $scope.phone_error = 'Incorrect phone number';
+    document.getElementById("submit").disabled = true;
     }
     else{
+    document.getElementById("submit").disabled = false;  
     $scope.phone_error = '';
     }
     }
@@ -205,8 +207,10 @@ myapp.controller('create_event', function($scope) {
     $scope.year_verify = function(){
     if ($scope.year >3000 || $scope.year < 2016){
     $scope.year_error = 'Incorrect year';
+    document.getElementById("submit").disabled = true;
     }
     else{
+    document.getElementById("submit").disabled = false;  
     $scope.year_error = '';
     }
     }
@@ -214,9 +218,11 @@ myapp.controller('create_event', function($scope) {
 
     $scope.month_verify = function(){
     if ($scope.month >12 || $scope.month < 1){
+    document.getElementById("submit").disabled = true;  
     $scope.month_error = 'Incorrect month';
     }
     else{
+    document.getElementById("submit").disabled = false;  
     $scope.month_error = '';
     }
     }
@@ -224,9 +230,11 @@ myapp.controller('create_event', function($scope) {
 
     $scope.day_verify = function(){
     if ($scope.day > 31 || $scope.day < 1){
+    document.getElementById("submit").disabled = true;  
     $scope.day_error = 'Incorrect day';
     }
     else{
+    document.getElementById("submit").disabled = false;  
     $scope.day_error = '';
     }
     }
