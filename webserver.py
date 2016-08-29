@@ -407,10 +407,6 @@ def create_event():
             day = int(request.form['day'])
             
             try:
-                datetime.date(year,month,day)
-            except ValueError or NameError:
-                error = 'Wrong dates'
-            try:
                 if datetime.date(year, month, day) < datetime.date.today():
                     error = "Can't create events in the past"
             except ValueError or NameError:
@@ -455,8 +451,7 @@ def create_event():
                 #Event data. request.form fields are fields on the webpage
                 event_data =  {
                     'name': request.form['name'],
-                    'email': request.form['email'],
-                    'phone_number' : request.form['phone_number'],
+                    'contact' : request.form['contact']
                     'venue' : request.form['venue'],
                     'address' : request.form['address'],
                     'description' : request.form['description'],
@@ -558,7 +553,7 @@ def edit_event(event_id):
                         db.events.save(var)
 
                 #The dict that stores changes, and then emails them
-                changes = {'name':'Not changed', 'email':'Not changed', 'venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'phone_number': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed','private':'Not changed' }
+                changes = {'name':'Not changed','venue':'Not changed', 'address':'Not changed', 'description':'Not changed', 'contact': 'Not changed', 'time':'Not changed', 'duration':'Not changed' ,'date':'Not changed','private':'Not changed' }
 
                 #Gets the year month and day from event and converts it to int for it to be stored as a date
                 year = int(request.form['year'])
@@ -573,9 +568,9 @@ def edit_event(event_id):
                     db.events.save(var)
 
 
-                if  var['email'] !=request.form['email']:
-                    var['email'] = request.form['email']
-                    changes['email'] = request.form['email']
+                if  var['contact'] !=request.form['contact']:
+                    var['contact'] = request.form['contact']
+                    changes['contact'] = request.form['contact']
                     db.events.save(var)
 
                 if var['venue'] != request.form['venue']:
@@ -595,12 +590,6 @@ def edit_event(event_id):
                     var['description'] = request.form['description']
                     changes['description'] = request.form['description']
                     db.events.save(var)
-
-                if var['phone_number'] != request.form['phone_number']:
-                    var['phone_number'] = request.form['phone_number']
-                    changes['phone_number'] = request.form['phone_number']
-                    db.events.save(var)
-
 
                 if var['time']  != request.form['time']:
                     var['time'] = request.form['time']

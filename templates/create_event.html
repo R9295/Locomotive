@@ -116,11 +116,6 @@
           <input type="text"  name="name" class="form-control" required>
           <br>
 
-          Email of host
-          <br>
-          <input type="text" placeholder="goldroger@gmail.com" name="email" class="form-control" required>
-          <br>
-
           Venue
           <br>
           <input type="text" name="venue" class="form-control" required>
@@ -136,9 +131,9 @@
         <textarea class="form-control" rows="7" name="description" required>{{request.form['description']}}</textarea>
           <br>
 
-          Phone Number of host
+          Host Contact Information
           <br>
-          <input type="text" placeholder="944xxxxxxx" name="phone_number" class="form-control" ng-model="phone_number" ng-change="phone_verify()"  required>
+          <input type="text" placeholder="email or phone" name="contact" class="form-control"  required>
           <br>
           <div ng-bind="phone_error" class="text-danger bg-danger" style="font-family:Raleway;"></div>
 
@@ -191,26 +186,12 @@
     // onchange verification by Angular
 var myapp = angular.module('app', []);
 myapp.controller('create_event', function($scope) {
-
-    $scope.phone_verify = function(){
-    if ($scope.phone_number.length != 10){
-    $scope.phone_error = 'Incorrect phone number';
-    document.getElementById("submit").disabled = true;
-    }
-    else{
-    document.getElementById("submit").disabled = false;  
-    $scope.phone_error = '';
-    }
-    }
-
-
     $scope.year_verify = function(){
     if ($scope.year >3000 || $scope.year < 2016){
     $scope.year_error = 'Incorrect year';
     document.getElementById("submit").disabled = true;
     }
-    else{
-    document.getElementById("submit").disabled = false;  
+    elsephone    document.getElementById("submit").disabled = false;  
     $scope.year_error = '';
     }
     }
